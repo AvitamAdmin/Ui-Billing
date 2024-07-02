@@ -81,25 +81,24 @@ const AddNewProducts = (props: AddNewProductsProps) => {
                         </View>
                         <View>
                             <CustomTextInputField name={formKeys.productName} control={control} placeholder={labels.enterProductName} label={labels.productName} />
-                            <CustomTextInputField name={formKeys.productCode} control={control} placeholder={labels.enterProductCode} label={labels.productCode} showOtp={true} />
-                            <CustomTextInputField name={formKeys.productCategory} control={control} placeholder={labels.productCategory} label={labels.productCategory} showIcon={true} />
+                            {/* <CustomTextInputField name={formKeys.productCode} control={control} placeholder={labels.enterProductCode} label={labels.productCode} showOtp={true} /> */}
+                            {/* <CustomTextInputField name={formKeys.productCategory} control={control} placeholder={labels.productCategory} label={labels.productCategory} showIcon={true} /> */}
 
                             <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                                 <CustomTextInputField name={formKeys.sellingPrice} control={control} placeholder={labels.addSellingPrice} label={labels.sellingPrice} width={158} />
                                 <CustomTextInputField name={formKeys.purchasePrice} control={control} placeholder={labels.enterPurchasePrice} label={labels.purchasePrice} width={158} />
                             </View>
 
-                            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                            {/* <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                                 <CustomTextInputField name={formKeys.units} control={control} placeholder={labels.select} label={labels.units} width={158} showIcon={true} />
                                 <CustomTextInputField name={formKeys.purchasePrice} control={control} placeholder={labels.select} label={labels.discountType} width={158} showIcon={true} />
-                            </View>
-                            <CustomTextInputField name={formKeys.discountValue} control={control} placeholder={labels.enterDiscountValue} label={labels.discountValue} />
-                            <CustomTextInputField name={formKeys.barcode} control={control} placeholder={labels.enterBarcode} label={labels.barCode} showOtp />
-
-                            <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                            </View> */}
+                            {/* <CustomTextInputField name={formKeys.discountValue} control={control} placeholder={labels.enterDiscountValue} label={labels.discountValue} />
+                            <CustomTextInputField name={formKeys.barcode} control={control} placeholder={labels.enterBarcode} label={labels.barCode} showOtp /> */}
+                            {/* <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                                 <CustomTextInputField name={formKeys.alertquantity} control={control} placeholder={labels.enterAlertQuantity} label={labels.alertQuantity} width={158} />
                                 <CustomTextInputField name={formKeys.tax} control={control} placeholder={labels.selectItemsTax} label={labels.tax} width={158} />
-                            </View>
+                            </View> */}
                             <View style={[flexRow, justifyBetween, { marginVertical: 20 }]}>
                                 <OnboardingButton
                                     width={160}
