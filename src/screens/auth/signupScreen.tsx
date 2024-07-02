@@ -21,6 +21,7 @@ const SignupScreen: React.FC<LoginEmailScreenProps> = () => {
 
     const formKeys = {
         username:"username",
+        mobilenumber:"mobilenumber",
         email: 'email',
         password: 'password',
     };
@@ -79,10 +80,34 @@ const SignupScreen: React.FC<LoginEmailScreenProps> = () => {
                                                             // errorMessage={errors[formKeys.username]?.message}
                                                         />
                                                     )}
-                                                    rules={{
-                                                        required: requiredValidation(labels.emailAddress),
-                                                        minLength: minLengthValidation(validationSchema.name.minLength),
-                                                    }}
+                                                    // rules={{
+                                                    //     required: requiredValidation(labels.emailAddress),
+                                                    //     minLength: minLengthValidation(validationSchema.name.minLength),
+                                                    // }}
+                                                />
+                                                <CustomIcon name='email-outline' size={16} color={colors.grey} type='MaterialCommunityIcons' />
+                                            </IconInputContainer>
+                                        </View>
+                                        <View style={{ marginVertical: 15 }}>
+                                            <H14blackOne600 style={{ marginVertical: 5 }}>{labels.mobileNumber}</H14blackOne600>
+                                            <IconInputContainer>
+                                                <Controller
+                                                    name={formKeys.mobilenumber}
+                                                    control={control}
+                                                    render={({ field: { onChange, value } }) => (
+                                                        <CustomTextInput
+                                                            placeholder={labels.enterMobileNumber}
+                                                            value={value}
+                                                            onChangeText={onChange}
+                                                            textColor={colors.black}
+                                                            // error={errors[formKeys.username]}
+                                                            // errorMessage={errors[formKeys.username]?.message}
+                                                        />
+                                                    )}
+                                                    // rules={{
+                                                    //     required: requiredValidation(labels.emailAddress),
+                                                    //     minLength: minLengthValidation(validationSchema.name.minLength),
+                                                    // }}
                                                 />
                                                 <CustomIcon name='email-outline' size={16} color={colors.grey} type='MaterialCommunityIcons' />
                                             </IconInputContainer>

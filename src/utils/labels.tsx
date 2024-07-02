@@ -17,6 +17,7 @@ export const labels = {
     signupMessage: 'Please Sign Up to start your journey',
     fullname:"Full Name",
     email: 'Email',
+    mobilenumber:"Mobile Number",
     no:'No',
     yes:'Yes',
     password: 'Password',
