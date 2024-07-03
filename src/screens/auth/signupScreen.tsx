@@ -7,11 +7,12 @@ import { CustomTextInput } from '../../components/commonInputFields';
 import CustomIcon from '../../utils/icons';
 import { labels } from '../../utils/labels';
 import { screenName } from '../../utils/screenNames';
-import { H14blackOne600, H14blackTwo400, H16blackTwo400, H16greySix700, H28blackOne700, IconInputContainer } from '../../utils/styledComponents';
+import { H14blackOne600, H14blackTwo400, H16blackTwo400, H28blackOne700, IconInputContainer } from '../../utils/styledComponents';
 import { GroupCircle1, SplashScreenImage } from '../../utils/svg';
 import { colors } from '../../utils/theme/colors';
 import { alignItemCenter, alignSelfCenter, alignSelfEnd, flexRow, justifyAround, justifyCenter, mh15, mt15, mv5 } from '../../utils/theme/commonStyles';
 import { minLengthValidation, requiredValidation, validationSchema } from '../../utils/validationConfig';
+import axios from 'axios';
 
 export type LoginEmailScreenProps = {};
 
@@ -30,10 +31,20 @@ const SignupScreen: React.FC<LoginEmailScreenProps> = () => {
         handleSubmit,
         control,
         formState: { errors },
+        getValues
     } = useForm();
 
-    const onLogin = () => {
-        navigation.navigate(screenName.LoginEmailScreen as never);
+    const onLogin = async () => {
+        const formValues = getValues();
+        console.log('Form Values:', formValues);
+        try {
+            const response = await axios.post('http://192.168.0.119:5000/auth/userRegister', formValues);
+            console.log('Server Response:', response.data);
+            // Navigate to the login screen upon successful registration
+            navigation.navigate(screenName.LoginEmailScreen as never);
+        } catch (error) {
+            console.error('Error posting form values:', error);
+        }
     };
 
     const togglePasswordVisibility = () => {
@@ -56,15 +67,14 @@ const SignupScreen: React.FC<LoginEmailScreenProps> = () => {
                                 <Image source={require('../../../assets/images/png/group1.png')} style={{ height: 400, width: 280 }} />
                             </View>
                         </View>
-                        <View style={{ bottom: '10%' }}>
+                        <View style={{ bottom: '15%' }}>
                             <View style={{ backgroundColor: '#ebebeb', height: '100%', borderTopLeftRadius: 30, borderTopRightRadius: 30, width: '100%', top: 0 }}>
                                     <View style={{ marginHorizontal: 20 }}>
-                                        <View style={{ marginVertical: 30,justifyContent: 'center',
-        alignItems: 'center', gap:10}}>
+                                        <View style={{ marginVertical: 30,justifyContent: 'center', alignItems: 'center', gap:10}}>
                                             <H28blackOne700>{labels.welcome}</H28blackOne700>
                                             <H16blackTwo400>{labels.signupMessage}</H16blackTwo400>
                                         </View>
-                                         <View style={{ marginVertical: 15 }}>
+                                         <View style={{ marginVertical: 10 }}>
                                             <H14blackOne600 style={{ marginVertical: 5 }}>{labels.name}</H14blackOne600>
                                             <IconInputContainer>
                                                 <Controller
@@ -76,19 +86,13 @@ const SignupScreen: React.FC<LoginEmailScreenProps> = () => {
                                                             value={value}
                                                             onChangeText={onChange}
                                                             textColor={colors.black}
-                                                            // error={errors[formKeys.username]}
-                                                            // errorMessage={errors[formKeys.username]?.message}
                                                         />
                                                     )}
-                                                    // rules={{
-                                                    //     required: requiredValidation(labels.emailAddress),
-                                                    //     minLength: minLengthValidation(validationSchema.name.minLength),
-                                                    // }}
                                                 />
                                                 <CustomIcon name='email-outline' size={16} color={colors.grey} type='MaterialCommunityIcons' />
                                             </IconInputContainer>
                                         </View>
-                                        <View style={{ marginVertical: 15 }}>
+                                        <View style={{ marginVertical: 10 }}>
                                             <H14blackOne600 style={{ marginVertical: 5 }}>{labels.mobileNumber}</H14blackOne600>
                                             <IconInputContainer>
                                                 <Controller
@@ -100,19 +104,13 @@ const SignupScreen: React.FC<LoginEmailScreenProps> = () => {
                                                             value={value}
                                                             onChangeText={onChange}
                                                             textColor={colors.black}
-                                                            // error={errors[formKeys.username]}
-                                                            // errorMessage={errors[formKeys.username]?.message}
                                                         />
                                                     )}
-                                                    // rules={{
-                                                    //     required: requiredValidation(labels.emailAddress),
-                                                    //     minLength: minLengthValidation(validationSchema.name.minLength),
-                                                    // }}
                                                 />
                                                 <CustomIcon name='email-outline' size={16} color={colors.grey} type='MaterialCommunityIcons' />
                                             </IconInputContainer>
                                         </View>
-                                        <View style={{ marginVertical: 15 }}>
+                                        <View style={{ marginVertical: 10 }}>
                                             <H14blackOne600 style={{ marginVertical: 5 }}>{labels.email}</H14blackOne600>
                                             <IconInputContainer>
                                                 <Controller
@@ -124,8 +122,6 @@ const SignupScreen: React.FC<LoginEmailScreenProps> = () => {
                                                             value={value}
                                                             onChangeText={onChange}
                                                             textColor={colors.black}
-                                                            // error={errors[formKeys.email]}
-                                                            // errorMessage={errors[formKeys.email]?.message}
                                                         />
                                                     )}
                                                     rules={{
@@ -149,8 +145,6 @@ const SignupScreen: React.FC<LoginEmailScreenProps> = () => {
                                                             onChangeText={onChange}
                                                             secureTextEntry={showPassword}
                                                             textColor={colors.black}
-                                                            // error={errors[formKeys.password]}
-                                                            // errorMessage={errors[formKeys.password]?.message}
                                                         />
                                                     )}
                                                     rules={{
@@ -173,12 +167,11 @@ const SignupScreen: React.FC<LoginEmailScreenProps> = () => {
                                         </TouchableOpacity>
                                         <OnboardingButton
                                             title={labels.createaccount}
-                                            onChange={onLogin}
+                                            onChange={handleSubmit(onLogin)}
                                             backgroundColor={colors.primary}
                                             color={colors.white}
                                             icon={true}
                                         />
-                                
                                     </View>
                             </View>
                         </View>

@@ -76,6 +76,7 @@ import SignupScreen from '../screens/auth/signupScreen';
 import PersonalScreen from '../screens/adminAcess/personal';
 import FinanceScreen from '../screens/adminAcess/finance';
 import Stockupdate from '../screens/adminAcess/stockupdate';
+import AuthLoadingScreen from '../screens/onboarding/authLoadingScreen';
 
 const Stack = createStackNavigator();
 interface NavigationProps {
@@ -85,7 +86,14 @@ interface NavigationProps {
 const StackNavigation = (props: NavigationProps) => {
   // screenOptions={{ headezrShown: false }}
   return (
-    <Stack.Navigator screenOptions={{headerShown:false}} initialRouteName={screenName.OnboardingScreen}>
+    <Stack.Navigator screenOptions={{headerShown:false}} initialRouteName={screenName.AuthLoadingScreen}>
+      <Stack.Screen
+      options={{
+        headerShown:false
+      }}
+        name={screenName.AuthLoadingScreen}
+        component={AuthLoadingScreen}
+      />
       <Stack.Screen
       options={{
         headerShown:false

@@ -7,6 +7,9 @@ app.use(cors());
 const dotenv = require("dotenv");
 dotenv.config();
 
+const UserRegister = require("./routes/UserRegister");
+const UserLogin = require("./routes/UserLogin");
+
 
 
 // Server setup and connect
@@ -22,6 +25,7 @@ mongoose
   .catch((err) => console.error("Database connection error:", err));
 
 
-
+app.use("/auth",UserRegister)
+app.use("/auth",UserLogin)
 
 

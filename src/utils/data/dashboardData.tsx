@@ -82,12 +82,12 @@ export const dashboardHeaderCardData = [
 ];
 
 export const addQuickData = [
-  // {
-  //   id: 1,
-  //   title: 'Invoice',
-  //   // moveTo:screenName.add
-  //   moveTo: screenName.AddInvoiceScreen,
-  // },
+  {
+    id: 1,
+    title: 'Add Invoice',
+    // moveTo:screenName.add
+    moveTo: screenName.AddInvoiceScreen,
+  },
   {id: 2, title: 'Product', moveTo: screenName.AddNewProducts},
   {id: 3, title: 'Customer', moveTo: screenName.AddCustomersScreen},
   // {id: 4, title: 'Inventory'},

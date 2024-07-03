@@ -69,6 +69,8 @@ import QuickAccess from './quickAccess';
 import RecentCustomers from './recentCustomers';
 import RecentInvoices from './recentInvoices';
 import LottieView from 'lottie-react-native';
+import { clearStorage } from '../../utils/async';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export type dashboardProps = {};
 
@@ -128,6 +130,15 @@ const DashboardScreen = (props: dashboardProps) => {
           <View style={{backgroundColor:"#ebebeb",padding:15,borderRadius:8}}>
             <Text style={{fontSize:16}}>Other</Text>
           </View>
+          <TouchableOpacity onPress={()=>{
+                 AsyncStorage.removeItem('userToken');
+
+            console.log("storage cleared");
+            navigation.navigate(screenName.LoginEmailScreen as never);
+
+          }} style={{padding:15,borderRadius:8}}>
+            <Text style={{fontSize:16,color:"red"}}>Logout</Text>
+          </TouchableOpacity>
         </View>
       </View>
     );

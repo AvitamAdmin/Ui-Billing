@@ -8,11 +8,13 @@ import { SplashScreenContainer } from './src/utils/styledComponents';
 import { SplashScreenImage } from './src/utils/svg';
 import { colors } from './src/utils/theme/colors';
 import { alignItemCenter, flex1, h100, justifyCenter, w100 } from './src/utils/theme/commonStyles';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export type AppProps = {};
 
 const App = (props: AppProps) => {
   const [isLoading, setIsLoading] = React.useState<boolean>(true);
+  const [authendicate, setAuthendicate] = React.useState<boolean>(false);
 
   const STATUS_BAR_HEIGHT = Platform.OS === "ios" ? 50 : StatusBar.currentHeight;
 
@@ -26,11 +28,16 @@ const App = (props: AppProps) => {
       setIsLoading(false);
     }, 1000);
 
-    var loginDetails = await getData(storageKeys.loginDetails);
-    if (loginDetails && loginDetails.token) {
-    } else {
-      console.log('SplashScreen')
+
+    const token = await AsyncStorage.getItem("userToken");
+    if (token !== null) {
+
     }
+    // var loginDetails = await getData(storageKeys.loginDetails);
+    // if (loginDetails && loginDetails.token) {
+    // } else {
+    //   console.log('SplashScreen')
+    // }
   };
 
   if (isLoading) {

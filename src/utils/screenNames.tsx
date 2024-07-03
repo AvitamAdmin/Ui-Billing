@@ -1,6 +1,8 @@
 
 
 export const screenName = {
+    AuthLoadingScreen:"AuthLoadingScreen",
+    App: 'App',
     SignupScreen:"SignupScreen",
     DashboardScreen: 'Dashboard',    
     Personal: 'Personal',

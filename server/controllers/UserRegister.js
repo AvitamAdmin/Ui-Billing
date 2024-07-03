@@ -1,8 +1,6 @@
-// controllers/userController.js
-
 const UserRegister = require("../models/UserRegister");
+const bcrypt = require("bcrypt");
 
-// Function to handle user registration
 exports.userRegister = async (req, res) => {
   try {
     const { username, mobilenumber, email, password } = req.body;
@@ -11,16 +9,19 @@ exports.userRegister = async (req, res) => {
     const existingUser = await UserRegister.findOne({ email });
 
     if (existingUser) {
-        console.log("Email already registered:", email);
-        return res.status(400).json({ message: "Email already registered" });
-      }
+      console.log("Email already registered:", email);
+      return res.status(400).json({ message: "Email already registered" });
+    }
+
+    // Hash the password
+    const hashedPassword = await bcrypt.hash(password, 10);
 
     // Create a new document using the UserRegister model
     const newUser = new UserRegister({
       username,
       mobilenumber,
       email,
-      password,
+      password: hashedPassword,
     });
 
     // Save the new user to the database
@@ -32,6 +33,7 @@ exports.userRegister = async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 };
+
 
 exports.getUser = async (req, res) => {
   try {

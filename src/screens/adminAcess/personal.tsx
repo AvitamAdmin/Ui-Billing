@@ -28,6 +28,7 @@ const PersonalScreen = () => {
         <TouchableOpacity onPress={()=>{setFinancescreen(false)}} style={{padding:5}}>
        <Text style={{fontSize:20,fontWeight:"500",color:financescreen == false ? colors.primaryThree : "#737373"}}> Stock Update</Text>
         </TouchableOpacity>
+        
     </View>
    <View style={{marginTop:5}}>
    
