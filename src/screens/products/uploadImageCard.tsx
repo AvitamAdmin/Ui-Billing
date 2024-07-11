@@ -1,38 +1,43 @@
-import React, { FC } from 'react';
-import { Image, TextStyle, TouchableOpacity, View, ViewStyle } from 'react-native';
+import React, { FC, useState } from 'react';
+import { Image, Text, TextStyle, TouchableOpacity, View, ViewStyle } from 'react-native';
 import CustomIcon from '../../utils/icons';
-import { ProfileImage } from '../../utils/png';
-
-import {
-    H12blackTwo400,
-    H12white600,
-    H14Danger400,
-    H14blackOne600,
-    H16danger600
-} from '../../utils/styledComponents';
 import { colors } from '../../utils/theme/colors';
-import {
-    alignSelfCenter,
-    flexRow,
-    mh10,
-    mh5
-} from '../../utils/theme/commonStyles';
+import { alignSelfCenter, flexRow, mh10, mh5 } from '../../utils/theme/commonStyles';
+import { launchImageLibrary } from 'react-native-image-picker';
+import { H12blackTwo400, H12white600, H14Danger400, H14blackOne600, H16danger600 } from '../../utils/styledComponents';
 
 interface UploadImageCardProps {
     title: string;
     sizeInfo: string;
-    onUpload: () => void;
-    onDelete: () => void;
-    imgTrue?: boolean; 
+    onImageSelect: (base64: string) => void;
 }
 
 export const UploadImageCard: FC<UploadImageCardProps> = ({
     title,
     sizeInfo,
-    onUpload,
-    onDelete,
-    imgTrue,
+    onImageSelect,
 }) => {
+    const [imageURL, setImageURL] = useState<string | undefined>(undefined);
+
+    const handleImagePicker = async () => {
+        console.log("pressing camera button");
+
+        try {
+            const result = await launchImageLibrary({
+                mediaType: 'photo',
+                includeBase64: true,
+            });
+            if (result && result.assets && result.assets.length > 0) {
+                const base64 = result.assets[0].base64!;
+                setImageURL(base64);
+                onImageSelect(base64);
+                console.log(imageURL, "img response");
+            }
+        } catch (error) {
+            console.error('Image picking error:', error);
+        }
+    };
+
     const containerStyle: ViewStyle = {
         backgroundColor: colors.greyOne,
         padding: 10,
@@ -41,14 +46,14 @@ export const UploadImageCard: FC<UploadImageCardProps> = ({
     };
 
     const uploadButtonStyle: ViewStyle = {
-        height: 92,
-        width: 92,
+        height: 85,
+        width: 85,
         backgroundColor: 'white',
         borderRadius: 10,
         borderWidth: 1,
         borderColor: colors.greyTwo,
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
     };
 
     const uploadTextStyle: TextStyle = {
@@ -64,14 +69,16 @@ export const UploadImageCard: FC<UploadImageCardProps> = ({
     return (
         <View style={containerStyle}>
             <View style={[flexRow]}>
-                {imgTrue ?(  
-                        <Image source={ProfileImage} style={{ height: 60, width: 60, borderRadius: 10 }} />
-                ):(
-                    <TouchableOpacity onPress={onUpload}>
-                    <View style={uploadButtonStyle}>
-                        <CustomIcon name={'image'} size={16} color={colors.grey} type={'OctIcon'} />
-                    </View>
-                </TouchableOpacity>
+                {imageURL ? (
+                    <TouchableOpacity onPress={handleImagePicker}>
+                        <Image source={{ uri: `data:image/jpeg;base64,${imageURL}` }} style={{ height: 85, width: 85, borderRadius: 10 }} />
+                    </TouchableOpacity>
+                ) : (
+                    <TouchableOpacity onPress={handleImagePicker}>
+                        <View style={uploadButtonStyle}>
+                            <CustomIcon name={'image'} size={56} color="#ababab" type={'OctIcon'} />
+                        </View>
+                    </TouchableOpacity>
                 )}
                 <View style={[alignSelfCenter, mh10]}>
                     <View style={[flexRow]}>
@@ -81,11 +88,11 @@ export const UploadImageCard: FC<UploadImageCardProps> = ({
                     <H12blackTwo400>{sizeInfo}</H12blackTwo400>
                     <View style={[flexRow]}>
                         <TouchableOpacity
-                            onPress={onUpload}
+                            onPress={handleImagePicker}
                             style={uploadTextStyle}>
                             <H12white600>Upload Image</H12white600>
                         </TouchableOpacity>
-                        <TouchableOpacity style={[alignSelfCenter, mh5]} onPress={onDelete}>
+                        <TouchableOpacity style={[alignSelfCenter, mh5]} onPress={() => { setImageURL(undefined);  }}>
                             <H14Danger400>Delete</H14Danger400>
                         </TouchableOpacity>
                     </View>

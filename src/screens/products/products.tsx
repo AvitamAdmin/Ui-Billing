@@ -1,112 +1,201 @@
-import { useNavigation } from '@react-navigation/native';
-import React, { useState } from 'react';
-import { View } from 'react-native';
-import BottomNavBar from '../../components/bottomNavBar';
-import { ListSubHeader, TabBar, TopHeader } from '../../components/commonComponents';
-import CustomModal from '../../components/commonModal';
-import { labels } from '../../utils/labels';
-import { screenName } from '../../utils/screenNames';
-import { BottomWidth } from '../../utils/styledComponents';
-import { colors } from '../../utils/theme/colors';
-import { flex1, mv10 } from '../../utils/theme/commonStyles';
-import CategoriesList from '../categories/categoriesList';
-import UnitsList from '../units/unitsList';
-import { CategoryFilter, ProductFilter, UnitFilter } from './filterModal';
-import ProductsList from './productsList';
+import React, {useState, useEffect} from 'react';
+import {ScrollView, View, Text, Image, StyleSheet} from 'react-native';
+import axios from 'axios';
+import {TouchableOpacity} from 'react-native-gesture-handler';
+import CustomIcon from '../../utils/icons';
+import {colors} from '../../utils/theme/colors';
+import {useNavigation} from '@react-navigation/native';
 
-export type ProductsProps = {
-
+interface Product {
+  _id: string;
+  productName: string;
+  purchasePrice: string;
+  sellingPrice: string;
+  image: string; // Assuming image is now a base64 string
 }
 
-const Products = (props: ProductsProps) => {
-    const [selectedTab, setSelectedTab] = useState(labels.products);
-    const [total, setTotal] = useState('45');
-    const [productFilterModal, setProductFilterModal] = useState(false);
-    const [categoryFilterModal, setCategoryFilterModal] = useState(false);
-    const [unitFilterModal, setUnitFilterModal] = useState(false);
+const Products = () => {
+  const [products, setProducts] = useState<Product[]>([]);
+  const navigation = useNavigation();
 
+  useEffect(() => {
+    fetchProducts();
+  }, []);
 
-    const navigation = useNavigation();
-
-    const tabs = [
-        { label: labels.products, total: '45' },
-        { label: labels.categories, total: '21' },
-        { label: labels.units, total: '15' },
-    ];
-
-    const handleTabPress = (tab: string) => {
-        setSelectedTab(tab);
-        const tabData = tabs.find(item => item.label === tab);
-        if (tabData) {
-            setTotal(tabData.total);
-        }
-    };
-
-    const handleAddPress = () => {
-        if (selectedTab === labels.products) {
-            navigation.navigate(screenName.AddNewProducts as never)
-        } else if (selectedTab === labels.categories) {
-            navigation.navigate(screenName.AddNewCategories as never)
-        } else if (selectedTab === labels.units) {
-            navigation.navigate(screenName.AddNewUnits as never)
-        }
+  const fetchProducts = async () => {
+    try {
+      const response = await axios.get<{data: Product[]}>(
+        'http://192.168.0.119:5000/auth/product/getProduct',
+      );
+      setProducts(response.data.data); // Assuming response.data.data is an array of products
+    } catch (error) {
+      console.error('Error fetching products:', error);
     }
+  };
 
-    const openProductFilterModal = () => {
-        setProductFilterModal(true);
-    };
+  const deleteProduct = async (id: string) => {
+    try {
+      await axios.delete(`http://192.168.45.145:5000/auth/product/${id}`);
+      // Update the state by filtering out the deleted product
+      setProducts(prevProducts => prevProducts.filter(product => product._id !== id));
+    } catch (error) {
+      console.error('Error deleting product:', error);
+    }
+  };
 
-    const closeProductFilterModal = () => {
-        setProductFilterModal(false);
-    };
-
-    const openCategoryFilterModal = () => {
-        setCategoryFilterModal(true);
-    };
-
-    const closeCategoryFilterModal = () => {
-        setCategoryFilterModal(false);
-    };
-
-    const openUnitFilterModal = () => {
-        setUnitFilterModal(true);
-    };
-
-    const closeUnitFilterModal = () => {
-        setUnitFilterModal(false);
-    };
-
-    return (
-        <View style={[flex1, { backgroundColor: colors.whiteTwo }]}>
-            <View style={{ marginHorizontal: 15, marginVertical: 10 }}>
-                <TopHeader headerText={selectedTab} searchIcon={true} searchName={selectedTab} searchText={'Search ' + selectedTab} />
-                <View style={[mv10]}>
-                    <TabBar tabs={tabs} activeTab={selectedTab} onTabPress={handleTabPress} />
-                </View>
-                <BottomWidth />
-                <ListSubHeader listName={selectedTab} totalNumber={total} onAddPress={handleAddPress} addIcon={true} onFilterPress={selectedTab === labels.products ? openProductFilterModal : selectedTab === labels.categories ? openCategoryFilterModal : selectedTab === labels.units? openUnitFilterModal:undefined} />
-                {selectedTab === labels.products && (
-                    <>
-                        <ProductsList searchValue={''} />
-                        <CustomModal visible={productFilterModal} onClose={closeProductFilterModal} height={'80%'} children={<ProductFilter onSave={closeProductFilterModal} onCancel={closeProductFilterModal} />} />
-                    </>
-                )}
-                {selectedTab === labels.categories && (
-                    <>
-                        <CategoriesList />
-                        <CustomModal visible={categoryFilterModal} onClose={closeCategoryFilterModal} height={'80%'} children={<CategoryFilter onSave={closeCategoryFilterModal} onCancel={closeCategoryFilterModal} />} />
-                    </>
-                )}
-                {selectedTab === labels.units && (
-                     <>
-                     <UnitsList />
-                     <CustomModal visible={unitFilterModal} onClose={closeUnitFilterModal} height={'80%'} children={<UnitFilter onSave={closeUnitFilterModal} onCancel={closeUnitFilterModal} />} />
-                 </>
-                )}
-            </View>
-            <BottomNavBar />
+  return (
+    <View>
+      <View style={{padding: 10,flexDirection:"row",width:"100%",justifyContent:"space-between",alignItems:"center",paddingLeft:10,paddingRight:10}}>
+      <View >
+          <TouchableOpacity onPress={() => navigation.goBack()}>
+            <CustomIcon
+              color={colors.primarTwo}
+              size={24}
+              name="arrow-back"
+              type="Ionicons"
+            />
+          </TouchableOpacity>
         </View>
-    );
+        <View
+          style={{
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+          <Text style={{fontSize: 18, color: '#000', fontWeight: '500'}}>
+            View all Products
+          </Text>
+        </View>
+        <View >
+          <TouchableOpacity onPress={() => navigation.goBack()}>
+            <CustomIcon
+              color={colors.primarTwo}
+              size={24}
+              name="plussquareo"
+              type="AntDesign"
+            />
+          </TouchableOpacity>
+        </View>
+      </View>
+      <ScrollView contentContainerStyle={styles.scrollView}>
+        <View
+          style={{
+            gap: 10,
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            alignContent: 'center',
+            width: '100%',
+          }}>
+          {products.map(item => (
+            <TouchableOpacity 
+            onPress={()=>{
+              // console.log(item._id,"product id");
+              
+            }}
+              key={item._id}
+              style={{
+                backgroundColor: '#f7f7f7',
+                width: '100%',
+                padding: 3,
+                display: 'flex',
+                flexDirection: 'row',
+                gap: 10,
+                justifyContent: 'center',
+                alignContent: 'center',
+                borderRadius:8
+              }}>
+              <View
+                style={{
+                  width: '25%',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}>
+                <Image
+                  source={{uri: `data:image/jpeg;base64,${item.image}`}} // Use base64 directly
+                  style={styles.image}
+                />
+              </View>
+              <View
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  alignItems: 'flex-start',
+                  width: '70%',
+                }}>
+                <View>
+                  <Text
+                    style={{fontSize: 18, color: '#000', fontWeight: '500'}}>
+                    {item.productName}
+                  </Text>
+                  <Text
+                    style={{fontSize: 14, color: '#4d4d4d', fontWeight: '500'}}>
+                    Selling Price : {item.sellingPrice}
+                  </Text>
+                  <Text
+                    style={{fontSize: 14, color: '#4d4d4d', fontWeight: '500'}}>
+                    Purchased Price : {item.purchasePrice}
+                  </Text>
+                </View>
+
+                <View
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'space-between',
+                    alignContent: 'center',
+                    gap: 20,
+                    padding: 5,
+                  }}>
+                  <TouchableOpacity onPress={() => {
+console.log("edit button triged");
+
+                  }}>
+                    <CustomIcon
+                      color="#4d4d4d"
+                      size={20}
+                      name="edit"
+                      type="Feather"
+                    />
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={() => {
+                    console.log(item._id,"delete btn id");
+                    deleteProduct(item._id);
+                  }}>
+                    <CustomIcon
+                      color="#4d4d4d"
+                      size={20}
+                      name="delete"
+                      type="MaterialIcons"
+                    />
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </TouchableOpacity>
+          ))}
+        </View>
+      </ScrollView>
+    </View>
+  );
 };
+
+const styles = StyleSheet.create({
+  scrollView: {
+    padding: 10,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    minHeight:"100%"
+  },
+  image: {
+    width: 75,
+    height: 75,
+    borderRadius: 8,
+
+  },
+});
 
 export default Products;

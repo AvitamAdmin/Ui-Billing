@@ -1,227 +1,147 @@
-import React, { useState } from 'react';
-import { ScrollView, Text, View } from 'react-native';
-import { CustomTextInputField, ListSubHeader, MultiLineTextBox, TabBar, TopHeader } from '../../components/commonComponents';
+import React, { useEffect, useState } from 'react';
+import { Image, Text, TextInput, View, TouchableOpacity } from 'react-native';
+import { launchImageLibrary } from 'react-native-image-picker';
+import axios from 'axios';
+import CustomIcon from '../../utils/icons';
+import { TopHeader } from '../../components/commonComponents';
 import { labels } from '../../utils/labels';
-import { colors } from '../../utils/theme/colors';
-import { flex1, mt10, mh10, mv15, alignSelfCenter, ml10, mr10, alignItemCenter, mt15, mr15, flexRow, justifyBetween } from '../../utils/theme/commonStyles';
-import { useNavigation } from '@react-navigation/native';
-import { screenName } from '../../utils/screenNames';
-import { UploadImageCard } from '../products/uploadImageCard';
-import { useForm } from 'react-hook-form';
-import { OnboardingButton } from '../../components/commonButton';
-import { DevWidth } from '../../utils/device';
-import DashedLine from '../../components/dashedLine';
-import { H16BlackOne700, H18BlackOne700 } from '../../utils/styledComponents';
-import PopupCardModal from '../../components/popupCardModal';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export type addCustomersProps = {
+const AddCustomers = () => {
+  const [formData, setFormData] = useState({
+    name: '',
+    phone: '',
+    address: '',
+  });
+  const [currentUser, setCurrentUser] = useState<string | undefined>(undefined);
+  const [imageURL, setImageURL] = useState<string | undefined>(undefined);
 
+  const handleImagePicker = async () => {
+    try {
+      const result = await launchImageLibrary({
+        mediaType: 'photo',
+        includeBase64: true,
+      });
+      if (result && result.assets && result.assets.length > 0) {
+        const base64 = result.assets[0].base64!;
+        setImageURL(base64);
+      }
+    } catch (error) {
+      console.error('Image picking error:', error);
+    }
+  };
+
+  const handleInputChange = (field: string, value: string) => {
+    setFormData({ ...formData, [field]: value });
+  };
+
+  useEffect(() => {
+    const fetchEmail = async () => {
+      try {
+        const email = await AsyncStorage.getItem('userEmail');
+        setCurrentUser(email ?? undefined); // Handle null case
+console.log(currentUser,"asdfghjkl");
+
+        console.log('Retrieved email:', email);
+      } catch (error) {
+        console.error('Error retrieving email from AsyncStorage:', error);
+      }
+    };
+
+    fetchEmail();
+  }, []);
+
+
+  const [errmsg, seterrmsg] = useState<string | undefined>(undefined);
+  const handleSubmit = async () => {      const { name, phone, address } = formData;
+if(name !== "" && phone !== "" && address !== ""){ try {
+
+  const response = await axios.post(
+    'http://192.168.0.119:5000/api/customer/customercreate',
+    {
+      customerName: name,
+      mobileNumber: phone,
+      address: address,
+      creator: currentUser, // Replace with the actual creator ID or logic
+    }
+  );
+  setFormData({
+    name: '',
+    phone: '',
+    address: '',
+  })
+
+  console.log('Customer creation successful:', response.data);
+
+  // Assuming you navigate to the CustomerDetails screen upon successful submission
+
+} catch (error) {
+  console.error('Customer creation failed:', error);
+  // Handle error state or feedback to the user
+}}else{
+seterrmsg("* All Fields are mandatory");
 }
+   
+  };
 
-
-const AddCustomersScreen = (props: addCustomersProps) => {
-    const navigation = useNavigation();
-
-    const [selectedTab, setSelectedTab] = useState(labels.basicDetails);
-    const [notes, setNotes] = useState('');
-    const [isActiveBtn, setIsActiveBtn] = useState(false);
-
-    const tabs = [
-        { label: labels.basicDetails },
-        { label: labels.address },
-        { label: labels.bankDetails },
-    ];
-
-    const handleTabPress = (tab: string) => {
-        setSelectedTab(tab);
-    };
-
-    const handlePrevBtnClick = () => {
-        setIsActiveBtn(true);
-        setSelectedTab(labels.basicDetails);
-    };
-
-    const handlePrevTwoBtnClick = () => {
-        setIsActiveBtn(true);
-        setSelectedTab(labels.address);
-    }
-
-    const handleSaveChangesBtnClick = () => {
-        setIsActiveBtn(true);
-        // navigation.navigate(screenName.CustomerDetails as never)
-    }
-
-    const handleNextBtnClick = () => {
-        setIsActiveBtn(false);
-        setSelectedTab(labels.bankDetails);
-    };
-
-    const formKeys = {
-        name: 'name',
-        email: 'email',
-        phone: 'phone',
-        website: 'website',
-        notes: 'notes',
-        nameSecond: 'nameSecond',
-        addressOne: 'addressOne',
-        addressTwo: 'addressTwo',
-        city: 'city',
-        state: 'state',
-        country: 'country',
-        pincode: 'pincode',
-        bankName: 'bankName',
-        branch: 'branch',
-        accountHolderName: 'accountHolderName',
-        accountNumber: 'accountNumber',
-        ifsc: 'ifsc',
-    }
-
-    const {
-        control,
-    } = useForm();
-
-    const basicDetails = () => {
-        return (
-            <View style={[{}]}>
-                <View style={[mv15, mr10]}>
-                    <UploadImageCard title={labels.customerImage} sizeInfo={'Size should be below 4 MB'} onUpload={() => { }} onDelete={() => { }} />
-                </View>
-                <View style={[mr10]}>
-                    <CustomTextInputField name={formKeys.name} control={control} placeholder={labels.enterName} label={labels.name} />
-                    <CustomTextInputField name={formKeys.email} control={control} placeholder={labels.enterEmailAddress} label={labels.emailAddress} />
-                    <CustomTextInputField name={formKeys.phone} control={control} placeholder={labels.enterPhone} label={labels.phone} />
-                    <CustomTextInputField name={formKeys.website} control={control} placeholder={labels.addWebsite} label={labels.website} />
-                    <MultiLineTextBox
-                        placeHolder={labels.notes}
-                        label={labels.notes}
-                        value={notes}
-                        onChangeValue={() => setNotes(notes)}
-                        multiline={true}
-                        keyboardType="default"
-                        height={100}
-                        maxLength={200}
-                        disable={false}
-                    />
-                    <View style={[mv15, { bottom: 0 }]}>
-                        <OnboardingButton
-                            width={DevWidth / 1.1}
-                            title={labels.next}
-                            onChange={() => setSelectedTab(labels.address)}
-                            backgroundColor={colors.primary}
-                            color={colors.white}
-                        />
-                    </View>
-                </View>
-            </View>
-        )
-    }
-
-    const address = () => {
-        return (
-            <View style={[mt15]}>
-                <H16BlackOne700>{labels.billingAddress}</H16BlackOne700>
-                <View style={[alignItemCenter, mv15, mr15]}>
-                    <DashedLine height={330} color={colors.greyTwo} dashLength={5} dashGap={0} />
-                </View>
-                <View style={[mr10]}>
-                    <CustomTextInputField name={formKeys.name} control={control} placeholder={labels.enterName} label={labels.name} />
-                    <CustomTextInputField name={formKeys.addressOne} control={control} placeholder='' label={labels.addressLine1} />
-                    <CustomTextInputField name={formKeys.addressTwo} control={control} placeholder='' label={labels.addressLine2} />
-                    <View style={[flexRow, justifyBetween]}>
-                        <CustomTextInputField width={160} name={formKeys.city} control={control} placeholder={labels.enterCity} label={labels.city} />
-                        <CustomTextInputField width={160} name={formKeys.state} control={control} placeholder={labels.enterState} label={labels.state} />
-                    </View>
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                        <CustomTextInputField name={formKeys.country} control={control} placeholder={labels.select} label={labels.country} width={160} showIcon={true} />
-                        <CustomTextInputField name={formKeys.pincode} control={control} placeholder={labels.enterPincode} label={labels.pincode} width={160} />
-                    </View>
-                </View>
-                <H16BlackOne700 style={mt15}>{labels.shippingAddress}</H16BlackOne700>
-                <View style={[alignItemCenter, mv15, mr15]}>
-                    <DashedLine height={330} color={colors.greyTwo} dashLength={5} dashGap={0} />
-                </View>
-                <View style={[mr10]}>
-                    <CustomTextInputField name={formKeys.name} control={control} placeholder={labels.enterName} label={labels.name} />
-                    <CustomTextInputField name={formKeys.addressOne} control={control} placeholder='' label={labels.addressLine1} />
-                    <CustomTextInputField name={formKeys.addressTwo} control={control} placeholder='' label={labels.addressLine2} />
-                    <View style={[flexRow, justifyBetween]}>
-                        <CustomTextInputField width={160} name={formKeys.city} control={control} placeholder={labels.enterCity} label={labels.city} />
-                        <CustomTextInputField width={160} name={formKeys.state} control={control} placeholder={labels.enterState} label={labels.state} />
-                    </View>
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                        <CustomTextInputField name={formKeys.country} control={control} placeholder={labels.select} label={labels.country} width={160} showIcon={true} />
-                        <CustomTextInputField name={formKeys.pincode} control={control} placeholder={labels.enterPincode} label={labels.pincode} width={160} />
-                    </View>
-                    <View style={[flexRow, justifyBetween, { marginTop: 30 }]}>
-                        <OnboardingButton
-                            width={160}
-                            title={labels.prev}
-                            onChange={handlePrevBtnClick}
-                            backgroundColor={isActiveBtn ? colors.primary : colors.greySeven}
-                            color={isActiveBtn ? colors.white : colors.blackOne}
-                        />
-                        <OnboardingButton
-                            width={160}
-                            title={labels.next}
-                            onChange={handleNextBtnClick}
-                            backgroundColor={isActiveBtn ? colors.greySeven : colors.primary}
-                            color={isActiveBtn ? colors.blackOne : colors.white}
-                        />
-                    </View>
-                </View>
-            </View>
-        )
-    }
-
-    const bankDetails = () => {
-        return (
-            <View style={[mt15]}>
-                <H16BlackOne700>{labels.bankDetails}</H16BlackOne700>
-                <View style={[alignItemCenter, mv15, mr15]}>
-                    <DashedLine height={330} color={colors.greyTwo} dashLength={5} dashGap={0} />
-                </View>
-                <View style={[mr10]}>
-                    <CustomTextInputField name={formKeys.bankName} control={control} placeholder={labels.enterBankName} label={labels.bankName} />
-                    <CustomTextInputField name={formKeys.branch} control={control} placeholder={labels.enterBranch} label={labels.branch} />
-                    <CustomTextInputField name={formKeys.accountHolderName} control={control} placeholder={labels.enterAccountHolderName} label={labels.accountHolderName} />
-                    <CustomTextInputField name={formKeys.accountNumber} control={control} placeholder={labels.enterAccountNumber} label={labels.accountNumber} />
-                    <CustomTextInputField name={formKeys.ifsc} control={control} placeholder={labels.enterIfsc} label={labels.ifsc} />
-                    <View style={[flexRow, justifyBetween, { marginTop: 150 }]}>
-                        <OnboardingButton
-                            width={160}
-                            title={labels.prev}
-                            onChange={handlePrevTwoBtnClick}
-                            backgroundColor={isActiveBtn ? colors.primary : colors.greySeven}
-                            color={isActiveBtn ? colors.white : colors.blackOne}
-                        />
-                        <OnboardingButton
-                            width={160}
-                            title={labels.saveChanges}
-                            onChange={handleSaveChangesBtnClick}
-                            backgroundColor={isActiveBtn ? colors.greySeven : colors.primary}
-                            color={isActiveBtn ? colors.blackOne : colors.white}
-                        />
-                    </View>
-                </View>
-            </View>
-        )
-    }
-
-    return (
-        <View style={[flex1, { backgroundColor: colors.white }]}>
-            <ScrollView showsVerticalScrollIndicator={false}>
-                <View style={[flex1, mt10, mh10]}>
-                    <TopHeader headerText={labels.addCustomer} searchIcon={false} />
-                    <View style={[mv15, alignSelfCenter, ml10]}>
-                        <TabBar tabs={tabs} activeTab={selectedTab} onTabPress={handleTabPress} />
-                        {selectedTab === labels.basicDetails && basicDetails()}
-                        {selectedTab === labels.address && address()}
-                        {selectedTab === labels.bankDetails && bankDetails()}
-                    </View>
-                </View>
-            </ScrollView>
+  return (
+    <View style={{ flex: 1, justifyContent: 'flex-start', alignItems: 'center', padding: 10 }}>
+      <TopHeader headerText={labels.addNewCustomer} />
+      <View style={{ width: '95%' }}>
+        <View style={{ marginVertical: 15 }}>
+          <View style={{ width: '22%' }}>
+            {imageURL ? (
+              <Image
+                source={{ uri: `data:image/jpeg;base64,${imageURL}` }}
+                style={{ height: 80, width: 80, borderRadius: 10 }}
+              />
+            ) : (
+              <TouchableOpacity
+                onPress={handleImagePicker}
+                style={{
+                  borderWidth: 3,
+                  borderColor: '#ababab',
+                  height: 80,
+                  width: 80,
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  borderRadius: 10,
+                }}>
+                <CustomIcon name={'image'} size={56} color="#ababab" type={'OctIcon'} />
+              </TouchableOpacity>
+            )}
+          </View>
         </View>
-    )
-}
+        <View style={{ marginVertical: 15 }}>
+          <TextInput
+            placeholder="Enter Customer Name"
+            onChangeText={(value) => handleInputChange('name', value)}
+            value={formData.name}
+            style={{ borderWidth: 2, borderRadius: 10, borderColor: '#ababab', paddingLeft: 15, marginBottom: 10 }}
+          />
+          <TextInput
+            placeholder="Enter Mobile Number"
+            onChangeText={(value) => handleInputChange('phone', value)}
+            value={formData.phone}
+            style={{ borderWidth: 2, borderRadius: 10, borderColor: '#ababab', paddingLeft: 15, marginBottom: 10 }}
+          />
+          <TextInput
+            placeholder="Enter Address"
+            onChangeText={(value) => handleInputChange('address', value)}
+            value={formData.address}
+            style={{ borderWidth: 2, borderRadius: 10, borderColor: '#ababab', paddingLeft: 15, marginBottom: 10 }}
+          />
+        </View>
+        {errmsg && <Text style={{color:"red",padding:10}}>{errmsg}</Text>}
+        <View style={{ marginBottom: 15 }}>
+          <TouchableOpacity onPress={handleSubmit} style={{ backgroundColor: '#8F62FF', padding: 10, alignItems: 'center', borderRadius: 5 }}>
+            <Text style={{ color: 'white', fontSize: 18 }}>Create Customer</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    </View>
+  );
+};
 
-export default AddCustomersScreen;
+export default AddCustomers;

@@ -41,21 +41,28 @@ const LoginEmailScreen: React.FC<LoginEmailScreenProps> = () => {
 
     const onLogin: SubmitHandler<LoginFormInputs> = async (data) => {
         try {
-            const response = await axios.post('http://192.168.0.119:5000/auth/login', data);
-            if (response.status === 200) {
-                console.log('Login successful:', response.data);
-                // Navigate to the dashboard
-                navigation.navigate(screenName.DashboardScreen as never);
-                const tokens =       await AsyncStorage.setItem("userToken", JSON.stringify(response.data));
-               // await storeData('token',response.data)
-               
-            } else {
-                Alert.alert('Login failed', 'Invalid email or password');
-            }
+          const response = await axios.post('http://192.168.0.119:5000/auth/login', data);
+          if (response.status === 200) {
+            console.log('Login successful:', response.data);
+      
+            // Separate storage of token and email
+            const { email, token } = response.data;
+      
+            await AsyncStorage.setItem('userEmail', email); // Store email
+            await AsyncStorage.setItem('userToken', token); // Store token
+            console.log(token,"tokem");
+            console.log(email,"email");
+            
+      
+            // Navigate to the dashboard
+            navigation.navigate(screenName.DashboardScreen as never);
+          } else {
+            Alert.alert('Login failed', 'Invalid email or password');
+          }
         } catch (error) {
-            console.error('Error logging in:', error);
+          console.error('Error logging in:', error);
         }
-    };
+      };
 
     const togglePasswordVisibility = () => {
         setShowPassword(!showPassword);

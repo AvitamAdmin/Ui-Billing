@@ -9,6 +9,12 @@ import { SplashScreenImage } from './src/utils/svg';
 import { colors } from './src/utils/theme/colors';
 import { alignItemCenter, flex1, h100, justifyCenter, w100 } from './src/utils/theme/commonStyles';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { configureStore } from '@reduxjs/toolkit';
+import useReducer from "./src/redux/Slice";
+import { Provider } from "react-redux";
+import store from './src/redux/Store';
+
+
 
 export type AppProps = {};
 
@@ -49,6 +55,8 @@ const App = (props: AppProps) => {
       </SplashScreenContainer>
     );
   }
+
+
   return (
       <View style={{ flex: 1 }}>
         <View style={{  }}>
@@ -57,7 +65,9 @@ const App = (props: AppProps) => {
             barStyle="light-content"
           /> 
         </View>
+        <Provider store={store}>
         <MainNavigation initialRouteName={screenName.InventoryList} />
+        </Provider>
       </View>
   );
 };

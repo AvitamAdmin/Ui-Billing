@@ -68,8 +68,6 @@ import PaymentStatics from './paymentStatics';
 import QuickAccess from './quickAccess';
 import RecentCustomers from './recentCustomers';
 import RecentInvoices from './recentInvoices';
-import LottieView from 'lottie-react-native';
-import { clearStorage } from '../../utils/async';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export type dashboardProps = {};
@@ -116,16 +114,7 @@ const DashboardScreen = (props: dashboardProps) => {
             <View style={{width:"30%"}}>
             <Text style={{fontSize:16}}>Personal</Text>
             </View>
-            <View style=
-            {{width:"25%",justifyContent:"flex-end"}}>
-            <LottieView
-    source={require("../../../assets/images/arrowback.json")}
-    style={{ width: "100%",zIndex:1000,height:30 }}
-    autoPlay
-    loop={true}
-    speed={0.9}
-  />
-            </View>
+            
           </TouchableOpacity>
           <View style={{backgroundColor:"#ebebeb",padding:15,borderRadius:8}}>
             <Text style={{fontSize:16}}>Other</Text>

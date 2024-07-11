@@ -30,7 +30,7 @@ exports.login = async (req, res) => {
       // { expiresIn: "1h" }
     );
 
-    res.status(200).json({ token });
+    res.status(200).json({ token,email });
   } catch (error) {
     console.error("Login failed:", error);
     res.status(500).json({ error: "Internal server error" });

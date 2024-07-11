@@ -1,7 +1,9 @@
-
-
 export const screenName = {
     AuthLoadingScreen:"AuthLoadingScreen",
+    BillTemplate:"BillTemplate",
+    BillScreen:"BillScreen",
+    CreateBill:"CreateBill",
+    AddBillAddress:"AddBillAddress",
     App: 'App',
     SignupScreen:"SignupScreen",
     DashboardScreen: 'Dashboard',    
@@ -44,7 +46,7 @@ export const screenName = {
     InvoiceTemplatesScreen: 'InvoiceTemplatesScreen',
     ProductScreen: 'Product',
     CustomersScreen: 'Customers',
-    AddCustomersScreen: 'AddCustomer',
+    AddCustomersScreen: 'AddCustomersScreen',
     AddExpenses: 'AddExpenses',
     ExpensesScreen: 'ExpensesScreen',
     ViewExpenses: 'ViewExpenses',

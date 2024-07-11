@@ -1,4 +1,6 @@
 export const labels = {
+    createbilladdress :"Create Bill Address",
+    addNewCustomer: 'Add New Customer',
     logIn: 'Sign in',
     signUp: 'Sign Up',
     createaccount:"Create Account",
@@ -58,6 +60,7 @@ export const labels = {
     enterAlertQuantity: 'Enter Alert Quantity',
     selectItemsTax: 'Select Item’s Tax',
     saveChanges: 'Save Changes',
+    addtoproducts: 'Add to Products',
     apply:'Apply',
     reset: 'Reset',
     enterCategorySlug: 'Enter Category Slug',
