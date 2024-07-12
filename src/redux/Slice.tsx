@@ -8,6 +8,7 @@ type Product = {
   image: string;
   count: number;
   quantity: string;
+  bag: string;
 };
 
 interface UserState {
@@ -27,6 +28,9 @@ const userSlice = createSlice({
     addCustomerNameToBill(state, action: PayloadAction<string>) {
       state.name = action.payload;
     },
+    restCustomerBill(state, action: PayloadAction<string>){
+      state.fetchCustomerFromBill = [];
+    },
     addCustomerToBill(state, action: PayloadAction<Product>) {
       state.fetchCustomerFromBill.push(action.payload);
     },
@@ -36,6 +40,6 @@ const userSlice = createSlice({
   },
 });
 
-export const { addCustomerNameToBill, addCustomerToBill, removeCustomerFromBill } = userSlice.actions;
+export const { addCustomerNameToBill, addCustomerToBill, removeCustomerFromBill, restCustomerBill } = userSlice.actions;
 
 export default userSlice.reducer;

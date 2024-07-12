@@ -14,7 +14,7 @@ import axios from 'axios';
 import { Picker } from '@react-native-picker/picker';
 import CustomIcon from '../../utils/icons';
 import { useDispatch, useSelector } from 'react-redux';
-import { addCustomerNameToBill, addCustomerToBill, removeCustomerFromBill } from '../../redux/Slice';
+import { addCustomerNameToBill, addCustomerToBill, removeCustomerFromBill, restCustomerBill } from '../../redux/Slice';
 import { AppDispatch, RootState } from '../../redux/Store';
 
 type Customer = {
@@ -36,6 +36,7 @@ type Product = {
   image: string; // Assuming image is now a base64 string
   count: number; // Add count property
   quantity: string; // Change to string to handle TextInput value
+  bag: string;
 };
 
 const CreateBill = () => {
@@ -79,6 +80,7 @@ const CreateBill = () => {
         ...product,
         count: 0, // Initialize count property
         quantity: '', // Initialize quantity property
+        bag: ''
       }));
       setProducts(productsWithCount);
     } catch (error) {
@@ -90,8 +92,7 @@ const CreateBill = () => {
     setSelectedCustomer(value);
   };
 
-
-  const [errmsg, setErrmsg] = useState<String | undefined>(undefined)
+  const [errmsg, setErrmsg] = useState<string | undefined>(undefined)
   const handlePress = () => {
     if (selectedCustomer) {
       setErrmsg('');
@@ -110,31 +111,41 @@ const CreateBill = () => {
     }
   };
 
-  const handleIncrement = (productId: string) => {
-    setProducts(prevProducts =>
-      prevProducts.map(product =>
-        product._id === productId
-          ? { ...product, count: product.count + 1 }
-          : product,
-      ),
-    );
-  };
+  // const handleIncrement = (productId: string) => {
+  //   setProducts(prevProducts =>
+  //     prevProducts.map(product =>
+  //       product._id === productId
+  //         ? { ...product, count: product.count + 1 }
+  //         : product,
+  //     ),
+  //   );
+  // };
 
-  const handleDecrement = (productId: string) => {
-    setProducts(prevProducts =>
-      prevProducts.map(product =>
-        product._id === productId && product.count > 0
-          ? { ...product, count: product.count - 1 }
-          : product,
-      ),
-    );
-  };
+  // const handleDecrement = (productId: string) => {
+  //   setProducts(prevProducts =>
+  //     prevProducts.map(product =>
+  //       product._id === productId && product.count > 0
+  //         ? { ...product, count: product.count - 1 }
+  //         : product,
+  //     ),
+  //   );
+  // };
 
   const handleQuantityChange = (productId: string, quantity: string) => {
     setProducts(prevProducts =>
       prevProducts.map(product =>
         product._id === productId
           ? { ...product, quantity }
+          : product,
+      ),
+    );
+  };
+
+  const handleBagChange = (productId: string, bag: string) => {
+    setProducts(prevProducts =>
+      prevProducts.map(product =>
+        product._id === productId
+          ? { ...product, bag }
           : product,
       ),
     );
@@ -285,31 +296,21 @@ const CreateBill = () => {
                           width: '64%',
                           alignItems: 'center',
                           justifyContent: 'center',
-                          borderWidth: 1,
-                          borderColor: '#000',
                           borderRadius: 8,
                         }}>
-                        <TouchableOpacity
-                          onPress={() => handleIncrement(item._id)}>
-                          <CustomIcon
-                            color="#000"
-                            size={20}
-                            name="plus"
-                            type="Entypo"
-                          />
-                        </TouchableOpacity>
-                        <Text style={{ fontSize: 16, marginHorizontal: 5 }}>
-                          {item.count}
-                        </Text>
-                        <TouchableOpacity
-                          onPress={() => handleDecrement(item._id)}>
-                          <CustomIcon
-                            color="#000"
-                            size={20}
-                            name="minus"
-                            type="Entypo"
-                          />
-                        </TouchableOpacity>
+                        <TextInput
+                          style={{
+                            paddingRight: 10,
+                            paddingLeft: 10,
+                            borderRadius: 8,
+                            color: '#000',
+                            width: '80%',
+                            padding: 0
+                          }}
+                          value={item.bag}
+                          onChangeText={(text) => handleBagChange(item._id, text)}
+                        />
+                        <Text> bags</Text>
                       </View>
                     </View>
                     <View
@@ -345,8 +346,11 @@ const CreateBill = () => {
                         />
                         <Text> kg</Text>
                       </View>
+                      
                     </View>
+                    
                   </View>
+                  
 
                   <View
                     style={{
@@ -402,6 +406,11 @@ const CreateBill = () => {
             })}
           </View>
         </View>
+        <TouchableOpacity onPress={()=>{
+         dispatch( restCustomerBill());
+        }} style={{display:"flex",flexDirection:"row",width:"100%",justifyContent:"flex-end",padding:10}}>
+                        <Text style={{fontSize:16,color:"#000"}}>Reset</Text>
+                      </TouchableOpacity>
       </View>
             <View style={{width:"100%",justifyContent:"center",alignItems:"center",padding:5}}>{errmsg ? <Text style={{color:"red",fontSize:16}}>{errmsg}</Text> : null}</View>
       <TouchableOpacity onPress={handlePress} style={styles.button}>

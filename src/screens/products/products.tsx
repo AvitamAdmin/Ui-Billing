@@ -35,7 +35,7 @@ const Products = () => {
 
   const deleteProduct = async (id: string) => {
     try {
-      await axios.delete(`http://192.168.45.145:5000/auth/product/${id}`);
+      await axios.delete(`http://192.168.0.119:5000/auth/product/${id}`);
       // Update the state by filtering out the deleted product
       setProducts(prevProducts => prevProducts.filter(product => product._id !== id));
     } catch (error) {
