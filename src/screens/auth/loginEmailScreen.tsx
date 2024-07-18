@@ -41,7 +41,7 @@ const LoginEmailScreen: React.FC<LoginEmailScreenProps> = () => {
 
     const onLogin: SubmitHandler<LoginFormInputs> = async (data) => {
         try {
-          const response = await axios.post('http://192.168.0.119:5000/auth/login', data);
+          const response = await axios.post('http://192.168.31.105:5000/auth/login', data);
           if (response.status === 200) {
             console.log('Login successful:', response.data);
       

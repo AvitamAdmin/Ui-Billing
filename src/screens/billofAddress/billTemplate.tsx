@@ -19,30 +19,27 @@ interface Item {
 }
 
 const BillTemplate: React.FC = () => {
-
   const Customername = useSelector((state: RootState) => state.billing.name);
-  console.log(Customername, 'dsf');
   const [currentDate, setCurrentDate] = useState<String>('');
   useEffect(() => {
     const date = new Date();
     setCurrentDate(date.toLocaleDateString());
   }, []);
 
-
-  const FetchCustomerFromBill = useSelector((state: RootState) => state.billing.fetchCustomerFromBill);
-  // console.log(FetchCustomerFromBill, 'FetchCustomerFromBill');
+  const FetchCustomerFromBill = useSelector(
+    (state: RootState) => state.billing.fetchCustomerFromBill,
+  );
 
   const [totalProductPrice, setTotalProductPrice] = useState<number>(0);
 
   useEffect(() => {
     // Calculate total product price
     const totalPrice = FetchCustomerFromBill.reduce((total, item) => {
-      return total + (item.quantity * item.sellingPrice);
+      return total + item.quantity * item.sellingPrice;
     }, 0);
     setTotalProductPrice(totalPrice);
-    console.log(totalProductPrice,"totalProductPrice");
-    
   }, [FetchCustomerFromBill]);
+
   return (
     <View
       style={{
@@ -264,33 +261,54 @@ const BillTemplate: React.FC = () => {
         </View>
         <View
           style={{borderWidth: 2, borderColor: '#1D6B39', borderTopWidth: 1}}>
-          {FetchCustomerFromBill.map((item,id)=>{
+          {FetchCustomerFromBill.map((item, id) => {
             const productprice = item.quantity * item.sellingPrice;
-            const ttprice = productprice + productprice
-
-            return( <View style={styles.row}>
-              <View style={[styles.cell, styles.rateCell, styles.cellBorder]}>
-                <Text style={{color: 'green', fontWeight: 'bold'}}>{item.sellingPrice}</Text>
+            return (
+              <View style={styles.row} key={id}>
+                <View style={[styles.cell, styles.rateCell, styles.cellBorder]}>
+                  <Text style={{color: 'green', fontWeight: 'bold'}}>
+                    {item.sellingPrice}
+                  </Text>
+                </View>
+                <View
+                  style={[
+                    styles.cell,
+                    styles.particularsCell,
+                    styles.cellBorder,
+                  ]}>
+                  <Text style={{color: 'green', fontWeight: 'bold'}}>
+                    {item.productName}
+                  </Text>
+                </View>
+                <View style={[styles.cell, styles.qtyCell, styles.cellBorder]}>
+                  <Text style={{color: 'green', fontWeight: 'bold'}}>
+                    {item.quantity}
+                  </Text>
+                </View>
+                <View style={[styles.cell, styles.bagCell, styles.cellBorder]}>
+                  <Text style={{color: 'green', fontWeight: 'bold'}}>
+                    {item.bag}
+                  </Text>
+                </View>
+                <View
+                  style={{
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    paddingVertical: 8,
+                    width: wp('20%'),
+                  }}>
+                  <Text
+                    style={{
+                      color: 'green',
+                      fontWeight: 'bold',
+                      justifyContent: 'flex-end',
+                    }}>
+                    {productprice}
+                  </Text>
+                </View>
               </View>
-              <View style={[styles.cell, styles.particularsCell, styles.cellBorder]}>
-                <Text style={{color: 'green', fontWeight: 'bold'}}>{item.productName}</Text>
-              </View>
-              <View style={[styles.cell, styles.qtyCell, styles.cellBorder]}>
-                <Text style={{color: 'green', fontWeight: 'bold'}}>
-                {item.quantity}
-                </Text>
-              </View>
-              <View style={[styles.cell, styles.bagCell, styles.cellBorder]}>
-                <Text style={{color: 'green', fontWeight: 'bold'}}>{item.bag}</Text>
-              </View>
-              <View style={[styles.cell, styles.amountCell]}>
-                <Text style={{color: 'green', fontWeight: 'bold'}}>
-                {productprice}
-                </Text>
-              </View>
-            </View>)
+            );
           })}
-    
         </View>
 
         <View
@@ -307,18 +325,21 @@ const BillTemplate: React.FC = () => {
               flexDirection: 'row',
               justifyContent: 'flex-end',
               alignItems: 'flex-end',
+              gap: 10,
             }}>
             <Text style={{fontWeight: 'bold', color: '#1D6B39', fontSize: 16}}>
-              Pending Amount : ₹
+              Pending Amount :
             </Text>
             <Text
               style={{
-                width: '19%',
+                width: '18%',
                 fontWeight: 'bold',
                 color: '#1D6B39',
                 fontSize: 16,
+                justifyContent: 'flex-end',
+                alignItems: 'flex-end',
               }}>
-              {totalProductPrice}
+              ₹ {totalProductPrice}
             </Text>
           </View>
           <View
@@ -327,18 +348,21 @@ const BillTemplate: React.FC = () => {
               flexDirection: 'row',
               justifyContent: 'flex-end',
               alignItems: 'flex-end',
+              gap: 10,
             }}>
             <Text style={{fontWeight: 'bold', color: '#1D6B39', fontSize: 16}}>
-              Total Price : ₹
+              Total Price :
             </Text>
             <Text
               style={{
-                width: '19%',
+                width: '18%',
                 fontWeight: 'bold',
                 color: '#1D6B39',
                 fontSize: 16,
+                justifyContent: 'flex-end',
+                alignItems: 'flex-end',
               }}>
-              7000
+              ₹ 7000
             </Text>
           </View>
         </View>

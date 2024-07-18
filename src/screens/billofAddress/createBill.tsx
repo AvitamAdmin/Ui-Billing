@@ -63,7 +63,7 @@ const CreateBill = () => {
   const fetchCustomers = async () => {
     try {
       const response = await axios.get(
-        'http://192.168.0.119:5000/api/customer/getcustomerdetails',
+        'http://192.168.31.105:5000/api/customer/getcustomerdetails',
       );
       setCustomers(response.data.data);
     } catch (error) {
@@ -74,7 +74,7 @@ const CreateBill = () => {
   const fetchProducts = async () => {
     try {
       const response = await axios.get<{ data: Product[] }>(
-        'http://192.168.0.119:5000/auth/product/getProduct',
+        'http://192.168.31.105:5000/auth/product/getProduct',
       );
       const productsWithCount = response.data.data.map(product => ({
         ...product,
@@ -98,11 +98,11 @@ const CreateBill = () => {
       setErrmsg('');
       dispatch(addCustomerNameToBill(selectedCustomer));
       console.log('Selected Customer ID:', selectedCustomer);
-      products.forEach(product => {
-        if (Customerfrombill.some(p => p._id === product._id)) {
-          console.log('Product ID:', product._id, 'Quantity:', product.quantity);
-        }
-      });
+      // products.forEach(product => {
+      //   if (Customerfrombill.some(p => p._id === product._id)) {
+      //     console.log('Product ID:', product._id, 'Quantity:', product.quantity);
+      //   }
+      // });
       navigation.navigate(screenName.BillTemplate as never);
     }else{
       console.log("dasdssdas");
@@ -110,26 +110,18 @@ const CreateBill = () => {
       
     }
   };
+  const [totalProductPrice, setTotalProductPrice] = useState<number>(0);
 
-  // const handleIncrement = (productId: string) => {
-  //   setProducts(prevProducts =>
-  //     prevProducts.map(product =>
-  //       product._id === productId
-  //         ? { ...product, count: product.count + 1 }
-  //         : product,
-  //     ),
-  //   );
-  // };
-
-  // const handleDecrement = (productId: string) => {
-  //   setProducts(prevProducts =>
-  //     prevProducts.map(product =>
-  //       product._id === productId && product.count > 0
-  //         ? { ...product, count: product.count - 1 }
-  //         : product,
-  //     ),
-  //   );
-  // };
+  const FetchCustomerFromBill = useSelector(
+    (state: RootState) => state.billing.fetchCustomerFromBill,
+  );
+  useEffect(() => {
+    // Calculate total product price
+    const totalPrice = FetchCustomerFromBill.reduce((total, item) => {
+      return total + item.quantity * item.sellingPrice;
+    }, 0);
+    setTotalProductPrice(totalPrice);
+  }, [FetchCustomerFromBill]);
 
   const handleQuantityChange = (productId: string, quantity: string) => {
     setProducts(prevProducts =>
@@ -410,6 +402,9 @@ const CreateBill = () => {
          dispatch( restCustomerBill());
         }} style={{display:"flex",flexDirection:"row",width:"100%",justifyContent:"flex-end",padding:10}}>
                         <Text style={{fontSize:16,color:"#000"}}>Reset</Text>
+                      </TouchableOpacity>
+                      <TouchableOpacity  style={{display:"flex",flexDirection:"row",width:"100%",justifyContent:"flex-end",padding:10}}>
+                        <Text style={{fontSize:16,color:"#000"}}>{totalProductPrice}</Text>
                       </TouchableOpacity>
       </View>
             <View style={{width:"100%",justifyContent:"center",alignItems:"center",padding:5}}>{errmsg ? <Text style={{color:"red",fontSize:16}}>{errmsg}</Text> : null}</View>
