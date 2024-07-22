@@ -5,7 +5,7 @@ const customerSchema = new Schema({
   customerName: { type: String, required: true },
   mobileNumber: { type: String, required: true },
   address: { type: String, required: true },
-  pendingAmount: { type: String, required: true },
+  pendingAmount: { type: String },
   creator: { type: String, required: true },
   status: { type: Boolean,  },
   creationTime: { type: Date, default: Date.now },

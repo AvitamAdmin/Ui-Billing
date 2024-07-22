@@ -266,6 +266,8 @@ const BillTemplate: React.FC = () => {
             Amount
           </Text>
         </View>
+        {/* <View   style={{borderWidth: 2, borderColor: '#1D6B39', borderTopWidth: 1,padding:10,justifyContent:"center",alignItems:"center"}}><Text style={{color:"#000",fontSize:14}}>No products selected yet!</Text></View> */}
+
         <View
           style={{borderWidth: 2, borderColor: '#1D6B39', borderTopWidth: 1}}>
           {FetchCustomerFromBill.map((item, id) => {

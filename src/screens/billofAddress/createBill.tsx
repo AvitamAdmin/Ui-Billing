@@ -34,7 +34,7 @@ type Customer = {
   creationTime: string;
   lastModified: string;
   __v: number;
-  pendingAmount : string
+  pendingAmount: string;
 };
 
 type Product = {
@@ -62,8 +62,7 @@ const CreateBill = () => {
   );
 
   console.log(Customerfrombill, 'asdfghjkl');
-  console.log(selectedCustomer,"selectedCustomer");
-  
+  console.log(selectedCustomer, 'selectedCustomer');
 
   useEffect(() => {
     fetchCustomers();
@@ -144,38 +143,43 @@ const CreateBill = () => {
   };
 
   const [errmsg2, setErrmsg2] = useState<string | undefined>(undefined);
-  const [billAmount, setBillAmount] = useState<number >();
-  const [pendingAmt, setPendingAmt] = useState<string>()
+  const [billAmount, setBillAmount] = useState<number>();
+  const [pendingAmt, setPendingAmt] = useState<string>();
 
   const handleInputChange = (value: number) => {
     setBillAmount(value);
   };
 
   const handlePay = async () => {
-    const amount = parseFloat(billAmount || "0");
+    const amount = parseFloat(billAmount || '0');
     let pendingamount = totalProductPrice - amount;
-  
-    console.log(pendingamount, "pendingamount");
-    
+
+    console.log(pendingamount, 'pendingamount');
+
     if (amount > totalProductPrice) {
-      setErrmsg("Entered amount is greater than the total purchased price");
+      setErrmsg('Entered amount is greater than the total purchased price');
     } else {
-      setErrmsg("");
+      setErrmsg('');
       try {
-        console.log({ pendingamount, selectedCustomer }, "Data being sent to backend");
-        const response = await axios.post('http://192.168.0.119:5000/api/customer/updatePendingAmt', { pendingamount, selectedCustomer });
+        console.log(
+          {pendingamount, selectedCustomer},
+          'Data being sent to backend',
+        );
+        const response = await axios.post(
+          'http://192.168.0.119:5000/api/customer/updatePendingAmt',
+          {pendingamount, selectedCustomer},
+        );
         console.log(response.data);
       } catch (error) {
-        console.log(error, "error from createbill screen");
+        console.log(error, 'error from createbill screen');
       }
     }
   };
-  
 
-  const filteredcustomer = customers.filter((item) => item.customerName === selectedCustomer);
-  console.log(filteredcustomer,"filteredcustomer");
-  
-
+  const filteredcustomer = customers.filter(
+    item => item.customerName === selectedCustomer,
+  );
+  console.log(filteredcustomer, 'filteredcustomer');
 
   const fetchPendingAmount = useSelector(
     (state: RootState) => state.billing.fetchPendingAmount,
@@ -183,6 +187,10 @@ const CreateBill = () => {
   const fetchPendingAmountNum = parseFloat(fetchPendingAmount.toString());
   const totalProductPriceNum = parseFloat(totalProductPrice.toString());
   const totalamount  = fetchPendingAmountNum + totalProductPriceNum
+  console.log(totalamount,"gyhhhhjjjj");
+  
+
+  const [payoption, setPayoption] = useState<boolean>(false)
 
   return (
     <View style={styles.container}>
@@ -206,331 +214,367 @@ const CreateBill = () => {
           type="MaterialCommunityIcons"
         />
       </View>
-     <ScrollView>
-     <View style={styles.pickerContainer}>
-        <View>
-          <Text style={styles.label}>Select Customer</Text>
-          <Picker
-            selectedValue={selectedCustomer}
-            onValueChange={handleCustomerChange}
-            style={styles.picker}>
-            <Picker.Item label="Select a customer..." value={undefined} />
-            {customers.map((customer, index) => (
-              <Picker.Item
-                key={customer._id}
-                label={customer.customerName}
-                value={customer.customerName}
-                style={{backgroundColor: index % 2 === 0 ? '#fff' : '#e6e6e6',color:"#000"}}
-              />
-            ))}
-          </Picker>
-        </View>
-        <View>
-          <Text style={styles.label}>Select Product</Text>
-          {
-            <ScrollView  style={{height: '50%', gap: 10}}>
-           
-             <View style={{display: 'flex', flexDirection: 'column', gap: 10}}>
-                {products.map(item => {
-                  const backgroundColor = Customerfrombill.some(
-                    p => p._id === item._id,
-                  )
-                    ? '#e0ccff'
-                    : '#f7f7f7';
-                  return (
-                    <Pressable
-                      onPress={() => {}}
-                      key={item._id}
-                      style={{
-                        backgroundColor,
-                        width: '100%',
-                        padding: 3,
-                        display: 'flex',
-                        flexDirection: 'row',
-                        gap: 10,
-                        justifyContent: 'space-between',
-                        alignContent: 'center',
-                        borderRadius: 8,
-                      }}>
-                      <View
+      <ScrollView>
+        <View style={styles.pickerContainer}>
+          <View>
+            <Text style={styles.label}>Select Customer</Text>
+            <Picker
+              selectedValue={selectedCustomer}
+              onValueChange={handleCustomerChange}
+              style={styles.picker}>
+              <Picker.Item label="Select a customer..." value={undefined} />
+              {customers.map((customer, index) => (
+                <Picker.Item
+                  key={customer._id}
+                  label={customer.customerName}
+                  value={customer.customerName}
+                  style={{
+                    backgroundColor: index % 2 === 0 ? '#fff' : '#e6e6e6',
+                    color: '#000',
+                  }}
+                />
+              ))}
+            </Picker>
+          </View>
+          <View>
+            <Text style={styles.label}>Select Product</Text>
+            {
+              <ScrollView style={{height: '40%', gap: 10}}>
+                <View
+                  style={{display: 'flex', flexDirection: 'column', gap: 10}}>
+                  {products.map(item => {
+                    const backgroundColor = Customerfrombill.some(
+                      p => p._id === item._id,
+                    )
+                      ? '#e0ccff'
+                      : '#f7f7f7';
+                    return (
+                      <Pressable
+                        onPress={() => {}}
+                        key={item._id}
                         style={{
-                          width: '15%',
-                          display: 'flex',
-                          flexDirection: 'column',
-                          justifyContent: 'center',
-                          alignItems: 'center',
-                        }}>
-                        <Image
-                          source={{uri: `data:image/jpeg;base64,${item.image}`}} // Use base64 directly
-                          style={styles.image}
-                        />
-                      </View>
-                      <View
-                        style={{
+                          backgroundColor,
+                          width: '100%',
+                          padding: 3,
                           display: 'flex',
                           flexDirection: 'row',
+                          gap: 10,
                           justifyContent: 'space-between',
-                          alignItems: 'flex-start',
-                          width: '40%',
+                          alignContent: 'center',
+                          borderRadius: 8,
                         }}>
-                        <View>
-                          <Text
-                            style={{
-                              fontSize: 18,
-                              color: '#000',
-                              fontWeight: '500',
-                            }}>
-                            {item.productName}
-                          </Text>
-                          <Text
-                            style={{
-                              fontSize: 14,
-                              color: '#4d4d4d',
-                              fontWeight: '500',
-                            }}>
-                            Selling Price : {item.sellingPrice}
-                          </Text>
-                          <Text
-                            style={{
-                              fontSize: 14,
-                              color: '#4d4d4d',
-                              fontWeight: '500',
-                            }}>
-                            Purchased Price : {item.purchasePrice}
-                          </Text>
+                        <View
+                          style={{
+                            width: '15%',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                          }}>
+                          <Image
+                            source={{
+                              uri: `data:image/jpeg;base64,${item.image}`,
+                            }} // Use base64 directly
+                            style={styles.image}
+                          />
                         </View>
-                      </View>
-                      <View
-                        style={{
-                          display: 'flex',
-                          flexDirection: 'column',
-                          justifyContent: 'space-around',
-                          alignItems: 'flex-start',
-                          width: '30%',
-                        }}>
                         <View
                           style={{
                             display: 'flex',
                             flexDirection: 'row',
-                            gap: 7,
-                            width: '100%',
-                            alignItems: 'center',
+                            justifyContent: 'space-between',
+                            alignItems: 'flex-start',
+                            width: '40%',
                           }}>
-                          <Text
-                            style={{
-                              fontSize: 14,
-                              color: '#4d4d4d',
-                              fontWeight: '500',
-                              alignItems: 'center',
-                            }}>
-                            Bag :
-                          </Text>
-                          <View
-                            style={{
-                              display: 'flex',
-                              flexDirection: 'row',
-                              width: '64%',
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                              borderRadius: 8,
-                            }}>
-                            <TextInput
-                            keyboardType='numeric'
+                          <View>
+                            <Text
                               style={{
-                                paddingRight: 10,
-                                paddingLeft: 10,
-                                borderRadius: 8,
+                                fontSize: 18,
                                 color: '#000',
-                                width: '80%',
-                                padding: 0,
-                              }}
-                              value={item.bag}
-                              onChangeText={text =>
-                                handleBagChange(item._id, text)
-                              }
-                            />
-                            <Text style={{color:"#333333"}}> bags</Text>
+                                fontWeight: '500',
+                              }}>
+                              {item.productName}
+                            </Text>
+                            <Text
+                              style={{
+                                fontSize: 14,
+                                color: '#4d4d4d',
+                                fontWeight: '500',
+                              }}>
+                              Selling Price : {item.sellingPrice}
+                            </Text>
+                            <Text
+                              style={{
+                                fontSize: 14,
+                                color: '#4d4d4d',
+                                fontWeight: '500',
+                              }}>
+                              Purchased Price : {item.purchasePrice}
+                            </Text>
                           </View>
                         </View>
                         <View
                           style={{
-                            flexDirection: 'row',
-                            gap: 7,
-                            alignItems: 'center',
-                            height: 30,
-                            justifyContent: 'flex-start',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            justifyContent: 'space-around',
+                            alignItems: 'flex-start',
+                            width: '30%',
                           }}>
-                          <Text
-                            style={{
-                              fontSize: 14,
-                              color: '#4d4d4d',
-                              fontWeight: '500',
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                            }}>
-                            QTY :
-                          </Text>
                           <View
                             style={{
-                              width: '60%',
-                              paddingTop: 0,
                               display: 'flex',
                               flexDirection: 'row',
-                              justifyContent: 'center',
+                              gap: 7,
+                              width: '100%',
                               alignItems: 'center',
                             }}>
-                            <TextInput
-                            keyboardType='numeric'
+                            <Text
                               style={{
-                                paddingRight: 10,
-                                paddingLeft: 10,
+                                fontSize: 14,
+                                color: '#4d4d4d',
+                                fontWeight: '500',
+                                alignItems: 'center',
+                              }}>
+                              Bag :
+                            </Text>
+                            <View
+                              style={{
+                                display: 'flex',
+                                flexDirection: 'row',
+                                width: '64%',
+                                alignItems: 'center',
+                                justifyContent: 'center',
                                 borderRadius: 8,
-                                color: '#000',
-                                width: '80%',
-                                padding: 0,
-                              }}
-                              value={item.quantity}
-                              onChangeText={text =>
-                                handleQuantityChange(item._id, text)
-                              }
-                            />
-                            <Text style={{color:"#333333"}}> kg</Text>
+                              }}>
+                              <TextInput
+                                keyboardType="numeric"
+                                style={{
+                                  paddingRight: 10,
+                                  paddingLeft: 10,
+                                  borderRadius: 8,
+                                  color: '#000',
+                                  width: '80%',
+                                  padding: 0,
+                                }}
+                                value={item.bag}
+                                onChangeText={text =>
+                                  handleBagChange(item._id, text)
+                                }
+                              />
+                              <Text style={{color: '#333333'}}> bags</Text>
+                            </View>
+                          </View>
+                          <View
+                            style={{
+                              flexDirection: 'row',
+                              gap: 7,
+                              alignItems: 'center',
+                              height: 30,
+                              justifyContent: 'flex-start',
+                            }}>
+                            <Text
+                              style={{
+                                fontSize: 14,
+                                color: '#4d4d4d',
+                                fontWeight: '500',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                              }}>
+                              QTY :
+                            </Text>
+                            <View
+                              style={{
+                                width: '60%',
+                                paddingTop: 0,
+                                display: 'flex',
+                                flexDirection: 'row',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                              }}>
+                              <TextInput
+                                keyboardType="numeric"
+                                style={{
+                                  paddingRight: 10,
+                                  paddingLeft: 10,
+                                  borderRadius: 8,
+                                  color: '#000',
+                                  width: '80%',
+                                  padding: 0,
+                                }}
+                                value={item.quantity}
+                                onChangeText={text =>
+                                  handleQuantityChange(item._id, text)
+                                }
+                              />
+                              <Text style={{color: '#333333'}}> kg</Text>
+                            </View>
                           </View>
                         </View>
-                      </View>
 
-                      <View
-                        style={{
-                          display: 'flex',
-                          flexDirection: 'column',
-                          justifyContent: 'space-between',
-                          alignContent: 'center',
-                          gap: 20,
-                          padding: 5,
-                          width: '15%',
-                        }}>
-                        {Customerfrombill.some(p => p._id === item._id) ? (
-                          <TouchableOpacity
-                            onPress={() => {
-                              setCheckbox(true);
-                              dispatch(removeCustomerFromBill(item._id)); // Fix the payload type
-                              console.log(item._id, 'removed');
-                            }}>
-                            <CustomIcon
-                              color={
-                                Customerfrombill.some(p => p._id === item._id)
-                                  ? '#196'
-                                  : '#4d4d4d'
-                              }
-                              size={20}
-                              name="checkbox"
-                              type="Ionicons"
-                            />
-                          </TouchableOpacity>
-                        ) : (
-                          <TouchableOpacity
-                            onPress={() => {
-                              if (item.quantity && item.bag) {
-                                setCheckbox(false);
-                                console.log(item._id, 'added');
-                                dispatch(addCustomerToBill(item)); // Fix the payload type
-                                setErrmsg('');
-                              } else {
-                                setErrmsg(
-                                  '*Please fill in both bag and quantity fields.',
-                                );
-                              }
-                            }}>
-                            <CustomIcon
-                              color={
-                                Customerfrombill.some(p => p._id === item._id)
-                                  ? '#196'
-                                  : '#4d4d4d'
-                              }
-                              size={20}
-                              name="checkbox-blank-outline"
-                              type="MaterialCommunityIcons"
-                            />
-                          </TouchableOpacity>
-                        )}
-                      </View>
-                    </Pressable>
-                  );
-                })}
-              </View>
-           
-            </ScrollView>
-          }
-        </View>
-        <TouchableOpacity
-          onPress={() => {
-            dispatch(restCustomerBill());
-          }}
-          style={{
-            display: 'flex',
-            flexDirection: 'row',
-            width: '100%',
-            justifyContent: 'flex-end',
-            padding: 10,
-          }}>
-          <Text style={{fontSize: 16, color: '#000'}}>Reset</Text>
-        </TouchableOpacity>
-        <View style={{gap:5}}>
-        <View
-          style={{
-            display: 'flex',
-            flexDirection: 'row',
-            width: '100%',
-            justifyContent: 'flex-end',
-          }}>
-          {filteredcustomer.map((item,id) =>{
-            dispatch(GetPendingAmount(item.pendingAmount))
-            return ( <Text style={{fontSize: 16, color: '#000'}}>
-              Pending Amount: {item.pendingAmount}
-            </Text>)
-          })}
-        </View>
-        <View
-          style={{
-            display: 'flex',
-            flexDirection: 'row',
-            width: '100%',
-            justifyContent: 'flex-end',
-            }}>
-          <Text style={{fontSize: 16, color: '#000'}}>
-            Gross Amount: {totalProductPrice}
-          </Text>
-        </View>
-        </View>
-        <View style={{width:"100%",display:"flex",flexDirection:"row",justifyContent:"center"}}>
-          <TextInput
-            placeholder="Enter bill amount to pay"
-            keyboardType="numeric"
-            style={{
-              fontSize: 16,
-              color: '#000',
-              fontWeight: '500',
-              width: '75%',
-              padding: 5,
-              borderColor: '#ccc',
-              borderWidth: 1,
-              borderRadius: 8,
-              paddingLeft:5
+                        <View
+                          style={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            justifyContent: 'space-between',
+                            alignContent: 'center',
+                            gap: 20,
+                            padding: 5,
+                            width: '15%',
+                          }}>
+                          {Customerfrombill.some(p => p._id === item._id) ? (
+                            <TouchableOpacity
+                              onPress={() => {
+                                setCheckbox(true);
+                                dispatch(removeCustomerFromBill(item._id)); // Fix the payload type
+                                console.log(item._id, 'removed');
+                              }}>
+                              <CustomIcon
+                                color={
+                                  Customerfrombill.some(p => p._id === item._id)
+                                    ? '#196'
+                                    : '#4d4d4d'
+                                }
+                                size={20}
+                                name="checkbox"
+                                type="Ionicons"
+                              />
+                            </TouchableOpacity>
+                          ) : (
+                            <TouchableOpacity
+                              onPress={() => {
+                                if (item.quantity && item.bag) {
+                                  setCheckbox(false);
+                                  console.log(item._id, 'added');
+                                  dispatch(addCustomerToBill(item)); // Fix the payload type
+                                  setErrmsg('');
+                                } else {
+                                  setErrmsg(
+                                    '*Please fill in both bag and quantity fields.',
+                                  );
+                                }
+                              }}>
+                              <CustomIcon
+                                color={
+                                  Customerfrombill.some(p => p._id === item._id)
+                                    ? '#196'
+                                    : '#4d4d4d'
+                                }
+                                size={20}
+                                name="checkbox-blank-outline"
+                                type="MaterialCommunityIcons"
+                              />
+                            </TouchableOpacity>
+                          )}
+                        </View>
+                      </Pressable>
+                    );
+                  })}
+                </View>
+              </ScrollView>
+            }
+          </View>
+          <TouchableOpacity
+            onPress={() => {
+              dispatch(restCustomerBill());
             }}
-            value={billAmount}
-            onChangeText={handleInputChange} // Ensure handleInputChange receives a string
-          />
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              width: '100%',
+              justifyContent: 'flex-end',
+              padding: 10,
+            }}>
+            <Text style={{fontSize: 16, color: '#000'}}>Reset</Text>
+          </TouchableOpacity>
+          <View style={{gap: 5}}>
+            <View
+              style={{
+                display: 'flex',
+                flexDirection: 'row',
+                width: '100%',
+                justifyContent: 'flex-end',
+              }}>
+              {filteredcustomer.map((item, id) => {
+                dispatch(GetPendingAmount(item.pendingAmount));
+                return (
+                  <Text style={{fontSize: 16, color: '#000'}}>
+                    Pending Amount:{' '}
+                    {item.pendingAmount > 0 ? item.pendingAmount : 0}
+                  </Text>
+                );
+              })}
+            </View>
+            <View
+              style={{
+                display: 'flex',
+                flexDirection: 'row',
+                width: '100%',
+                justifyContent: 'flex-end',
+              }}>
+              <Text style={{fontSize: 16, color: '#000'}}>
+                Gross Amount: {totalProductPrice}
+              </Text>
+            </View>
+          </View>
+          <View
+            style={{
+              width: '100%',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              alignItems: 'center',
+              gap: 5,
+            }}>
+            {payoption ? <Text style={{                padding: 9,fontSize:16,color:"#000"
+}}>₹ {totalamount ? totalamount : 0}</Text>: <TextInput
+              placeholder="Enter bill amount to pay"
+              keyboardType="numeric"
+              style={{
+                fontSize: 16,
+                color: '#000',
+                fontWeight: '500',
+                width: '75%',
+                padding: 5,
+                borderColor: '#ccc',
+                borderWidth: 1,
+                borderRadius: 8,
+                paddingLeft: 5,
+              }}
+              value={billAmount}
+              onChangeText={handleInputChange} // Ensure handleInputChange receives a string
+            /> }
+            <View style={{display: 'flex', flexDirection: 'row', gap: 5}}>
+              <View>
+                {payoption ? <TouchableOpacity onPress={()=>{setPayoption(false)}}><CustomIcon
+                                color="#196"
+                                size={20}
+                                name="checkbox"
+                                type="Ionicons"
+                              /></TouchableOpacity> : <TouchableOpacity onPress={()=>{setPayoption(true)}}><CustomIcon
+                color="#4d4d4d"
+                size={20}
+                name="checkbox-blank-outline"
+                type="MaterialCommunityIcons"
+              /></TouchableOpacity>}
+              </View>
+              <Text>Pay both pending and gross amount</Text>
+            </View>
+          </View>
+          <TouchableOpacity
+            onPress={handlePay}
+            style={{
+              justifyContent: 'center',
+              flexDirection: 'column',
+              backgroundColor: '#196',
+              alignItems: 'center',
+              padding: 10,
+              borderRadius: 8,
+            }}>
+            <Text style={styles.buttonText}>Proceed to Pay</Text>
+          </TouchableOpacity>
         </View>
-        <TouchableOpacity onPress={handlePay} style={{justifyContent: 'center',
-    flexDirection: 'column',
-    backgroundColor: '#196',
-    alignItems: 'center',
-    padding: 10,
-    borderRadius: 8,}}>
-          <Text style={styles.buttonText}>Proceed to Pay</Text>
-        </TouchableOpacity>
-      </View>
-     </ScrollView>
+      </ScrollView>
 
       <View
         style={{
