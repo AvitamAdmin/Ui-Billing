@@ -61,7 +61,7 @@ const { shopName,
         console.log('create bill process started');
 
         const response = await axios.post(
-          'http://192.168.45.145:5000/api/bill/shopbillcreate',
+          'http://192.168.0.119:5000/api/bill/shopbillcreate',
           { shopName,
             shopsalename,
             address,

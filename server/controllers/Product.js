@@ -58,3 +58,4 @@ exports.deleteProduct = async (req, res) => {
     console.log(error, "delete user error in backend");
   }
 };
+

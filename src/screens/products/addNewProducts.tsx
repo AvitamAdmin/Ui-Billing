@@ -53,7 +53,7 @@ const AddNewProducts = (props: AddNewProductsProps) => {
     } else {
         try {
             const response = await axios.post(
-              'http://192.168.45.145:5000/auth/product/postproduct',
+              'http://192.168.0.119:5000/auth/product/postproduct',
               { productName: formValues.productName,
                 sellingPrice: formValues.sellingPrice,
                 purchasePrice: formValues.purchasePrice,

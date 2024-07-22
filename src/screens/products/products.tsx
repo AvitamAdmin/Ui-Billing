@@ -25,7 +25,7 @@ const Products = () => {
   const fetchProducts = async () => {
     try {
       const response = await axios.get<{data: Product[]}>(
-        'http://192.168.31.105:5000/auth/product/getProduct',
+        'http://192.168.0.119:5000/auth/product/getProduct',
       );
       setProducts(response.data.data); // Assuming response.data.data is an array of products
     } catch (error) {

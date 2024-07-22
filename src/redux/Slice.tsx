@@ -10,14 +10,26 @@ type Product = {
   quantity: string;
   bag: string;
 };
-
+type Customer = {
+  _id: string;
+  customerName: string;
+  address: string;
+  mobileNumber: string;
+  creator: string;
+  creationTime: string;
+  lastModified: string;
+  __v: number;
+  pendingAmount : string
+};
 interface UserState {
   name?: string;
   fetchCustomerFromBill: Product[];
+  fetchPendingAmount: string;
 }
 
 const initialState: UserState = {
   fetchCustomerFromBill: [],
+  fetchPendingAmount: "",
   name: "",
 };
 
@@ -36,10 +48,13 @@ const userSlice = createSlice({
     },
     removeCustomerFromBill(state, action: PayloadAction<string>) {
       state.fetchCustomerFromBill = state.fetchCustomerFromBill.filter(product => product._id !== action.payload);
-    }
+    },
+    GetPendingAmount(state, action: PayloadAction<string>){
+      state.fetchPendingAmount = action.payload;
+    },
   },
 });
 
-export const { addCustomerNameToBill, addCustomerToBill, removeCustomerFromBill, restCustomerBill } = userSlice.actions;
+export const { addCustomerNameToBill, addCustomerToBill, removeCustomerFromBill, restCustomerBill,GetPendingAmount } = userSlice.actions;
 
 export default userSlice.reducer;

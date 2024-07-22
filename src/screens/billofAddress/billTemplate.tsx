@@ -30,6 +30,10 @@ const BillTemplate: React.FC = () => {
     (state: RootState) => state.billing.fetchCustomerFromBill,
   );
 
+  const fetchPendingAmount = useSelector(
+    (state: RootState) => state.billing.fetchPendingAmount,
+  );
+
   const [totalProductPrice, setTotalProductPrice] = useState<number>(0);
 
   useEffect(() => {
@@ -39,6 +43,9 @@ const BillTemplate: React.FC = () => {
     }, 0);
     setTotalProductPrice(totalPrice);
   }, [FetchCustomerFromBill]);
+  const fetchPendingAmountNum = parseFloat(fetchPendingAmount.toString());
+  const totalProductPriceNum = parseFloat(totalProductPrice.toString());
+  const totalamount  = fetchPendingAmountNum + totalProductPriceNum
 
   return (
     <View
@@ -318,8 +325,9 @@ const BillTemplate: React.FC = () => {
             borderTopWidth: 0,
             width: '100%',
             padding: 2,
+            gap:3
           }}>
-          <View
+            <View
             style={{
               width: '100%',
               flexDirection: 'row',
@@ -339,9 +347,33 @@ const BillTemplate: React.FC = () => {
                 justifyContent: 'flex-end',
                 alignItems: 'flex-end',
               }}>
+              ₹ {fetchPendingAmount}
+            </Text>
+          </View>
+          <View
+            style={{
+              width: '100%',
+              flexDirection: 'row',
+              justifyContent: 'flex-end',
+              alignItems: 'flex-end',
+              gap: 10,
+            }}>
+            <Text style={{fontWeight: 'bold', color: '#1D6B39', fontSize: 16}}>
+              Gross Amount :
+            </Text>
+            <Text
+              style={{
+                width: '18%',
+                fontWeight: 'bold',
+                color: '#1D6B39',
+                fontSize: 16,
+                justifyContent: 'flex-end',
+                alignItems: 'flex-end',
+              }}>
               ₹ {totalProductPrice}
             </Text>
           </View>
+          
           <View
             style={{
               width: '100%',
@@ -362,7 +394,7 @@ const BillTemplate: React.FC = () => {
                 justifyContent: 'flex-end',
                 alignItems: 'flex-end',
               }}>
-              ₹ 7000
+              ₹ {totalamount}
             </Text>
           </View>
         </View>
