@@ -29,6 +29,8 @@ const BillTemplate: React.FC = () => {
   const FetchCustomerFromBill = useSelector(
     (state: RootState) => state.billing.fetchCustomerFromBill,
   );
+  console.log(FetchCustomerFromBill,"FetchCustomerFromBill");
+  
 
   const fetchPendingAmount = useSelector(
     (state: RootState) => state.billing.fetchPendingAmount,

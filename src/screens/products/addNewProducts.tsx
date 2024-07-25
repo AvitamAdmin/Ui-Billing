@@ -1,4 +1,4 @@
-import React, {useCallback, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import {
   ActivityIndicator,
@@ -23,6 +23,7 @@ import {
 } from '../../utils/theme/commonStyles';
 import {UploadImageCard} from './uploadImageCard';
 import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export type AddNewProductsProps = {};
 
@@ -42,6 +43,23 @@ const AddNewProducts = (props: AddNewProductsProps) => {
     setFormValues({...formValues, [name]: value});
   };
 
+  const [currentUser, setCurrentUser] = useState<string | undefined>(undefined);
+
+  useEffect(() => {
+    const fetchEmail = async () => {
+      try {
+        const email = await AsyncStorage.getItem('userEmail');
+        setCurrentUser(email ?? undefined); // Handle null case
+        console.log(currentUser, 'asdfghjkl');
+
+        console.log('Retrieved email:', email);
+      } catch (error) {
+        console.error('Error retrieving email from AsyncStorage:', error);
+      }
+    };
+
+    fetchEmail();
+  }, []);
   const handleSaveBtnClick = async () => {
     if (
       !formValues.productName ||
@@ -57,7 +75,8 @@ const AddNewProducts = (props: AddNewProductsProps) => {
               { productName: formValues.productName,
                 sellingPrice: formValues.sellingPrice,
                 purchasePrice: formValues.purchasePrice,
-                image: formValues.image,},
+                image: formValues.image,
+                creator:currentUser},
             );
     
             console.log(response.data);

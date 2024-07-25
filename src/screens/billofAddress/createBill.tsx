@@ -9,6 +9,7 @@ import {
   Pressable,
   ScrollView,
   Alert,
+  BackHandler,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {screenName} from '../../utils/screenNames';
@@ -24,6 +25,7 @@ import {
   restCustomerBill,
 } from '../../redux/Slice';
 import {AppDispatch, RootState} from '../../redux/Store';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type Customer = {
   _id: string;
@@ -72,6 +74,7 @@ const CreateBill = () => {
   const fetchCustomers = async () => {
     try {
       const response = await axios.get(
+        // 'http://192.168.208.145:5000/api/customer/getcustomerdetails',
         'http://192.168.0.119:5000/api/customer/getcustomerdetails',
       );
       setCustomers(response.data.data);
@@ -83,6 +86,7 @@ const CreateBill = () => {
   const fetchProducts = async () => {
     try {
       const response = await axios.get<{data: Product[]}>(
+        // 'http://192.168.208.145:5000/auth/product/getProduct',
         'http://192.168.0.119:5000/auth/product/getProduct',
       );
       const productsWithCount = response.data.data.map(product => ({
@@ -92,6 +96,49 @@ const CreateBill = () => {
         bag: '',
       }));
       setProducts(productsWithCount);
+    } catch (error) {
+      console.error('Error fetching products:', error);
+    }
+  };
+  const [creator, setCreator] = useState<string | undefined>(undefined);
+
+  useEffect(() => {
+    const fetchEmail = async () => {
+      try {
+        const email = await AsyncStorage.getItem('userEmail');
+        setCreator(email ?? undefined); // Handle null case
+        console.log(creator, 'asdfghjkl');
+
+        console.log('Retrieved email:', email);
+      } catch (error) {
+        console.error('Error retrieving email from AsyncStorage:', error);
+      }
+    };
+
+    fetchEmail();
+  }, []);
+  const customerName = useSelector((state: RootState) => state.billing.name);
+
+  const genereteInvoice = async () => {
+    console.log("btn pressed");
+    
+    try {
+      const response = await axios.post(
+        'http://192.168.0.119:5000/api/invoice/addInvoice',
+        {
+          ShopName: 'SK VEGETABLES',
+          shopAddress: ' No.10 Transport Market, Karamadai, Coimbatore Dist.',
+          mobNum1: '098947 54308',
+          mobNum2: '090420 66533',
+          creator,
+          customerName,
+          fetchPendingAmount,
+          totalProductPriceNum,
+          totalamount,
+          paid: 'unpaid',
+          Customerfrombill
+        },
+      );
     } catch (error) {
       console.error('Error fetching products:', error);
     }
@@ -151,6 +198,7 @@ const CreateBill = () => {
   };
 
   const handlePay = async () => {
+    genereteInvoice;
     const amount = parseFloat(billAmount || '0');
     let pendingamount = totalProductPrice - amount;
 
@@ -186,11 +234,24 @@ const CreateBill = () => {
   );
   const fetchPendingAmountNum = parseFloat(fetchPendingAmount.toString());
   const totalProductPriceNum = parseFloat(totalProductPrice.toString());
-  const totalamount  = fetchPendingAmountNum + totalProductPriceNum
-  console.log(totalamount,"gyhhhhjjjj");
-  
+  const totalamount = fetchPendingAmountNum + totalProductPriceNum;
+  console.log(totalamount, 'gyhhhhjjjj');
 
-  const [payoption, setPayoption] = useState<boolean>(false)
+  const [payoption, setPayoption] = useState<boolean>(false);
+  useEffect(() => {
+    const backAction = () => {
+      dispatch(restCustomerBill());
+
+      return false;
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      backAction,
+    );
+
+    return () => backHandler.remove(); // Clean up the event listener on unmount
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -198,6 +259,7 @@ const CreateBill = () => {
         <TouchableOpacity
           onPress={() => {
             navigation.goBack();
+            dispatch(restCustomerBill());
           }}>
           <CustomIcon
             color="#000"
@@ -499,7 +561,7 @@ const CreateBill = () => {
                 dispatch(GetPendingAmount(item.pendingAmount));
                 return (
                   <Text style={{fontSize: 16, color: '#000'}}>
-                    Pending Amount:{' '}
+                    Pending Amount:
                     {item.pendingAmount > 0 ? item.pendingAmount : 0}
                   </Text>
                 );
@@ -526,43 +588,62 @@ const CreateBill = () => {
               alignItems: 'center',
               gap: 5,
             }}>
-            {payoption ? <Text style={{                padding: 9,fontSize:16,color:"#000"
-}}>₹ {totalamount ? totalamount : 0}</Text>: <TextInput
-              placeholder="Enter bill amount to pay"
-              keyboardType="numeric"
-              style={{
-                fontSize: 16,
-                color: '#000',
-                fontWeight: '500',
-                width: '75%',
-                padding: 5,
-                borderColor: '#ccc',
-                borderWidth: 1,
-                borderRadius: 8,
-                paddingLeft: 5,
-              }}
-              value={billAmount}
-              onChangeText={handleInputChange} // Ensure handleInputChange receives a string
-            /> }
+            {payoption ? (
+              <Text style={{padding: 9, fontSize: 16, color: '#000'}}>
+                ₹ {selectedCustomer ? totalamount : 0}
+              </Text>
+            ) : (
+              <TextInput
+                placeholder="Enter bill amount to pay"
+                keyboardType="numeric"
+                style={{
+                  fontSize: 16,
+                  color: '#000',
+                  fontWeight: '500',
+                  width: '75%',
+                  padding: 5,
+                  borderColor: '#ccc',
+                  borderWidth: 1,
+                  borderRadius: 8,
+                  paddingLeft: 5,
+                }}
+                value={billAmount}
+                onChangeText={handleInputChange} // Ensure handleInputChange receives a string
+              />
+            )}
             <View style={{display: 'flex', flexDirection: 'row', gap: 5}}>
               <View>
-                {payoption ? <TouchableOpacity onPress={()=>{setPayoption(false)}}><CustomIcon
-                                color="#196"
-                                size={20}
-                                name="checkbox"
-                                type="Ionicons"
-                              /></TouchableOpacity> : <TouchableOpacity onPress={()=>{setPayoption(true)}}><CustomIcon
-                color="#4d4d4d"
-                size={20}
-                name="checkbox-blank-outline"
-                type="MaterialCommunityIcons"
-              /></TouchableOpacity>}
+                {payoption ? (
+                  <TouchableOpacity
+                    onPress={() => {
+                      setPayoption(false);
+                    }}>
+                    <CustomIcon
+                      color="#196"
+                      size={20}
+                      name="checkbox"
+                      type="Ionicons"
+                    />
+                  </TouchableOpacity>
+                ) : (
+                  <TouchableOpacity
+                    onPress={() => {
+                      setPayoption(true);
+                    }}>
+                    <CustomIcon
+                      color="#4d4d4d"
+                      size={20}
+                      name="checkbox-blank-outline"
+                      type="MaterialCommunityIcons"
+                    />
+                  </TouchableOpacity>
+                )}
               </View>
               <Text>Pay both pending and gross amount</Text>
             </View>
           </View>
           <TouchableOpacity
-            onPress={handlePay}
+            onPress={genereteInvoice}
             style={{
               justifyContent: 'center',
               flexDirection: 'column',

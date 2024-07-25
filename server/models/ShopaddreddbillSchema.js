@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const {Schema} = mongoose;
 
-const billSchema = new Schema({
+const shopaddreddbillSchema = new Schema({
   shopName: {type: String, required: true},
   imageURL: {type: String, required: true}, // Assuming image is stored as a base64 encoded string
   shopsalename: {type: String, required: true},
@@ -15,6 +15,6 @@ const billSchema = new Schema({
   _class: {type: String, default: 'com.avitam.billing.model.Product'},
 });
 
-const Bill = mongoose.model('billschema', billSchema);
+const Bill = mongoose.model('billschema', shopaddreddbillSchema);
 
 module.exports = Bill;

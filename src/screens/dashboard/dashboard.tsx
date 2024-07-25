@@ -467,7 +467,7 @@ const DashboardScreen = (props: dashboardProps) => {
                       type="Entypo"
                     />
                   </View>
-                  <H12BlackOne600>{item.title}</H12BlackOne600>
+                  <Text numberOfLines={1}>{item.title}</Text>
                 </Card>
               </TouchableOpacity>
             );

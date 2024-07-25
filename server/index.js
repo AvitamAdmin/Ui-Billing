@@ -12,8 +12,9 @@ const bodyParser = require('body-parser');
 const UserRegister = require("./routes/UserRegister");
 const UserLogin = require("./routes/UserLogin");
 const GetProduct = require("./routes/Product");
-const ProductBill = require("./routes/ProductBill");
+const ProductBill = require("./routes/ShopaddreddbillSchema");
 const CustomerDetails = require("./routes/CustomerDetails");
+const GenerateInvoice = require("./routes/GenerateInvoice");
 
 
 
@@ -39,5 +40,6 @@ app.use("/auth",UserLogin)
 app.use("/auth/product",GetProduct)
 app.use("/api/bill",ProductBill)
 app.use("/api/customer",CustomerDetails)
+app.use("/api/invoice",GenerateInvoice)
 
 

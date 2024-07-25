@@ -1,5 +1,5 @@
 export const labels = {
-    createbilladdress :"Create Bill Address",
+    createbilladdress :"Create Bill Shop Address",
     addNewCustomer: 'Add New Customer',
     logIn: 'Sign in',
     signUp: 'Sign Up',

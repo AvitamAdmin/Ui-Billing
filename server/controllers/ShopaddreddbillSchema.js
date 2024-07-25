@@ -1,4 +1,4 @@
-const Bill = require("../models/ProductBill");
+const Bill = require("../models/ShopaddreddbillSchema");
 
 exports.shopBillCreate = async (req, res) => {
   try {

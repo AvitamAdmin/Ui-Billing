@@ -4,7 +4,7 @@ const Product = require("../models/Product");
 
 exports.productPost = async (req, res) => {
   try {
-    const { image,productName,purchasePrice,sellingPrice } = req.body;
+    const { image,productName,purchasePrice,sellingPrice,creator } = req.body;
 
     // Check if the Product already exists or not
     const oldproduct = await Product.findOne({ productName });
@@ -20,7 +20,8 @@ exports.productPost = async (req, res) => {
       image,
       productName,
       purchasePrice,
-      sellingPrice
+      sellingPrice,
+      creator
     });
 
     // Save the new user to the database

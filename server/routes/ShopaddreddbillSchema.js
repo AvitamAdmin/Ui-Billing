@@ -1,5 +1,5 @@
 const express = require('express');
-const { shopBillCreate } = require('../controllers/ProductBill');
+const { shopBillCreate } = require('../controllers/ShopaddreddbillSchema');
 const router = express.Router();
 
 router.post('/shopbillcreate', shopBillCreate);
