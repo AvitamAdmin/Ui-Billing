@@ -148,7 +148,7 @@ const StackNavigation = (props: NavigationProps) => {
       />
       <Stack.Screen
       options={{
-        headerShown:false
+       
       }}
         name={screenName.Personal}
         component={PersonalScreen}

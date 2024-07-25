@@ -1,40 +1,36 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React, { useState } from 'react'
-import CustomIcon from '../../utils/icons'
-import { colors } from '../../utils/theme/colors'
-import { TouchableOpacity } from 'react-native-gesture-handler'
+import { Pressable, StyleSheet, Text, View } from 'react-native'
+import React from 'react'
+import PagerView from 'react-native-pager-view';
+
+
 import FinanceScreen from './finance'
-import Stockupdate from './stockupdate'
-import { useNavigation } from '@react-navigation/native'
+
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import StockUpdate from './stockupdate'
+import AntDesign from 'react-native-vector-icons/AntDesign'
+import { useNavigation } from '@react-navigation/native';
 
 const PersonalScreen = () => {
-    const navigation = useNavigation();
+const navigation = useNavigation();
 
-    const [financescreen, setFinancescreen] = useState(true);
-  return (
-    <View style={{backgroundColor:"#fff",width:"100%",padding:10,height:"100%",gap:5}}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-        <CustomIcon
-              color={colors.primarTwo}
-              size={24}
-              name="arrow-back"
-              type="Ionicons"
-            />
-        </TouchableOpacity>
-    <View style={{backgroundColor:"#ebebeb",display:"flex",flexDirection:"row",width:"100%",justifyContent:"space-evenly",alignItems:"center",paddingTop:7,paddingBottom:7,borderRadius:8}}>
-        <TouchableOpacity onPress={()=>{setFinancescreen(true)}} style={{padding:5}}>
-       <Text style={{fontSize:20,fontWeight:"500",color:financescreen == true ? colors.primaryThree : "#737373"}}> ₹ Finance</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={()=>{setFinancescreen(false)}} style={{padding:5}}>
-       <Text style={{fontSize:20,fontWeight:"500",color:financescreen == false ? colors.primaryThree : "#737373"}}> Stock Update</Text>
-        </TouchableOpacity>
-        
-    </View>
-   <View style={{marginTop:5}}>
+function tab(){
+  return(
+    <Tab.Navigator>
+    <Tab.Screen name="finance" component={FinanceScreen} />
+    <Tab.Screen name="stockupdate" component={StockUpdate} />
+  </Tab.Navigator>
+  )
+}
    
-   {financescreen === true ? (<FinanceScreen />) : (<Stockupdate />)}
-   </View>
+const Tab = createMaterialTopTabNavigator();
+  return (
+   <View style={{flex:1}}>
+     <View style={{width:"100%",backgroundColor:"#8a42f5",height:"7%",padding:20}}>
+          <Pressable onPress={()=>{navigation.goBack()}}><AntDesign name="arrowleft" size={24} color="#fff" /></Pressable>
     </View>
+    {tab()}
+  
+   </View> 
   )
 }
 
