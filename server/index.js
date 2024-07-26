@@ -15,6 +15,7 @@ const GetProduct = require("./routes/Product");
 const ProductBill = require("./routes/ShopaddreddbillSchema");
 const CustomerDetails = require("./routes/CustomerDetails");
 const GenerateInvoice = require("./routes/GenerateInvoice");
+const stockUpdate = require("./routes/stockUpdate");
 
 
 
@@ -41,5 +42,6 @@ app.use("/auth/product",GetProduct)
 app.use("/api/bill",ProductBill)
 app.use("/api/customer",CustomerDetails)
 app.use("/api/invoice",GenerateInvoice)
+app.use("/stock",stockUpdate)
 
 

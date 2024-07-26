@@ -62,6 +62,9 @@ const CreateBill = () => {
   const Customerfrombill = useSelector(
     (state: RootState) => state.billing.fetchCustomerFromBill,
   );
+  const FetchCustomerFromBill = useSelector(
+    (state: RootState) => state.billing.fetchCustomerFromBill,
+  );
 
   console.log(Customerfrombill, 'asdfghjkl');
   console.log(selectedCustomer, 'selectedCustomer');
@@ -162,9 +165,7 @@ const CreateBill = () => {
   };
   const [totalProductPrice, setTotalProductPrice] = useState<number>(0);
 
-  const FetchCustomerFromBill = useSelector(
-    (state: RootState) => state.billing.fetchCustomerFromBill,
-  );
+ 
   useEffect(() => {
     // Calculate total product price
     const totalPrice = FetchCustomerFromBill.reduce((total, item) => {
@@ -304,7 +305,7 @@ const CreateBill = () => {
               <ScrollView style={{height: '40%', gap: 10}}>
                 <View
                   style={{display: 'flex', flexDirection: 'column', gap: 10}}>
-                  {products.map(item => {
+                  {products.map((item,id) => {
                     const backgroundColor = Customerfrombill.some(
                       p => p._id === item._id,
                     )
@@ -313,7 +314,7 @@ const CreateBill = () => {
                     return (
                       <Pressable
                         onPress={() => {}}
-                        key={item._id}
+                        key={id}
                         style={{
                           backgroundColor,
                           width: '100%',

@@ -3,16 +3,12 @@ const mongoose = require("mongoose");
 
 // Your child schema
 const childSchema = new mongoose.Schema({
-  productid: { type: String },
+  productId: { type: String },
   productName: { type: String,},
-  image: { type: String,  }, // Assuming image is stored as a base64 encoded string
   sellingPrice: { type: Number, },
-  purchasePrice: { type: Number,  },
-  creator: { type: String,   },
-  status: { type: Boolean, default: true },
-  creationTime: { type: Date, default: Date.now },
-  lastModified: { type: Date, default: Date.now },
-  _class: { type: String, default: "com.avitam.billing.model.Product" }
+  quantity: { type: Number, },
+  totalPrice: { type: Number, },
+  bag: { type: Number, },
 });
 
 // Your parent schema with the nested array
@@ -26,8 +22,6 @@ const billInvoice = new mongoose.Schema({
   lastModified: { type: Date, default: Date.now },
   _class: { type: String, default: 'com.avitam.billing.model.Customer' },
   customerName: { type: String, required: true },
-  // CustomerNumber: { type: String, required: true },
-  // customerAddress: { type: String, required: true },
   paid: { type: String },
   pendingAmount: { type: String },
   grossAmount: { type: String },

@@ -80,6 +80,7 @@ import AuthLoadingScreen from '../screens/onboarding/authLoadingScreen';
 import AddBillAddress from '../screens/billofAddress/addBillAddress';
 import BillTemplate from '../screens/billofAddress/billTemplate';
 import CreateBill from '../screens/billofAddress/createBill';
+import Viewallstocks from '../screens/adminAcess/viewallstocks';
 
 const Stack = createStackNavigator();
 interface NavigationProps {
@@ -96,6 +97,13 @@ const StackNavigation = (props: NavigationProps) => {
       }}
         name={screenName.AuthLoadingScreen}
         component={AuthLoadingScreen}
+      />
+      <Stack.Screen
+      options={{
+        headerShown:true
+      }}
+        name={screenName.Viewallstocks}
+        component={Viewallstocks}
       />
       <Stack.Screen
       options={{

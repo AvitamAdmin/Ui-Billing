@@ -1,6 +1,7 @@
 export const screenName = {
     AuthLoadingScreen:"AuthLoadingScreen",
     BillTemplate:"BillTemplate",
+    Viewallstocks:"Viewallstocks",
     BillScreen:"BillScreen",
     CreateBill:"CreateBill",
     AddBillAddress:"AddBillAddress",

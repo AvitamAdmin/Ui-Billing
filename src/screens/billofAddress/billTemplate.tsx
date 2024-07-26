@@ -8,6 +8,8 @@ import {
 } from 'react-native-responsive-screen';
 import {useSelector} from 'react-redux';
 import {RootState} from '../../redux/Store';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
 
 interface Item {
   item: string;
@@ -19,7 +21,7 @@ interface Item {
 }
 
 const BillTemplate: React.FC = () => {
-  const Customername = useSelector((state: RootState) => state.billing.name);
+  const customerName = useSelector((state: RootState) => state.billing.name);
   const [currentDate, setCurrentDate] = useState<String>('');
   useEffect(() => {
     const date = new Date();
@@ -47,7 +49,60 @@ const BillTemplate: React.FC = () => {
   }, [FetchCustomerFromBill]);
   const fetchPendingAmountNum = parseFloat(fetchPendingAmount.toString());
   const totalProductPriceNum = parseFloat(totalProductPrice.toString());
-  const totalamount  = fetchPendingAmountNum + totalProductPriceNum
+  const totalamount  = fetchPendingAmountNum + totalProductPriceNum;
+
+  const [creator, setCreator] = useState<string | undefined>(undefined);
+
+  useEffect(() => {
+    const fetchEmail = async () => {
+      try {
+        const email = await AsyncStorage.getItem('userEmail');
+        setCreator(email ?? undefined); // Handle null case
+        console.log(creator, 'asdfghjkl');
+
+        console.log('Retrieved email:', email);
+      } catch (error) {
+        console.error('Error retrieving email from AsyncStorage:', error);
+      }
+    };
+
+    fetchEmail();
+  }, []);
+  const genereteInvoice = async () => {
+    console.log("btn pressed");
+    const products = FetchCustomerFromBill.map(item => ({
+      productId: item._id,
+      productName: item.productName,
+      sellingPrice: item.sellingPrice,
+      quantity: item.quantity,
+      totalPrice: item.quantity * item.sellingPrice,
+      bag: item.bag,
+    }));
+    
+    try {
+      const response = await axios.post(
+        'http://192.168.0.119:5000/api/invoice/addInvoice',
+        {
+          ShopName: 'SK VEGETABLES',
+          shopAddress: ' No.10 Transport Market, Karamadai, Coimbatore Dist.',
+          mobNum1: '098947 54308',
+          mobNum2: '090420 66533',
+          creator,
+          customerName,
+          fetchPendingAmount,
+          totalProductPriceNum,
+          totalamount,
+          paid: 'unpaid',
+          products
+        },
+      );
+      console.log(response,"response from backend");
+      
+    } catch (error) {
+      console.error('Error fetching products:', error);
+    }
+  };
+
 
   return (
     <View
@@ -231,7 +286,7 @@ const BillTemplate: React.FC = () => {
               borderStyle: 'dotted',
             }}>
             <Text style={{color: '#000', fontSize: 16, fontWeight: 'bold'}}>
-              {Customername}
+              {customerName}
             </Text>
           </View>
         </View>
@@ -425,6 +480,7 @@ const BillTemplate: React.FC = () => {
       </View>
 
       <Pressable
+      onPress={genereteInvoice}
         style={{
           alignSelf: 'center',
           marginTop: 20,

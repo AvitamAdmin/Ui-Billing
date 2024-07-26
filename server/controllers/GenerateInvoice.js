@@ -12,9 +12,9 @@ exports.addInvoice = async (req, res) => {
         totalProductPriceNum,
         totalamount,
         paid,
-        Customerfrombill
+        products
     } = req.body;
-  
+  console.log(req.body,"llllllll");
     try {
       // Check if the user exists
     //   const olduser = await GenerateInvoice.findOne({ ShopName });
@@ -38,11 +38,11 @@ exports.addInvoice = async (req, res) => {
             grossAmount:totalProductPriceNum,
             totalAmount:totalamount,
             paid,
-          Invoice: [Customerfrombill], // Initialize devices array
+          Invoice: products, // Initialize devices array
         });
     //   }
   
-      // Add the new device to the devices array
+    // Add the new device to the devices array
     //   getinvoice.devices.push({
     //     Customerfrombill
     //   });
@@ -55,5 +55,17 @@ exports.addInvoice = async (req, res) => {
     } catch (error) {
       console.error("Error from getinvoice:", error);
       res.status(500).send({ status: "Error", error: error.message });
+    }
+  };
+
+
+  exports.getInvoice = async (req, res) => {
+    try {
+      const generateInvoice = await GenerateInvoice.find();
+      res.send({ status: "ok", data: generateInvoice });
+      // console.log(generateInvoice, "getcustomer details");
+    } catch (error) {
+      console.error("getcustomer details failed:", error);
+      res.status(500).json({ error: "Internal server error from getcustomer" });
     }
   };

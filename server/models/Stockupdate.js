@@ -2,17 +2,14 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
 const stockUpdateSchema = new Schema({
-  stock: { type: Number, required: true },
-  purchase: { type: Number, required: true },
-  sales: { type: Number, required: true },
-  productName: { type: String, required: true },
-  creator: { type: String, required: true },
-  status: { type: Boolean, default: true },
-  creationTime: { type: Date, default: Date.now },
-  lastModified: { type: Date, default: Date.now },
-  _class: { type: String, default: "com.avitam.billing.model.StockUpdate" }
+  productId: { type: Schema.Types.ObjectId, ref: 'Product' }, // Ensure 'Product' is the correct model name
+  currentStock: { type: Number, default: 0 },
+  totalPurchase: { type: Number, default: 0 },
+  totalSales: { type: Number, default: 0 },
+  lastUpdated: { type: Date, default: Date.now },
 });
 
 const StockUpdate = mongoose.model('StockUpdate', stockUpdateSchema);
 
 module.exports = StockUpdate;
+
