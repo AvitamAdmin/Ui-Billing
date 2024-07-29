@@ -1,6 +1,6 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState ,useRef} from 'react';
 import {Image} from 'react-native';
-import {View, Text, StyleSheet, FlatList, Pressable} from 'react-native';
+import {View, Text, StyleSheet, FlatList, Pressable,Button} from 'react-native';
 import DashedLine from 'react-native-dashed-line';
 import {
   widthPercentageToDP as wp,
@@ -8,8 +8,13 @@ import {
 } from 'react-native-responsive-screen';
 import {useSelector} from 'react-redux';
 import {RootState} from '../../redux/Store';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import axios from 'axios';
+
+
+import ViewShot from 'react-native-view-shot';
+import RNFS from 'react-native-fs';
+import Share from 'react-native-share';
+import RNPrint from 'react-native-print';
+import RNHTMLtoPDF from 'react-native-html-to-pdf';
 
 interface Item {
   item: string;
@@ -21,7 +26,7 @@ interface Item {
 }
 
 const BillTemplate: React.FC = () => {
-  const customerName = useSelector((state: RootState) => state.billing.name);
+  const Customername = useSelector((state: RootState) => state.billing.name);
   const [currentDate, setCurrentDate] = useState<String>('');
   useEffect(() => {
     const date = new Date();
@@ -30,12 +35,6 @@ const BillTemplate: React.FC = () => {
 
   const FetchCustomerFromBill = useSelector(
     (state: RootState) => state.billing.fetchCustomerFromBill,
-  );
-  console.log(FetchCustomerFromBill,"FetchCustomerFromBill");
-  
-
-  const fetchPendingAmount = useSelector(
-    (state: RootState) => state.billing.fetchPendingAmount,
   );
 
   const [totalProductPrice, setTotalProductPrice] = useState<number>(0);
@@ -47,61 +46,64 @@ const BillTemplate: React.FC = () => {
     }, 0);
     setTotalProductPrice(totalPrice);
   }, [FetchCustomerFromBill]);
-  const fetchPendingAmountNum = parseFloat(fetchPendingAmount.toString());
-  const totalProductPriceNum = parseFloat(totalProductPrice.toString());
-  const totalamount  = fetchPendingAmountNum + totalProductPriceNum;
 
-  const [creator, setCreator] = useState<string | undefined>(undefined);
+  const viewShotRef = useRef();
 
-  useEffect(() => {
-    const fetchEmail = async () => {
-      try {
-        const email = await AsyncStorage.getItem('userEmail');
-        setCreator(email ?? undefined); // Handle null case
-        console.log(creator, 'asdfghjkl');
-
-        console.log('Retrieved email:', email);
-      } catch (error) {
-        console.error('Error retrieving email from AsyncStorage:', error);
-      }
-    };
-
-    fetchEmail();
-  }, []);
-  const genereteInvoice = async () => {
-    console.log("btn pressed");
-    const products = FetchCustomerFromBill.map(item => ({
-      productId: item._id,
-      productName: item.productName,
-      sellingPrice: item.sellingPrice,
-      quantity: item.quantity,
-      totalPrice: item.quantity * item.sellingPrice,
-      bag: item.bag,
-    }));
-    
+  const captureAndPrint = async () => {
     try {
-      const response = await axios.post(
-        'http://192.168.0.119:5000/api/invoice/addInvoice',
-        {
-          ShopName: 'SK VEGETABLES',
-          shopAddress: ' No.10 Transport Market, Karamadai, Coimbatore Dist.',
-          mobNum1: '098947 54308',
-          mobNum2: '090420 66533',
-          creator,
-          customerName,
-          fetchPendingAmount,
-          totalProductPriceNum,
-          totalamount,
-          paid: 'unpaid',
-          products
-        },
-      );
-      console.log(response,"response from backend");
-      
+      // Capture the screen
+      const uri = await viewShotRef.current.capture();
+      console.log('Screenshot URI:', uri);
+
+      // Convert the image to base64
+      const base64Image = await RNFS.readFile(uri, 'base64');
+
+      // Prepare the HTML content with the captured image
+      const htmlContent = `
+        <html>
+          <body>
+            <img src="data:image/png;base64,${base64Image}" style="width: 100%;" />
+          </body>
+        </html>
+      `;
+
+      // Generate PDF from HTML content
+      const options = {
+        html: htmlContent,
+        fileName: Customername,
+        directory: 'Documents',
+      };
+ 
+      const pdf = await RNHTMLtoPDF.convert(options);
+      console.log('PDF Path:', pdf.filePath);
+
+      // Print the generated PDF
+      await RNPrint.print({ filePath: pdf.filePath });
     } catch (error) {
-      console.error('Error fetching products:', error);
+      console.error('Error capturing and printing:', error);
     }
   };
+  const captureScreenshot = async () => {
+    try {
+      const uri = await viewShotRef.current.capture();
+      console.log('Screenshot URI:', uri);
+
+      // Save the screenshot to a file
+      const filePath = `${RNFS.DocumentDirectoryPath}/screenshot.png`;
+      await RNFS.moveFile(uri, filePath);
+
+      // Share the screenshot file
+      const shareOptions = {
+        title: 'Share Screenshot',
+        url: `file://${filePath}`,
+        type: 'image/png',
+      };
+      Share.open(shareOptions);
+    } catch (error) {
+      console.error('Error capturing screenshot:', error);
+    }
+  };
+
 
 
   return (
@@ -111,7 +113,10 @@ const BillTemplate: React.FC = () => {
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
+       
       }}>
+         <ViewShot ref={viewShotRef} options={{ format: 'png', quality: 0.9 }}>
+      <View style={{backgroundColor:"#fff", height:hp("90%")}}>
       <View
         style={{
           width: wp('87%'),
@@ -120,7 +125,8 @@ const BillTemplate: React.FC = () => {
           justifyContent: 'space-between',
           paddingTop: 20,
           position: 'relative',
-        }}>
+                   
+        }}>   
         <View style={{width: '40%'}}></View>
         <View style={{width: '25%'}}>
           <View
@@ -286,7 +292,7 @@ const BillTemplate: React.FC = () => {
               borderStyle: 'dotted',
             }}>
             <Text style={{color: '#000', fontSize: 16, fontWeight: 'bold'}}>
-              {customerName}
+              {Customername}
             </Text>
           </View>
         </View>
@@ -323,8 +329,6 @@ const BillTemplate: React.FC = () => {
             Amount
           </Text>
         </View>
-        {/* <View   style={{borderWidth: 2, borderColor: '#1D6B39', borderTopWidth: 1,padding:10,justifyContent:"center",alignItems:"center"}}><Text style={{color:"#000",fontSize:14}}>No products selected yet!</Text></View> */}
-
         <View
           style={{borderWidth: 2, borderColor: '#1D6B39', borderTopWidth: 1}}>
           {FetchCustomerFromBill.map((item, id) => {
@@ -384,9 +388,8 @@ const BillTemplate: React.FC = () => {
             borderTopWidth: 0,
             width: '100%',
             padding: 2,
-            gap:3
           }}>
-            <View
+          <View
             style={{
               width: '100%',
               flexDirection: 'row',
@@ -406,33 +409,9 @@ const BillTemplate: React.FC = () => {
                 justifyContent: 'flex-end',
                 alignItems: 'flex-end',
               }}>
-              ₹ {fetchPendingAmount}
-            </Text>
-          </View>
-          <View
-            style={{
-              width: '100%',
-              flexDirection: 'row',
-              justifyContent: 'flex-end',
-              alignItems: 'flex-end',
-              gap: 10,
-            }}>
-            <Text style={{fontWeight: 'bold', color: '#1D6B39', fontSize: 16}}>
-              Gross Amount :
-            </Text>
-            <Text
-              style={{
-                width: '18%',
-                fontWeight: 'bold',
-                color: '#1D6B39',
-                fontSize: 16,
-                justifyContent: 'flex-end',
-                alignItems: 'flex-end',
-              }}>
               ₹ {totalProductPrice}
             </Text>
           </View>
-          
           <View
             style={{
               width: '100%',
@@ -453,7 +432,7 @@ const BillTemplate: React.FC = () => {
                 justifyContent: 'flex-end',
                 alignItems: 'flex-end',
               }}>
-              ₹ {totalamount}
+              ₹ 7000
             </Text>
           </View>
         </View>
@@ -478,9 +457,26 @@ const BillTemplate: React.FC = () => {
           </Text>
         </View>
       </View>
+      </View>
 
+      </ViewShot>
+  
+
+      <View style={{display:"flex",flexDirection:"row",width:"100%",justifyContent:"space-around"}}>
       <Pressable
-      onPress={genereteInvoice}
+      onPress={captureScreenshot}
+        style={{
+          alignSelf: 'center',
+          marginTop: 20,
+          backgroundColor: '#1D6B39',
+          padding: 10,
+          borderRadius: 5,
+        }}>
+        <Text style={{color: '#fff', fontWeight: 'bold', fontSize: 16}}>
+          Share
+        </Text>
+      </Pressable><Pressable
+      onPress={captureAndPrint}
         style={{
           alignSelf: 'center',
           marginTop: 20,
@@ -492,6 +488,7 @@ const BillTemplate: React.FC = () => {
           Print
         </Text>
       </Pressable>
+      </View>
     </View>
   );
 };

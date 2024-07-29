@@ -7,14 +7,14 @@ exports.addInvoice = async (req, res) => {
         mobNum1,
         mobNum2,
         creator,
-        customerName,
+        selectedCustomer,
         fetchPendingAmount,
         totalProductPriceNum,
         totalamount,
         paid,
         products
     } = req.body;
-  console.log(req.body,"llllllll");
+  // console.log(req.body,"llllllll");
     try {
       // Check if the user exists
     //   const olduser = await GenerateInvoice.findOne({ ShopName });
@@ -33,15 +33,15 @@ exports.addInvoice = async (req, res) => {
             mobNum1,
             mobNum2,
             creator,
-            customerName,
+            customerName:selectedCustomer,
             pendingAmount:fetchPendingAmount,
             grossAmount:totalProductPriceNum,
             totalAmount:totalamount,
             paid,
-          Invoice: products, // Initialize devices array
+            Invoice:products, // Initialize devices array
         });
     //   }
-  
+  console.log(getinvoice,"getinvoice");
     // Add the new device to the devices array
     //   getinvoice.devices.push({
     //     Customerfrombill
@@ -67,5 +67,17 @@ exports.addInvoice = async (req, res) => {
     } catch (error) {
       console.error("getcustomer details failed:", error);
       res.status(500).json({ error: "Internal server error from getcustomer" });
+    }
+  };
+
+
+  exports.getTotalGrossAmount = async (req, res) => {
+    try {
+      const invoices = await GenerateInvoice.find({}, 'grossAmount'); // Fetch all invoices with only the grossAmount field
+      const totalGrossAmount = invoices.reduce((sum, invoice) => sum + parseFloat(invoice.grossAmount || 0), 0);
+      res.send({ status: "ok", totalGrossAmount });
+    } catch (error) {
+      console.error("Failed to get total gross amount:", error);
+      res.status(500).json({ error: "Internal server error while calculating total gross amount" });
     }
   };

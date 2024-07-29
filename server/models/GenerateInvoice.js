@@ -3,12 +3,12 @@ const mongoose = require("mongoose");
 
 // Your child schema
 const childSchema = new mongoose.Schema({
-  productId: { type: String },
-  productName: { type: String,},
-  sellingPrice: { type: Number, },
-  quantity: { type: Number, },
-  totalPrice: { type: Number, },
-  bag: { type: Number, },
+  productId: { type: String ,required:true},
+  productName: { type: String,required:true},
+  sellingPrice: { type: Number,required:true },
+  quantity: { type: Number,required:true },
+  totalPrice: { type: Number,required:true },
+  bag: { type: Number,required:true },
 });
 
 // Your parent schema with the nested array

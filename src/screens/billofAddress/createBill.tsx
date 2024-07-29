@@ -120,11 +120,81 @@ const CreateBill = () => {
 
     fetchEmail();
   }, []);
+
+
+
+  const handleInputChange = (value: number) => {
+    setBillAmount(value);
+  };
+
+  const handlePay = async () => {
+    genereteInvoice;
+    const amount = parseFloat(billAmount || '0');
+    let pendingamount = totalProductPrice - amount;
+
+    const products = FetchCustomerFromBill.map(item => ({
+      productId: item._id,
+      productName: item.productName,
+      sellingPrice: item.sellingPrice,
+      quantity: item.quantity,
+      totalPrice: item.quantity * item.sellingPrice,
+      bag: item.bag,
+    }));
+    if (amount > totalProductPrice) {
+      setErrmsg('Entered amount is greater than the total purchased price');
+    } else {
+      setErrmsg('');
+      try {
+        console.log(
+          {pendingamount, selectedCustomer},
+          'Data being sent to backend',
+        );
+        const response = await axios.post(
+          'http://192.168.0.119:5000/api/customer/updatePendingAmt',
+          {pendingamount, selectedCustomer},
+        );
+        const totalamount = pendingamount;
+        const responsepost = await axios.post(
+          'http://192.168.0.119:5000/api/invoice/addInvoice',
+          {
+            ShopName: 'SK VEGETABLES',
+            shopAddress: ' No.10 Transport Market, Karamadai, Coimbatore Dist.',
+            mobNum1: '098947 54308',
+            mobNum2: '090420 66533',
+            creator,
+            selectedCustomer,
+            fetchPendingAmount,
+            totalProductPriceNum,
+            totalamount,
+            paid: 'unpaid',
+            products
+          },
+        );
+        console.log(responsepost,"responsepost");
+        
+        console.log(response.data);
+      } catch (error) {
+        console.log(error, 'error from createbill screen');
+      }
+    }
+  };
+
+
   const customerName = useSelector((state: RootState) => state.billing.name);
+  console.log(selectedCustomer,"customerN  ame");
+  
 
   const genereteInvoice = async () => {
     console.log("btn pressed");
-    
+    const products = FetchCustomerFromBill.map(item => ({
+      productId: item._id,
+      productName: item.productName,
+      sellingPrice: item.sellingPrice,
+      quantity: item.quantity,
+      totalPrice: item.quantity * item.sellingPrice,
+      bag: item.bag,
+    }));
+
     try {
       const response = await axios.post(
         'http://192.168.0.119:5000/api/invoice/addInvoice',
@@ -134,14 +204,16 @@ const CreateBill = () => {
           mobNum1: '098947 54308',
           mobNum2: '090420 66533',
           creator,
-          customerName,
+          selectedCustomer,
           fetchPendingAmount,
           totalProductPriceNum,
           totalamount,
           paid: 'unpaid',
-          Customerfrombill
+          products
         },
       );
+      console.log(response,"response from backend");
+
     } catch (error) {
       console.error('Error fetching products:', error);
     }
@@ -194,36 +266,6 @@ const CreateBill = () => {
   const [billAmount, setBillAmount] = useState<number>();
   const [pendingAmt, setPendingAmt] = useState<string>();
 
-  const handleInputChange = (value: number) => {
-    setBillAmount(value);
-  };
-
-  const handlePay = async () => {
-    genereteInvoice;
-    const amount = parseFloat(billAmount || '0');
-    let pendingamount = totalProductPrice - amount;
-
-    console.log(pendingamount, 'pendingamount');
-
-    if (amount > totalProductPrice) {
-      setErrmsg('Entered amount is greater than the total purchased price');
-    } else {
-      setErrmsg('');
-      try {
-        console.log(
-          {pendingamount, selectedCustomer},
-          'Data being sent to backend',
-        );
-        const response = await axios.post(
-          'http://192.168.0.119:5000/api/customer/updatePendingAmt',
-          {pendingamount, selectedCustomer},
-        );
-        console.log(response.data);
-      } catch (error) {
-        console.log(error, 'error from createbill screen');
-      }
-    }
-  };
 
   const filteredcustomer = customers.filter(
     item => item.customerName === selectedCustomer,
@@ -643,7 +685,18 @@ const CreateBill = () => {
               <Text>Pay both pending and gross amount</Text>
             </View>
           </View>
-          <TouchableOpacity
+          {payoption ? (<TouchableOpacity
+            onPress={handlePay}
+            style={{
+              justifyContent: 'center',
+              flexDirection: 'column',
+              backgroundColor: '#196',
+              alignItems: 'center',
+              padding: 10,
+              borderRadius: 8,
+            }}>
+            <Text style={styles.buttonText}>Pay full Amount</Text>
+          </TouchableOpacity>) : (<TouchableOpacity
             onPress={genereteInvoice}
             style={{
               justifyContent: 'center',
@@ -654,7 +707,9 @@ const CreateBill = () => {
               borderRadius: 8,
             }}>
             <Text style={styles.buttonText}>Proceed to Pay</Text>
-          </TouchableOpacity>
+          </TouchableOpacity>) }
+         
+          
         </View>
       </ScrollView>
 
