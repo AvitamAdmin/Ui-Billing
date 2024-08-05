@@ -15,6 +15,7 @@ import { alignItemCenter, alignSelfCenter, alignSelfEnd, flexRow, justifyAround,
 import { minLengthValidation, requiredValidation, validationSchema } from '../../utils/validationConfig';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { storeData } from '../../utils/async';
+import { api } from '../../../envfile/api';
 
 interface LoginFormInputs {
   email: string;
@@ -41,7 +42,7 @@ const LoginEmailScreen: React.FC<LoginEmailScreenProps> = () => {
 
     const onLogin: SubmitHandler<LoginFormInputs> = async (data) => {
         try {
-          const response = await axios.post('http://192.168.0.119:5000/auth/login', data);
+          const response = await axios.post(api+'/auth/login', data);
           if (response.status === 200) {
             console.log('Login successful:', response.data);
       

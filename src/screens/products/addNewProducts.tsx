@@ -24,6 +24,7 @@ import {
 import {UploadImageCard} from './uploadImageCard';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { api } from '../../../envfile/api';
 
 export type AddNewProductsProps = {};
 
@@ -70,8 +71,8 @@ const AddNewProducts = (props: AddNewProductsProps) => {
       setErrorMsg('All input fields are required.');
     } else {
         try {
-            const response = await axios.post(
-              'http://192.168.0.119:5000/auth/product/postproduct',
+            const response = await axios.post(api+
+              '/auth/product/postproduct',
               { productName: formValues.productName,
                 sellingPrice: formValues.sellingPrice,
                 purchasePrice: formValues.purchasePrice,

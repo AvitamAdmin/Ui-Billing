@@ -6,6 +6,7 @@ import { Dropdown } from 'react-native-element-dropdown';
 import { ActivityIndicator } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { screenName } from '../../utils/screenNames';
+import { api } from '../../../envfile/api';
 
 const StockUpdate = () => {
   const [value, setValue] = useState<string | null>(null);
@@ -23,7 +24,7 @@ console.log(value,"hfdg");
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch('http://192.168.0.119:5000/auth/product/getProduct');
+        const response = await fetch(api+'/auth/product/getProduct');
         const data = await response.json();
         const formattedData = data.data.map((product) => ({
           label: product.productName,
@@ -42,7 +43,7 @@ console.log(value,"hfdg");
     if (value) {
       const fetchStockData = async () => {
         try {
-          const response = await fetch(`http://192.168.0.119:5000/stock/getStockData/${value}`);
+          const response = await fetch(api+`/stock/getStockData/${value}`);
           const data = await response.json();
           console.log('Stock Data fetched:', data); // Log the full stock data
           if (data.status === 'ok' && data.data) {
@@ -63,7 +64,7 @@ console.log(value,"hfdg");
 
   const handleUpdate = async () => {
     try {
-      const response = await fetch(`http://192.168.0.119:5000/stock/updateStockData/${value}`, {
+      const response = await fetch(api+`/stock/updateStockData/${value}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

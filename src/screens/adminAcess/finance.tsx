@@ -1,90 +1,265 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View, Image, TextInput, Pressable } from 'react-native';
+import { StyleSheet, Text, View, Image, TextInput, Pressable, ScrollView } from 'react-native';
 import axios from 'axios';
+import { api } from '../../../envfile/api';
 
 const Finance = () => {
-  const [totalGrossAmount, setTotalGrossAmount] = useState(0);
-  const [outgoingCash, setOutgoingCash] = useState(100); 
-  const [inputValue, setInputValue] = useState('');
+  const [totalPaidAmount, setTotalPaidAmount] = useState(0);
+  const [incomingCashPerDay, setIncomingCashPerDay] = useState(0);
+  const [outgoingCash, setOutgoingCash] = useState(0);
+  const [borrowingCash, setBorrowingCash] = useState(0);
+  const [outgoingCashInput, setOutgoingCashInput] = useState('');
+  const [borrowingCashInput, setBorrowingCashInput] = useState('');
+  const [grandTotal, setGrandTotal] = useState(0);
+  const [incomingCashInput, setIncomingCashInput] = useState('');
 
-  const [initialOutgoingCash] = useState(100);
+  const fetchTotalPaidAmount = async () => {
+    try {
+      const response = await axios.get(api+"/api/invoice/totalPaidAmount");
+      if (response.data.status === "ok") {
+        const totalAmount = parseFloat(response.data.totalPaidAmount) || 0;
+        console.log("Total Paid Amount:", totalAmount);
 
+        const todayResponse = await axios.get(api+"/api/invoice/getIncomingCashPerDay");
+        const todayAmount = parseFloat(todayResponse.data.incomingCashPerDay) || 0;
+        console.log("Incoming Cash Per Day:", todayAmount);
 
-  useEffect(() => {
-    const fetchTotalGrossAmount = async () => {
-      try {
-        const response = await axios.get("http://192.168.0.160:5000/api/invoice/totalgrossamount");
-        console.log(response, "dfsdf");
-
-        if (response.data.status === "ok") {
-          setTotalGrossAmount(response.data.totalGrossAmount);
-          console.log(totalGrossAmount, "dfsdf");
-        }
-      } catch (error) {
-        console.error("Failed to fetch total gross amount:", error);
+        setIncomingCashPerDay(todayAmount);
+        setTotalPaidAmount(totalAmount - todayAmount);
+      } else {
+        console.error("Failed to fetch total paid amount:", response.data.error);
       }
-    };
-
-    fetchTotalGrossAmount();
-  }, []);
-
-  
-  const handleInputChange = (value) => {
-    const numericValue = parseFloat(value);
-    if (!isNaN(numericValue)) {
-      setInputValue(value);
-      setOutgoingCash(numericValue);
-    } else {
-      setInputValue('');
-      setOutgoingCash(initialOutgoingCash); 
+    } catch (error) {
+      console.error("Failed to fetch total paid amount:", error);
     }
   };
 
-  return (
-    <View style={{ width: "100%", flexDirection: "column", display: "flex", justifyContent: "center", backgroundColor: "#8a42f5", flex: 1, gap: 10, alignItems: "center" }}>
-      <View style={{ width: "90%", flexDirection: "row", display: "flex", justifyContent: "center", alignItems: "center", gap: 10 }}>
-        <View style={{ width: "40%", flexDirection: "row", display: "flex", borderRadius: 20, backgroundColor: "#fff", padding: 10, alignItems: "center" }}>
-          <View style={{ flexDirection: "column", display: "flex", width: "100%", justifyContent: "center", alignItems: "center", gap: 10 }}>
-            <Text style={{ color: "#000", fontWeight: "bold", fontSize: 18 }}>Incoming Cash</Text>
-            <Text style={{ color: "#000" }}>{totalGrossAmount}</Text>
-            <Image source={require('../../../assets/images/IncomingCash.png')} style={{ height: 40, width: 40 }} />
-          </View>
-        </View>
-        <View style={{ width: "40%", flexDirection: "row", display: "flex", borderRadius: 20, backgroundColor: "#fff", padding: 10, alignItems: "center" }}>
-          <View style={{ flexDirection: "column", display: "flex", width: "100%", justifyContent: "center", alignItems: "center", gap: 10 }}>
-            <Text style={{ color: "#000", fontWeight: "bold", fontSize: 18 }}>Outgoing Cash</Text>
-            <Text style={{ color: "#000" }}>{outgoingCash}</Text>
-            <Image source={require('../../../assets/images/OutgoingCash.png')} style={{ height: 40, width: 40 }} />
-          </View>
-        </View>
-      </View>
-      <View style={{ width: "90%", flexDirection: "row", display: "flex", justifyContent: "center", alignItems: "center", gap: 10 }}>
-        <View style={{ width: "40%", flexDirection: "row", display: "flex", borderRadius: 20, backgroundColor: "#fff", padding: 10, alignItems: "center" }}>
-          <View style={{ flexDirection: "column", display: "flex", width: "100%", justifyContent: "center", alignItems: "center", gap: 10 }}>
-            <Text style={{ color: "#000", fontWeight: "bold", fontSize: 18 }}>Borrowing Cash</Text>
-            <Text style={{ color: "#000" }}>1000</Text>
-            <Image source={require('../../../assets/images/BorrowingCash.png')} style={{ height: 40, width: 40 }} />
-          </View>
-        </View>
-      </View>
-      <View style={{backgroundColor: "#8a4",width:"95%"}}>
-      <TextInput
-          keyboardType="numeric"
-          value={inputValue}
-          onChangeText={handleInputChange}
-         
-        />
-      </View>
+  const fetchGrandTotal = async () => {
+    try {
+      const response = await axios.get(api+"/api/cashflow/grandTotal");
+      if (response.data.status === "ok") {
+        const fetchedGrandTotal = parseFloat(response.data.grandTotal) || 0;
+        console.log("Grand Total from API:", fetchedGrandTotal);
+        setGrandTotal(fetchedGrandTotal);
+      } else {
+        console.error("Failed to fetch grand total:", response.data.error);
+      }
+    } catch (error) {
+      console.error("Failed to fetch grand total:", error);
+    }
+  };
 
-      <View style={{width:"95%",}}>
-         <Pressable style={{backgroundColor: "#c0c0c0",alignItems: "center",padding:10}}>
-            <Text>submit</Text>
-         </Pressable>
+  useEffect(() => {
+    fetchTotalPaidAmount();
+    fetchGrandTotal();
+  }, []);
+
+  useEffect(() => {
+    // Recalculate grand total based on incoming and total paid amounts
+    const calculatedGrandTotal = incomingCashPerDay + totalPaidAmount;
+    console.log("Calculated Grand Total:", calculatedGrandTotal);
+    setGrandTotal(calculatedGrandTotal);
+  }, [incomingCashPerDay, totalPaidAmount]);
+
+  const handleInputChange = (setter) => (value) => {
+    setter(value);
+  };
+
+  const handleSubmit = async (type) => {
+    const numericValue = parseFloat(
+      type === "incoming"
+        ? incomingCashInput
+        : type === "outgoing"
+        ? outgoingCashInput
+        : borrowingCashInput
+    );
+  
+    if (!isNaN(numericValue) && numericValue > 0) {
+      try {
+        console.log(`Submitting ${type} cash with value: ${numericValue}`);
+        const response = await axios.post(api+
+          "/api/cashflow/updateCashFlow",
+          {
+            amount: numericValue,
+            type: type,
+          }
+        );
+  
+        console.log("Response from API:", response.data);
+  
+        if (response.data.status === "ok") {
+          const updatedCashFlow = response.data.cashFlow;
+          setTotalPaidAmount(updatedCashFlow.totalIncoming);
+          setOutgoingCash(updatedCashFlow.totalOutgoing);
+          setBorrowingCash(updatedCashFlow.totalBorrowing);
+          setIncomingCashPerDay(updatedCashFlow.incomingCashPerDay);
+  
+          // Update grand total using the latest cash flow data
+          setGrandTotal(
+            updatedCashFlow.totalIncoming - 
+            updatedCashFlow.totalOutgoing +
+            updatedCashFlow.totalBorrowing
+          );
+  
+          // Clear inputs
+          setIncomingCashInput("");
+          setOutgoingCashInput("");
+          setBorrowingCashInput("");
+        } else {
+          console.error(
+            "Failed to update cash flow on server:",
+            response.data.error
+          );
+        }
+      } catch (error) {
+        console.error(
+          "Error submitting cash flow:",
+          error.response?.data || error.message
+        );
+      }
+    } else {
+      console.error("Invalid input. Please enter a positive number.");
+    }
+  };
+  
+
+  return (
+    <ScrollView>
+      <View style={styles.container}>
+        <View style={styles.row}>
+          <View style={styles.box}>
+            <View style={styles.boxContent}>
+              <Text style={styles.title}>Incoming Cash per Day</Text>
+              <Text style={styles.amount}>{incomingCashPerDay}</Text>
+              <Image source={require('../../../assets/images/IncomingCash.png')} style={styles.image} />
+            </View>
+          </View>
+          <View style={styles.box}>
+            <View style={styles.boxContent}>
+              <Text style={styles.title}>Outgoing Cash</Text>
+              <Text style={styles.amount}>{outgoingCash}</Text>
+              <Image source={require('../../../assets/images/OutgoingCash.png')} style={styles.image} />
+            </View>
+          </View>
+        </View>
+        <View style={styles.row}>
+          <View style={styles.box}>
+            <View style={styles.boxContent}>
+              <Text style={styles.title}>Borrowing Cash</Text>
+              <Text style={styles.amount}>{borrowingCash}</Text>
+              <Image source={require('../../../assets/images/BorrowingCash.png')} style={styles.image} />
+            </View>
+          </View>
+          <View style={styles.box}>
+            <View style={styles.boxContent}>
+              <Text style={styles.title}>Total Incoming Cash</Text>
+              <Text style={styles.amount}>{totalPaidAmount}</Text>
+              <Image source={require('../../../assets/images/IncomingCash.png')} style={styles.image} />
+            </View>
+          </View>
+        </View>
+        <View style={styles.box}>
+          <View style={styles.boxContent}>
+            <Text style={styles.title}>Grand Total</Text>
+            <Text style={styles.amount}>{grandTotal}</Text>
+            <Image source={require('../../../assets/images/IncomingCash.png')} style={styles.image} />
+          </View>
+        </View>
+        <View style={styles.inputContainer}>
+          <TextInput
+            placeholder="Outgoing Cash"
+            keyboardType="numeric"
+            value={outgoingCashInput}
+            onChangeText={handleInputChange(setOutgoingCashInput)}
+            style={styles.input}
+          />
+          <Pressable onPress={() => handleSubmit('outgoing')} style={styles.submitButton}>
+            <Text>Submit Outgoing</Text>
+          </Pressable>
+        </View>
+        <View style={styles.inputContainer}>
+          <TextInput
+            placeholder="Borrowing Cash"
+            keyboardType="numeric"
+            value={borrowingCashInput}
+            onChangeText={handleInputChange(setBorrowingCashInput)}
+            style={styles.input}
+          />
+          <Pressable onPress={() => handleSubmit('borrowing')} style={styles.submitButton}>
+            <Text>Submit Borrowing</Text>
+          </Pressable>
+        </View>
       </View>
-    </View>
+    </ScrollView>
   );
-}
+};
 
 export default Finance;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  container: {
+    width: "100%",
+    flexDirection: "column",
+    display: "flex",
+    justifyContent: "center",
+    backgroundColor: "#8a42f5",
+    flex: 1,
+    gap: 10,
+    alignItems: "center"
+  },
+  row: {
+    width: "90%",
+    flexDirection: "row",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    gap: 10
+  },
+  box: {
+    width: "40%",
+    flexDirection: "row",
+    display: "flex",
+    borderRadius: 20,
+    backgroundColor: "#fff",
+    padding: 10,
+    alignItems: "center"
+  },
+  boxContent: {
+    flexDirection: "column",
+    alignItems: "center"
+  },
+  title: {
+    fontSize: 14,
+    fontWeight: "bold",
+    color: "#333",
+    marginBottom: 5
+  },
+  amount: {
+    fontSize: 22,
+    fontWeight: "bold",
+    color: "#333"
+  },
+  image: {
+    width: 50,
+    height: 50,
+    marginTop: 10
+  },
+  inputContainer: {
+    marginTop: 20,
+    width: "90%",
+    alignItems: "center"
+  },
+  input: {
+    width: "80%",
+    borderColor: "#ddd",
+    borderWidth: 1,
+    padding: 10,
+    borderRadius: 5,
+    marginBottom: 10
+  },
+  submitButton: {
+    backgroundColor: "#4CAF50",
+    padding: 10,
+    borderRadius: 5
+  }
+});

@@ -26,6 +26,7 @@ import {
 } from '../../redux/Slice';
 import {AppDispatch, RootState} from '../../redux/Store';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { api } from '../../../envfile/api';
 
 type Customer = {
   _id: string;
@@ -66,8 +67,8 @@ const CreateBill = () => {
     (state: RootState) => state.billing.fetchCustomerFromBill,
   );
 
-  console.log(Customerfrombill, 'asdfghjkl');
-  console.log(selectedCustomer, 'selectedCustomer');
+  // console.log(Customerfrombill, 'asdfghjkl');
+  // console.log(selectedCustomer, 'selectedCustomer');
 
   useEffect(() => {
     fetchCustomers();
@@ -76,9 +77,8 @@ const CreateBill = () => {
 
   const fetchCustomers = async () => {
     try {
-      const response = await axios.get(
-        // 'http://192.168.208.145:5000/api/customer/getcustomerdetails',
-        'http://192.168.0.119:5000/api/customer/getcustomerdetails',
+      const response = await axios.get(api+
+        '/api/customer/getcustomerdetails',
       );
       setCustomers(response.data.data);
     } catch (error) {
@@ -88,9 +88,8 @@ const CreateBill = () => {
 
   const fetchProducts = async () => {
     try {
-      const response = await axios.get<{data: Product[]}>(
-        // 'http://192.168.208.145:5000/auth/product/getProduct',
-        'http://192.168.0.119:5000/auth/product/getProduct',
+      const response = await axios.get<{data: Product[]}>(api+
+        '/auth/product/getProduct',
       );
       const productsWithCount = response.data.data.map(product => ({
         ...product,
@@ -110,9 +109,9 @@ const CreateBill = () => {
       try {
         const email = await AsyncStorage.getItem('userEmail');
         setCreator(email ?? undefined); // Handle null case
-        console.log(creator, 'asdfghjkl');
+        // console.log(creator, 'asdfghjkl');
 
-        console.log('Retrieved email:', email);
+        // console.log('Retrieved email:', email);
       } catch (error) {
         console.error('Error retrieving email from AsyncStorage:', error);
       }
@@ -120,8 +119,6 @@ const CreateBill = () => {
 
     fetchEmail();
   }, []);
-
-
 
   const handleInputChange = (value: number) => {
     setBillAmount(value);
@@ -140,22 +137,21 @@ const CreateBill = () => {
       totalPrice: item.quantity * item.sellingPrice,
       bag: item.bag,
     }));
+
     if (amount > totalProductPrice) {
       setErrmsg('Entered amount is greater than the total purchased price');
     } else {
       setErrmsg('');
       try {
-        console.log(
-          {pendingamount, selectedCustomer},
-          'Data being sent to backend',
-        );
-        const response = await axios.post(
-          'http://192.168.0.119:5000/api/customer/updatePendingAmt',
+        const pendingamount = '0';
+        const response = await axios.post(api+
+          '/api/customer/updatePendingAmt',
           {pendingamount, selectedCustomer},
         );
-        const totalamount = pendingamount;
-        const responsepost = await axios.post(
-          'http://192.168.0.119:5000/api/invoice/addInvoice',
+        const findpendingamt = totalamount - billAmount;
+
+        const responsepost = await axios.post(api+
+          '/api/invoice/addInvoice',
           {
             ShopName: 'SK VEGETABLES',
             shopAddress: ' No.10 Transport Market, Karamadai, Coimbatore Dist.',
@@ -163,15 +159,16 @@ const CreateBill = () => {
             mobNum2: '090420 66533',
             creator,
             selectedCustomer,
-            fetchPendingAmount,
+            findpendingamt,
             totalProductPriceNum,
             totalamount,
-            paid: 'unpaid',
-            products
+            billAmount,
+            paidstatus: 'unpaid',
+            products,
           },
         );
-        console.log(responsepost,"responsepost");
-        
+        console.log(responsepost, 'responsepost');
+
         console.log(response.data);
       } catch (error) {
         console.log(error, 'error from createbill screen');
@@ -179,13 +176,13 @@ const CreateBill = () => {
     }
   };
 
-
   const customerName = useSelector((state: RootState) => state.billing.name);
-  console.log(selectedCustomer,"customerN  ame");
-  
+  // console.log(selectedCustomer,"customerN  ame");
+
+  const [billno, setBillno] = useState<String | undefined>();
 
   const genereteInvoice = async () => {
-    console.log("btn pressed");
+    console.log('btn pressed');
     const products = FetchCustomerFromBill.map(item => ({
       productId: item._id,
       productName: item.productName,
@@ -195,27 +192,48 @@ const CreateBill = () => {
       bag: item.bag,
     }));
 
-    try {
-      const response = await axios.post(
-        'http://192.168.0.119:5000/api/invoice/addInvoice',
-        {
-          ShopName: 'SK VEGETABLES',
-          shopAddress: ' No.10 Transport Market, Karamadai, Coimbatore Dist.',
-          mobNum1: '098947 54308',
-          mobNum2: '090420 66533',
-          creator,
-          selectedCustomer,
-          fetchPendingAmount,
-          totalProductPriceNum,
-          totalamount,
-          paid: 'unpaid',
-          products
-        },
-      );
-      console.log(response,"response from backend");
-
-    } catch (error) {
-      console.error('Error fetching products:', error);
+    if(paidstatus == ""){
+      setErrmsg("Please select Paid Status");
+    }else{
+      try {
+        const findpendingamt = totalamount - billAmount;
+        const getinvois = await axios.get(api+
+          '/api/invoice/getInvoice',
+        );
+  
+        console.log(getinvois.data, 'invoice count');
+        setBillno(getinvois.data);
+        if (fetchPendingAmount === '0') {
+          console.log(findpendingamt, 'findpendingamt');
+        } else {
+          console.log(findpendingamt, 'adding findpendingamt');
+        }
+        const pendingamount = findpendingamt;
+        const updateresponse = await axios.post(api+
+          '/api/customer/updatePendingAmt',
+          {pendingamount, selectedCustomer},
+        );
+        const response = await axios.post(api+
+          '/api/invoice/addInvoice',
+          {
+            ShopName: 'SK VEGETABLES',
+            shopAddress: ' No.10 Transport Market, Karamadai, Coimbatore Dist.',
+            mobNum1: '098947 54308',
+            mobNum2: '090420 66533',
+            creator,
+            selectedCustomer,
+            findpendingamt,
+            totalProductPriceNum,
+            totalamount,
+            billAmount,
+            paidstatus: paidstatus,
+            products,
+          },
+        );
+        console.log(response, 'response from backend');
+      } catch (error) {
+        console.error('Error fetching products:', error);
+      }
     }
   };
 
@@ -229,15 +247,15 @@ const CreateBill = () => {
     if (selectedCustomer) {
       setErrmsg('');
       dispatch(addCustomerNameToBill(selectedCustomer));
-      console.log('Selected Customer ID:', selectedCustomer);
+      // console.log('Selected Customer ID:', selectedCustomer);
       navigation.navigate(screenName.BillTemplate as never);
     } else {
       setErrmsg(' *Please select customer');
     }
   };
   const [totalProductPrice, setTotalProductPrice] = useState<number>(0);
+  
 
- 
   useEffect(() => {
     // Calculate total product price
     const totalPrice = FetchCustomerFromBill.reduce((total, item) => {
@@ -266,11 +284,10 @@ const CreateBill = () => {
   const [billAmount, setBillAmount] = useState<number>();
   const [pendingAmt, setPendingAmt] = useState<string>();
 
-
   const filteredcustomer = customers.filter(
     item => item.customerName === selectedCustomer,
   );
-  console.log(filteredcustomer, 'filteredcustomer');
+  // console.log(filteredcustomer, 'filteredcustomer');
 
   const fetchPendingAmount = useSelector(
     (state: RootState) => state.billing.fetchPendingAmount,
@@ -278,7 +295,7 @@ const CreateBill = () => {
   const fetchPendingAmountNum = parseFloat(fetchPendingAmount.toString());
   const totalProductPriceNum = parseFloat(totalProductPrice.toString());
   const totalamount = fetchPendingAmountNum + totalProductPriceNum;
-  console.log(totalamount, 'gyhhhhjjjj');
+  // console.log(totalamount, 'gyhhhhjjjj');
 
   const [payoption, setPayoption] = useState<boolean>(false);
   useEffect(() => {
@@ -295,6 +312,9 @@ const CreateBill = () => {
 
     return () => backHandler.remove(); // Clean up the event listener on unmount
   }, []);
+
+
+  const [paidstatus, setPaidstatus] = useState<string | undefined>("");
 
   return (
     <View style={styles.container}>
@@ -330,7 +350,7 @@ const CreateBill = () => {
               <Picker.Item label="Select a customer..." value={undefined} />
               {customers.map((customer, index) => (
                 <Picker.Item
-                  key={customer._id}
+                  key={index}
                   label={customer.customerName}
                   value={customer.customerName}
                   style={{
@@ -347,7 +367,7 @@ const CreateBill = () => {
               <ScrollView style={{height: '40%', gap: 10}}>
                 <View
                   style={{display: 'flex', flexDirection: 'column', gap: 10}}>
-                  {products.map((item,id) => {
+                  {products.map((item, id) => {
                     const backgroundColor = Customerfrombill.some(
                       p => p._id === item._id,
                     )
@@ -624,6 +644,30 @@ const CreateBill = () => {
           </View>
           <View
             style={{
+              display: 'flex',
+              flexDirection: 'row',
+              width: '100%',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              backgroundColor:"#fff"
+            }}>
+            <Pressable onPress={()=>{
+              setPaidstatus("Paid");
+              
+            }}
+              style={{display: 'flex', flexDirection: 'row', width: '40%',justifyContent:"center",alignItems:"center",backgroundColor:paidstatus === "Paid" ? "#000" : "#fff",padding:5,borderRadius:8}}>
+              <Text style={{fontSize:16,color:paidstatus === "Paid" ? "#fff" : "#000",fontWeight:"bold"}}>Paid</Text>
+            </Pressable>
+            <Pressable onPress={()=>{
+              setPaidstatus("UnPaid");
+              
+            }}
+              style={{display: 'flex', flexDirection: 'row', width: '40%',justifyContent:"center",alignItems:"center",backgroundColor:paidstatus === "UnPaid" ? "#000" : "#fff",padding:5,borderRadius:8}}>
+              <Text style={{fontSize:16,color:paidstatus === "UnPaid" ? "#fff" : "#000",fontWeight:"bold"}}>UnPaid</Text>
+              </Pressable>
+          </View>
+          <View
+            style={{
               width: '100%',
               display: 'flex',
               flexDirection: 'column',
@@ -636,14 +680,17 @@ const CreateBill = () => {
                 ₹ {selectedCustomer ? totalamount : 0}
               </Text>
             ) : (
-              <TextInput
+              <View style={{display:"flex",flexDirection:"row",gap:5,width:"100%",
+                justifyContent: 'center',
+                alignItems: 'center',}}>
+                <View style={{width:"65%"}}><TextInput
                 placeholder="Enter bill amount to pay"
                 keyboardType="numeric"
                 style={{
                   fontSize: 16,
                   color: '#000',
                   fontWeight: '500',
-                  width: '75%',
+                  width: '100%',
                   padding: 5,
                   borderColor: '#ccc',
                   borderWidth: 1,
@@ -652,7 +699,13 @@ const CreateBill = () => {
                 }}
                 value={billAmount}
                 onChangeText={handleInputChange} // Ensure handleInputChange receives a string
-              />
+              /></View>
+              <Pressable onPress={()=>{
+                setBillAmount("");
+              }}>
+                <Text style={{color:"#000"}}>Clear</Text>
+              </Pressable>
+              </View>
             )}
             <View style={{display: 'flex', flexDirection: 'row', gap: 5}}>
               <View>
@@ -685,31 +738,33 @@ const CreateBill = () => {
               <Text>Pay both pending and gross amount</Text>
             </View>
           </View>
-          {payoption ? (<TouchableOpacity
-            onPress={handlePay}
-            style={{
-              justifyContent: 'center',
-              flexDirection: 'column',
-              backgroundColor: '#196',
-              alignItems: 'center',
-              padding: 10,
-              borderRadius: 8,
-            }}>
-            <Text style={styles.buttonText}>Pay full Amount</Text>
-          </TouchableOpacity>) : (<TouchableOpacity
-            onPress={genereteInvoice}
-            style={{
-              justifyContent: 'center',
-              flexDirection: 'column',
-              backgroundColor: '#196',
-              alignItems: 'center',
-              padding: 10,
-              borderRadius: 8,
-            }}>
-            <Text style={styles.buttonText}>Proceed to Pay</Text>
-          </TouchableOpacity>) }
-         
-          
+          {payoption ? (
+            <TouchableOpacity
+              onPress={handlePay}
+              style={{
+                justifyContent: 'center',
+                flexDirection: 'column',
+                backgroundColor: '#196',
+                alignItems: 'center',
+                padding: 10,
+                borderRadius: 8,
+              }}>
+              <Text style={styles.buttonText}>Pay full Amount</Text>
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity
+              onPress={genereteInvoice}
+              style={{
+                justifyContent: 'center',
+                flexDirection: 'column',
+                backgroundColor: '#196',
+                alignItems: 'center',
+                padding: 10,
+                borderRadius: 8,
+              }}>
+              <Text style={styles.buttonText}>Proceed to Pay</Text>
+            </TouchableOpacity>
+          )}
         </View>
       </ScrollView>
 

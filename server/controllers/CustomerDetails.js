@@ -63,7 +63,8 @@ exports.customerCreate = async (req, res) => {
       const currentPendingAmount = parseFloat(customer.pendingAmount) || 0;
   
       // Calculate the new pending amount
-      const newPendingAmount = currentPendingAmount + amountToAdd;
+      const newPendingAmount = amountToAdd;
+      // const newPendingAmount = currentPendingAmount + amountToAdd;
   
       // Update the customer's pending amount
       const updatedPendingAmount = await CustomerDetails.findOneAndUpdate(

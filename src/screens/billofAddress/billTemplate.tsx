@@ -105,7 +105,12 @@ const BillTemplate: React.FC = () => {
   };
 
 
+  const fetchPendingAmount = useSelector(
+    (state: RootState) => state.billing.fetchPendingAmount,
 
+    
+    
+  );
   return (
     <View
       style={{
@@ -398,7 +403,7 @@ const BillTemplate: React.FC = () => {
               gap: 10,
             }}>
             <Text style={{fontWeight: 'bold', color: '#1D6B39', fontSize: 16}}>
-              Pending Amount :
+              Gross Amount :
             </Text>
             <Text
               style={{
@@ -421,6 +426,29 @@ const BillTemplate: React.FC = () => {
               gap: 10,
             }}>
             <Text style={{fontWeight: 'bold', color: '#1D6B39', fontSize: 16}}>
+              Pending Amount :
+            </Text>
+            <Text
+              style={{
+                width: '18%',
+                fontWeight: 'bold',
+                color: '#1D6B39',
+                fontSize: 16,
+                justifyContent: 'flex-end',
+                alignItems: 'flex-end',
+              }}>
+              ₹ {fetchPendingAmount}
+            </Text>
+          </View>
+          <View
+            style={{
+              width: '100%',
+              flexDirection: 'row',
+              justifyContent: 'flex-end',
+              alignItems: 'flex-end',
+              gap: 10,
+            }}>
+            <Text style={{fontWeight: 'bold', color: '#1D6B39', fontSize: 16}}>
               Total Price :
             </Text>
             <Text
@@ -432,7 +460,7 @@ const BillTemplate: React.FC = () => {
                 justifyContent: 'flex-end',
                 alignItems: 'flex-end',
               }}>
-              ₹ 7000
+              ₹ {Number(totalProductPrice) + Number(fetchPendingAmount)  }
             </Text>
           </View>
         </View>

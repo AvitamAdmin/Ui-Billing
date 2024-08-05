@@ -81,6 +81,10 @@ import AddBillAddress from '../screens/billofAddress/addBillAddress';
 import BillTemplate from '../screens/billofAddress/billTemplate';
 import CreateBill from '../screens/billofAddress/createBill';
 import Viewallstocks from '../screens/adminAcess/viewallstocks';
+import AllInvoice from '../screens/invoices/allInvoice';
+import PaidInvoice from '../screens/invoices/paidInvoice';
+import UnPaidInvoice from '../screens/invoices/unPaidInvoice';
+import ViewAllInvoice from '../screens/invoices/viewAllInvoice';
 
 const Stack = createStackNavigator();
 interface NavigationProps {
@@ -95,6 +99,24 @@ const StackNavigation = (props: NavigationProps) => {
       options={{
         headerShown:false
       }}
+        name={screenName.AllInvoice}
+        component={AllInvoice}
+      /><Stack.Screen
+      options={{
+        headerShown:false
+      }}
+        name={screenName.PaidInvoice}
+        component={PaidInvoice}
+      /><Stack.Screen
+      options={{
+        headerShown:false
+      }}
+        name={screenName.UnPaidInvoice}
+        component={UnPaidInvoice}
+      /><Stack.Screen
+      options={{
+        headerShown:false
+      }}
         name={screenName.AuthLoadingScreen}
         component={AuthLoadingScreen}
       />
@@ -104,6 +126,13 @@ const StackNavigation = (props: NavigationProps) => {
       }}
         name={screenName.Viewallstocks}
         component={Viewallstocks}
+      />
+       <Stack.Screen
+      options={{
+        headerShown:true
+      }}
+        name={screenName.ViewAllInvoice}
+        component={ViewAllInvoice}
       />
       <Stack.Screen
       options={{
@@ -204,7 +233,7 @@ const StackNavigation = (props: NavigationProps) => {
       />
       {/* <Stack.Screen name={screenName.ProfileScreen} component={ProfileScreen} /> */}
       <Stack.Screen name={screenName.InvoiceScreen} component={InvoiceScreen} />
-      <Stack.Screen name={screenName.ReportsScreen} component={ReportsScreen} />
+      {/* <Stack.Screen name={screenName.ReportsScreen} component={ReportsScreen} /> */}
       <Stack.Screen
         name={screenName.SettingsScreen}
         component={SettingsScreen}
@@ -421,5 +450,8 @@ const StackNavigation = (props: NavigationProps) => {
     </Stack.Navigator>
   );
 };
+
+// const Tab = createBottomTabNavigator();
+
 
 export default StackNavigation;

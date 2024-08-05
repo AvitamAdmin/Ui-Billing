@@ -6,6 +6,7 @@ import CustomIcon from '../../utils/icons';
 import {TopHeader} from '../../components/commonComponents';
 import {labels} from '../../utils/labels';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { api } from '../../../envfile/api';
 
 const AddCustomers = () => {
   const [formData, setFormData] = useState({
@@ -56,8 +57,8 @@ const AddCustomers = () => {
     const {name, phone, address} = formData;
     if (name !== '' && phone !== '' && address !== '') {
       try {
-        const response = await axios.post(
-          'http://192.168.0.119:5000/api/customer/customercreate',
+        const response = await axios.post(api+
+          '/api/customer/customercreate',
           {
             customerName: name,
             mobileNumber: phone,

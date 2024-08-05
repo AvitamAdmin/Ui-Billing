@@ -5,6 +5,7 @@ import {TouchableOpacity} from 'react-native-gesture-handler';
 import CustomIcon from '../../utils/icons';
 import {colors} from '../../utils/theme/colors';
 import {useNavigation} from '@react-navigation/native';
+import { api } from '../../../envfile/api';
 
 interface Product {
   _id: string;
@@ -24,8 +25,8 @@ const Products = () => {
 
   const fetchProducts = async () => {
     try {
-      const response = await axios.get<{data: Product[]}>(
-        'http://192.168.0.119:5000/auth/product/getProduct',
+      const response = await axios.get<{data: Product[]}>(api+
+        '/auth/product/getProduct',
       );
       setProducts(response.data.data); // Assuming response.data.data is an array of products
     } catch (error) {
@@ -35,7 +36,7 @@ const Products = () => {
 
   const deleteProduct = async (id: string) => {
     try {
-      await axios.delete(`http://192.168.0.119:5000/auth/product/${id}`);
+      await axios.delete(api+`/auth/product/${id}`);
       // Update the state by filtering out the deleted product
       setProducts(prevProducts => prevProducts.filter(product => product._id !== id));
     } catch (error) {

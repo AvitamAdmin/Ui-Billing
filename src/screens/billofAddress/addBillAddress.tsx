@@ -8,6 +8,7 @@ import CustomIcon from '../../utils/icons';
 import { LinearProgress } from '@rneui/themed';
 import { colors } from '../../utils/theme/colors';
 import axios from 'axios';
+import { api } from '../../../envfile/api';
 
 const AddBillAddress = () => {
   const [imageURL, setImageURL] = useState<string | undefined>(undefined);
@@ -60,8 +61,8 @@ const { shopName,
       try {
         console.log('create bill process started');
 
-        const response = await axios.post(
-          'http://192.168.0.119:5000/api/bill/shopbillcreate',
+        const response = await axios.post(api+
+          '/api/bill/shopbillcreate',
           { shopName,
             shopsalename,
             address,

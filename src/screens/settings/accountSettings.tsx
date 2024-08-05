@@ -83,6 +83,7 @@ const AccountSettings = (props: accountSettingsProps) => {
                             backgroundColor={isActiveBtn ? colors.primary : colors.greySeven}
                             color={isActiveBtn ? colors.white : colors.blackOne}
                         />
+                        
                         <OnboardingButton
                             width={DevWidth / 2.3}
                             title={labels.saveChanges}

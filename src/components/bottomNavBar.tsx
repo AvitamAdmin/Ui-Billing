@@ -61,7 +61,7 @@ const BottomNavBar: React.FC<Props> = ({ navigationPlusButton }) => {
 
 
     return (
-        <View style={{ position: 'absolute', bottom: 0, left: 0, right: 0 }}>
+        <View style={{ position: 'absolute', bottom: 0, left: 0, right: 0,minHeight:"100%" }}>
             <View style={[flexRow, justifyBetween, ph15, pv10, { backgroundColor: colors.white, height: 60, borderRadius: 10,  shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.50, shadowRadius: 3.84, elevation: 8, }]}>
                 <TouchableOpacity onPress={() => navigation.navigate(screenName.DashboardScreen as never)} style={alignItemCenter}>
                     <HomeBottomTab height={25} width={25} />
@@ -71,7 +71,7 @@ const BottomNavBar: React.FC<Props> = ({ navigationPlusButton }) => {
                     <InvoicesBottomTab height={25} width={25} />
                     <H12BlackOne600>Invoices</H12BlackOne600>
                 </TouchableOpacity>
-                <View style={[{ height: 60, width: 80, backgroundColor: colors.white, bottom: 40, borderTopLeftRadius: 55, borderTopRightRadius: 55,  }, alignItemCenter, justifyCenter]}>
+                {/* <View style={[{ height: 60, width: 80, backgroundColor: colors.white, bottom: 40, borderTopLeftRadius: 55, borderTopRightRadius: 55,  }, alignItemCenter, justifyCenter]}>
                     {
                         navigationPlusButton ?
                             <TouchableOpacity onPress={navigationPlusButton} style={[{ height: 45, width: 45, backgroundColor: colors.primary, borderRadius: 25 }, alignItemCenter, justifyCenter]}>
@@ -83,11 +83,11 @@ const BottomNavBar: React.FC<Props> = ({ navigationPlusButton }) => {
                             </TouchableOpacity>
                     }
 
-                </View>
-                <TouchableOpacity onPress={() => navigation.navigate(screenName.ReportsScreen as never)} style={alignItemCenter}>
+                </View> */}
+                {/* <TouchableOpacity onPress={() => navigation.navigate(screenName.ReportsScreen as never)} style={alignItemCenter}>
                     <ReportsBottomTab height={25} width={25} />
                     <H12BlackOne600>Reports</H12BlackOne600>
-                </TouchableOpacity>
+                </TouchableOpacity> */}
                 <TouchableOpacity onPress={() => navigation.navigate(screenName.SettingsScreen as never)} style={alignItemCenter}>
                     <SettingsBottomTab height={25} width={25} />
                     <H12BlackOne600>Settings</H12BlackOne600>

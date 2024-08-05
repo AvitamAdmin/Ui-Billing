@@ -89,10 +89,10 @@ export const addQuickData = [
   // },
   {id: 2, title: 'Product', moveTo: screenName.AddNewProducts},
   {id: 3, title: 'Customer', moveTo: screenName.AddCustomersScreen},
-  {id: 4, title: 'Add Bill Address ', moveTo: screenName.CreateBill},
+  {id: 4, title: 'Generate Invoice', moveTo: screenName.CreateBill},
   // {id: 4, title: 'Inventory'},
 
-  {id: 5, title: 'AddBillAddress', moveTo: screenName.AddBillAddress},
+  {id: 5, title: 'Add Bill Address', moveTo: screenName.AddBillAddress},
   // {id: 6, title: 'Vendors', moveTo: screenName.AddVendor},
   // {id: 7, title: 'Challan', moveTo: screenName.AddDeliveryScreen},
   // {id: 8, title: 'Expenses', moveTo: screenName.AddExpenses},

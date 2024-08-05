@@ -441,7 +441,7 @@ const DashboardScreen = (props: dashboardProps) => {
   const addAQuickCard = () => {
     return (
       <View style={{flexDirection: 'row', marginVertical: 10}}>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+        <View style={{display:"flex",flexDirection:"row"}}>
           {addQuickData.map((item, index) => {
             return (
               <TouchableOpacity
@@ -455,7 +455,7 @@ const DashboardScreen = (props: dashboardProps) => {
                   }
                   style={{
                     height: 70,
-                    width: 100,
+                    width: 110,
                     alignItems: 'center',
                     justifyContent: 'center',
                   }}>
@@ -463,16 +463,16 @@ const DashboardScreen = (props: dashboardProps) => {
                     <CustomIcon
                       color={colors.blackOne}
                       name="plus"
-                      size={16}
+                      size={12}
                       type="Entypo"
                     />
                   </View>
-                  <Text numberOfLines={1}>{item.title}</Text>
+                  <Text style={{textAlign:"center",color:"#000"}}>{item.title}</Text>
                 </Card>
               </TouchableOpacity>
             );
           })}
-        </ScrollView>
+        </View>
       </View>
     );
   };
@@ -501,11 +501,11 @@ const DashboardScreen = (props: dashboardProps) => {
               {addAQuickCard()}
               {/* <PaymentStatics /> */}
               <FrequentCustomers />
-              <QuickAccess />
-              <InvoiceStatics />
+              {/* <QuickAccess /> */}
+              {/* <InvoiceStatics /> */}
               <RecentInvoices />
-              {paymentSurvey()}
-              <RecentCustomers />
+              {/* {paymentSurvey()}
+              <RecentCustomers /> */}
             </View>
           </View>
         </View>

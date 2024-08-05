@@ -13,6 +13,7 @@ import { colors } from '../../utils/theme/colors';
 import { alignItemCenter, alignSelfCenter, alignSelfEnd, flexRow, justifyAround, justifyCenter, mh15, mt15, mv5 } from '../../utils/theme/commonStyles';
 import { minLengthValidation, requiredValidation, validationSchema } from '../../utils/validationConfig';
 import axios from 'axios';
+import { api } from '../../../envfile/api';
 
 export type LoginEmailScreenProps = {};
 
@@ -38,7 +39,7 @@ const SignupScreen: React.FC<LoginEmailScreenProps> = () => {
         const formValues = getValues();
         console.log('Form Values:', formValues);
         try {
-            const response = await axios.post('http://192.168.0.119:5000/auth/userRegister', formValues);
+            const response = await axios.post(api+'/auth/userRegister', formValues);
             console.log('Server Response:', response.data);
             // Navigate to the login screen upon successful registration
             navigation.navigate(screenName.LoginEmailScreen as never);

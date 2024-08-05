@@ -6,4 +6,5 @@ router.post('/customercreate', customerCreate);
 router.post('/updatePendingAmt', updatePendingAmt);
 router.get('/getcustomerdetails', getCustomerDetails);
 
+
 module.exports = router;

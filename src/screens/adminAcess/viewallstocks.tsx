@@ -2,6 +2,7 @@ import { ScrollView, StyleSheet, Text, View, TextInput, Button, Alert, Pressable
 import React, { useState, useEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { screenName } from '../../utils/screenNames';
+import { api } from '../../../envfile/api';
 
 const Viewallstocks = () => {
   const [products, setProducts] = useState([]);
@@ -15,13 +16,13 @@ const Viewallstocks = () => {
     const fetchData = async () => {
       try {
         // Fetch all products
-        const productResponse = await fetch('http://192.168.0.119:5000/auth/product/getProduct');
+        const productResponse = await fetch(api+'/auth/product/getProduct');
         const productData = await productResponse.json();
         const formattedProductData = productData.data;
 
         // Fetch stock data for each product
         const stockPromises = formattedProductData.map(async (product) => {
-          const stockResponse = await fetch(`http://192.168.0.119:5000/stock/getStockData/${product._id}`);
+          const stockResponse = await fetch(api+`/stock/getStockData/${product._id}`);
           const stockData = await stockResponse.json();
           return {
             ...product,

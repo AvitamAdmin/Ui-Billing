@@ -16,6 +16,8 @@ const ProductBill = require("./routes/ShopaddreddbillSchema");
 const CustomerDetails = require("./routes/CustomerDetails");
 const GenerateInvoice = require("./routes/GenerateInvoice");
 const stockUpdate = require("./routes/stockUpdate");
+const CashFlow = require("./routes/CashFlow");
+const initializeCashFlow = require("./Utils/initializeCashFlow");
 
 
 
@@ -31,6 +33,8 @@ mongoose
   .then(() => console.log("Database connected"))
   .catch((err) => console.error("Database connection error:", err));
 
+  initializeCashFlow();
+
 
   // Increase the limit for the body parser
 app.use(bodyParser.json({ limit: '50mb' }));
@@ -43,5 +47,6 @@ app.use("/api/bill",ProductBill)
 app.use("/api/customer",CustomerDetails)
 app.use("/api/invoice",GenerateInvoice)
 app.use("/stock",stockUpdate)
+app.use("/api/cashflow",CashFlow)
 
 
