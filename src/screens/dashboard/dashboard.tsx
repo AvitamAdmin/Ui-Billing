@@ -440,8 +440,8 @@ const DashboardScreen = (props: dashboardProps) => {
 
   const addAQuickCard = () => {
     return (
-      <View style={{flexDirection: 'row', marginVertical: 10}}>
-        <View style={{display:"flex",flexDirection:"row"}}>
+      <View style={{flexDirection: 'row', marginVertical: 10,width:"100%"}}>
+        <View style={{display:"flex",flexDirection:"row",flexWrap:"wrap",width:"100%",gap:10,justifyContent:"space-between"}}>
           {addQuickData.map((item, index) => {
             return (
               <TouchableOpacity

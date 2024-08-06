@@ -89,8 +89,13 @@ const BottomNavBar: React.FC<Props> = ({ navigationPlusButton }) => {
                     <H12BlackOne600>Reports</H12BlackOne600>
                 </TouchableOpacity> */}
                 <TouchableOpacity onPress={() => navigation.navigate(screenName.SettingsScreen as never)} style={alignItemCenter}>
-                    <SettingsBottomTab height={25} width={25} />
-                    <H12BlackOne600>Settings</H12BlackOne600>
+                <CustomIcon
+                            name={'circle-user'}
+                            size={20}
+                            color="#000"
+                            type={'FontAwesome6'}
+                          />
+                    <H12BlackOne600>Profile</H12BlackOne600>
                 </TouchableOpacity>
             </View>
             <CustomModal children={addNewModal()} visible={showModal} onClose={closeModal} height={'80%'} />

@@ -32,7 +32,7 @@ import {useNavigation} from '@react-navigation/native';
 import {screenName} from '../../utils/screenNames';
 import axios from 'axios';
 import CustomIcon from '../../utils/icons';
-import { api } from '../../../envfile/api';
+import {api} from '../../../envfile/api';
 
 type Customer = {
   _id: string;
@@ -62,52 +62,46 @@ type Invoice = {
   creationTime: Date;
 };
 
-
-
 const RecentInvoices = () => {
-    const [customers, setCustomers] = useState<Customer[]>([]);
-const [invoice, setInvoice] = useState<Invoice[]>([]);
+  const [customers, setCustomers] = useState<Customer[]>([]);
+  const [invoice, setInvoice] = useState<Invoice[]>([]);
 
-useEffect(() => {
-  fetchCustomers();
-  fetchInvoices();
-}, []);
+  useEffect(() => {
+    fetchCustomers();
+    fetchInvoices();
+  }, []);
 
-const fetchCustomers = async () => {
-  try {
-    const response = await axios.get(api+
-      '/api/customer/getcustomerdetails',
-    );
-    setCustomers(response.data.data); // Ensure response data is correctly set
-  } catch (error) {
-    console.error('Error fetching customers:', error);
-  }
-};
+  const fetchCustomers = async () => {
+    try {
+      const response = await axios.get(
+        api + '/api/customer/getcustomerdetails',
+      );
+      setCustomers(response.data.data); // Ensure response data is correctly set
+    } catch (error) {
+      console.error('Error fetching customers:', error);
+    }
+  };
 
-const fetchInvoices = async () => {
-  try {
-    const response = await axios.get(api+
-      '/api/invoice/getInvoice',
-    );
-    setInvoice(response.data.data);
-    console.log(invoice, 'invoice');
-  } catch (error) {
-    console.error('Error fetching invoices:', error);
-  }
-};
+  const fetchInvoices = async () => {
+    try {
+      const response = await axios.get(api + '/api/invoice/getInvoice');
+      setInvoice(response.data.data);
+      console.log(invoice, 'invoice');
+    } catch (error) {
+      console.error('Error fetching invoices:', error);
+    }
+  };
 
-const sortedInvoices = invoice
-  .sort(
-    (a, b) =>
-      new Date(b.creationTime).getTime() - new Date(a.creationTime).getTime(),
-  )
-  .slice(0, 2); // Get the last two recent invoice
-
-
+  const sortedInvoices = invoice
+    .sort(
+      (a, b) =>
+        new Date(b.creationTime).getTime() - new Date(a.creationTime).getTime(),
+    )
+    .slice(0, 3); // Get the last two recent invoice
   const navigation = useNavigation();
 
   return (
-    <View style={{marginTop:10,gap:10}}>
+    <View style={{marginTop: 10, gap: 10}}>
       <View style={[flexRow, justifyBetween]}>
         <H16BlackOne700>{labels.recentInvoice}</H16BlackOne700>
         <TouchableOpacity
@@ -117,62 +111,188 @@ const sortedInvoices = invoice
           <H14Primary400Underline>{labels.viewAll}</H14Primary400Underline>
         </TouchableOpacity>
       </View>
-      <View style={{gap:10}}>{sortedInvoices.map((item,id) =>{
-        return(
-            <View key={id} style={{flexDirection:"column",backgroundColor:"#d9d9d9",padding:5,borderRadius:8,width:"100%"}}>
-                <View style={{flexDirection:"row",width:"100%",justifyContent:"space-between",padding:3}}>
-                    <View style={{flexDirection:"row",gap:10}}>
-                    <View>
-                    <CustomIcon
-                  name={'person-circle'}
-                  size={56}
-                  color="#4d4dff"
-                  type={'Ionicons'}
-                />
-                    </View>
-                    <View>
-                <Text  style={{
-                    fontWeight: '500',
-                    color: '#3385ff',
-                    fontSize: 14,
-                    textAlign: 'left',
-                  }}>#INV-{item.billNo}</Text>
-                <Text style={{color:"#000",fontWeight:"600",fontSize:16}}>{item.customerName}</Text>
-            </View>
-                    </View>
-                    <View style={{justifyContent:"flex-start",alignItems:"flex-end"}}>
-                    {item.paidstatus === "Paid" ? (<View style={{padding:5,backgroundColor:"#196",flexDirection:"row",justifyContent:"center",alignItems:"center",borderRadius:8,width:"65%"}}><View><CustomIcon
-                  name={'dot-single'}
-                  size={20}
-                  color="#fff"
-                  type={'Entypo'}
-                /></View><View><Text style={{color:"#fff",fontSize:16,fontWeight:"500"}}>Paid</Text></View></View>) : (<View style={{padding:5,backgroundColor:"#ff4d4d",flexDirection:"row",justifyContent:"center",alignItems:"center",borderRadius:8,width:"63%"}}><View><CustomIcon
-                    name={'dot-single'}
-                    size={20}
-                    color="#fff"
-                    type={'Entypo'}
-                  /></View><View><Text style={{color:"#fff",fontSize:16,fontWeight:"500"}}>UnPaid</Text></View></View>)}
+     
+      <View style={{gap: 10}}>
+        {sortedInvoices.map((item, id) => {
+          return (
+            <View
+              key={id}
+              style={{
+                flexDirection: 'row',
+                backgroundColor: '#fff',
+                padding: 5,
+                borderRadius: 8,
+                width: '100%',
+                justifyContent: 'center',
+                alignItems: 'center',
+                borderWidth:2,
+                borderColor:"#d9d9d9",
+                gap:10
+              }}>
+              <View style={{width: '22%',backgroundColor:"#a1c3ff",justifyContent:"center",alignItems:"center",flexDirection:"column",borderRadius:8}}>
+              <Image source={require("../../../assets/images/Profile.png")} style={{ width: 60,
+    height: 70,
+    marginTop: 10}}/>
+              </View>
+              <View
+                style={{
+                  flexDirection: 'column',
+                  width: '75%',
+                }}>
+                <View
+                style={{
+                  flexDirection: 'row',
+                  width: '100%',
+                  justifyContent: 'space-between',
+                  padding: 3,
+                }}>
+                <View style={{flexDirection: 'row', gap: 10,width:"50%"}}>
+                  
+                  <View>
+                  <Text
+                      style={{color: '#000', fontWeight: '600', fontSize: 16}}>
+                      {item.customerName}
+                    </Text>
+                    <Text
+                      style={{
+                        fontWeight: '500',
+                        color: '#3385ff',
+                        fontSize: 14,
+                        textAlign: 'left',
+                      }}>
+                      #INV-{item.billNo}
+                    </Text>
+                    
+                  </View>
                 </View>
-                </View>
+                <View style={{flexDirection:"column",width:"50%",justifyContent:"flex-end",alignItems:"flex-end"}}>
+                  <View
+                    style={{
+                      justifyContent: 'flex-start',
+                      alignItems: 'flex-end',
+                    }}>
+                    {item.paidstatus === 'Paid' ? (
+                      <View
+                        style={{
+                          paddingRight: 5,
+                          paddingLeft: 5,
+                          backgroundColor: '#C2EACB',
+                          flexDirection: 'row',
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                          borderRadius: 8,
+                          width: '35%',
+                        }}>
+                        <View>
+                          <CustomIcon
+                            name={'dot-single'}
+                            size={20}
+                            color="#1ce549"
+                            type={'Entypo'}
+                          />
+                        </View>
+                        <View>
+                          <Text
+                            style={{
+                              color: '#595959',
+                              fontSize: 16,
+                              fontWeight: '500',
+                            }}>
+                            Paid
+                          </Text>
+                        </View>
+                      </View>
+                    ) : (
+                      <View
+                        style={{
+                          paddingRight: 5,
+                          paddingLeft: 5,
 
-                <View style={{backgroundColor:"#fff",width:"100%",flexDirection:"row",justifyContent:"space-between",padding:5,borderRadius:5}}>
-                <View style={{flexDirection:"column",justifyContent:"center",alignItems:"center"}}>
-                    <Text>Total Amount</Text>
-                    <Text style={{color:"#000",fontWeight:"600"}}>{item.totalAmount}</Text>
-                    </View> 
-                    <View style={{flexDirection:"column",justifyContent:"center",alignItems:"center"}}>
-                    <Text>Paid Amount</Text>
-                    <Text style={{color:"#000",fontWeight:"600"}}>{item.paidamount}</Text>
-                    </View> 
-                    <View style={{flexDirection:"column",justifyContent:"center",alignItems:"center"}}>
-                    <Text>Date</Text>
-                    <Text style={{color:"#000",fontWeight:"600"}}>{new Date(item.creationTime).toLocaleDateString()}</Text>
-                    </View> 
+                          backgroundColor: '#ebbdbd',
+                          flexDirection: 'row',
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                          borderRadius: 8,
+                          width: '53%',
+                        }}>
+                        <View>
+                          <CustomIcon
+                            name={'dot-single'}
+                            size={20}
+                            color="#ed0606"
+                            type={'Entypo'}
+                          />
+                        </View>
+                        <View>
+                          <Text
+                            style={{
+                              color: '#595959',
+                              fontSize: 16,
+                              fontWeight: '500',
+                            }}>
+                            UnPaid
+                          </Text>
+                        </View>
+                      </View>
+                    )}
+                  </View>
+                  <View>
+                    <Text style={{color:"#000"}}>
+                      {new Date(item.creationTime).toLocaleDateString()}
+                    </Text>
+                  </View>
                 </View>
-                
+              </View>
+
+                <View
+                  style={{
+                    backgroundColor: '#e6e6e6',
+                    width: '100%',
+                    flexDirection: 'row',
+                    justifyContent: 'space-around',
+                    padding: 5,
+                    borderRadius: 5,
+                  }}>
+                  <View
+                    style={{
+                      flexDirection: 'column',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}>
+                    <Text style={{color: '#000'}}>Total Amount</Text>
+                    <Text style={{color: '#000', fontWeight: '600'}}>
+                      {item.totalAmount}
+                    </Text>
+                  </View>
+                  {/* <View
+                    style={{
+                      flexDirection: 'column',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}>
+                    <Text style={{color: '#000'}}>Gross Amount</Text>
+                    <Text style={{color: '#000', fontWeight: '600'}}>
+                      {item.grossAmount}
+                    </Text>
+                  </View> */}
+                  <View
+                    style={{
+                      flexDirection: 'column',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}>
+                    <Text style={{color: '#000'}}>Paid Amount</Text>
+                    <Text style={{color: '#000', fontWeight: '600'}}>
+                      {item.paidamount}
+                    </Text>
+                  </View>
+                  
+                </View>
+              </View>
             </View>
-        )
-      })}</View>
+          );
+        })}
+      </View>
     </View>
   );
 };

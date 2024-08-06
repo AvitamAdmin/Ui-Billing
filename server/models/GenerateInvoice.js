@@ -27,24 +27,11 @@ const billInvoice = new mongoose.Schema({
   pendingAmount: { type: String },
   grossAmount: { type: String },
   totalAmount: { type: String },
-  Invoice: [childSchema], // Renamed 'device' to 'devices'
+  Invoice: [childSchema], 
   billNo: { type: String, unique: true }, 
 });
 
-// Pre-save middleware to generate a unique bill number
-// billInvoice.pre('save', async function(next) {
-//   const invoice = this;
-//   if (invoice.isNew) {
-//     try {
-//       const lastInvoice = await GenerateInvoice.findOne().sort({ creationTime: -1 });
-//       const lastBillNo = lastInvoice ? parseInt(lastInvoice.billNo.split('-')[1], 10) : 0;
-//       invoice.billNo = `${lastBillNo + 1}`;
-//     } catch (error) {
-//       return next(error);
-//     }
-//   }
-//   next();
-// });
+
 
 const GenerateInvoice = mongoose.model('invoice', billInvoice);
 

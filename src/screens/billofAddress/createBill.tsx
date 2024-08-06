@@ -281,7 +281,7 @@ const CreateBill = () => {
   };
 
   const [errmsg2, setErrmsg2] = useState<string | undefined>(undefined);
-  const [billAmount, setBillAmount] = useState<number>();
+  const [billAmount, setBillAmount] = useState<number>(0);
   const [pendingAmt, setPendingAmt] = useState<string>();
 
   const filteredcustomer = customers.filter(
@@ -680,11 +680,15 @@ const CreateBill = () => {
                 ₹ {selectedCustomer ? totalamount : 0}
               </Text>
             ) : (
-              <View style={{display:"flex",flexDirection:"row",gap:5,width:"100%",
+              <View style={{display:"flex",flexDirection:"row",gap:5,
                 justifyContent: 'center',
-                alignItems: 'center',}}>
-                <View style={{width:"65%"}}><TextInput
+                alignItems: 'center',
+                borderWidth:2,borderColor:"#ccc",width:"70%",borderRadius:8}}>
+                <View style={{width:"85%",paddingLeft:3}}>
+                  <TextInput
                 placeholder="Enter bill amount to pay"
+                placeholderTextColor="#000"
+
                 keyboardType="numeric"
                 style={{
                   fontSize: 16,
@@ -692,16 +696,15 @@ const CreateBill = () => {
                   fontWeight: '500',
                   width: '100%',
                   padding: 5,
-                  borderColor: '#ccc',
-                  borderWidth: 1,
                   borderRadius: 8,
                   paddingLeft: 5,
                 }}
                 value={billAmount}
                 onChangeText={handleInputChange} // Ensure handleInputChange receives a string
               /></View>
-              <Pressable onPress={()=>{
-                setBillAmount("");
+              <Pressable
+              style={{width:"15%"}} onPress={()=>{
+                setBillAmount(0);
               }}>
                 <Text style={{color:"#000"}}>Clear</Text>
               </Pressable>
@@ -735,7 +738,7 @@ const CreateBill = () => {
                   </TouchableOpacity>
                 )}
               </View>
-              <Text>Pay both pending and gross amount</Text>
+              <Text  style={{color:"#000"}}>Pay both pending and gross amount</Text>
             </View>
           </View>
           {payoption ? (

@@ -198,13 +198,13 @@ const ViewAllInvoice = () => {
           </View>
             <View style={{width:"40%",flexDirection:"column",justifyContent:"flex-end",alignItems:"flex-end",gap:5}}>
            <View>
-                <Text>Pending Amount</Text>
+                <Text style={{color:"#000"}}>Pending Amount</Text>
               </View>
               <View>
-                <Text>Paid Amount</Text>
+                <Text style={{color:"#000"}}>Paid Amount</Text>
               </View>
               <View>
-                <Text>Total Amount</Text>
+                <Text style={{color:"#000"}}>Total Amount</Text>
               </View>
             </View>
             <View style={{width:"20%",flexDirection:"column",justifyContent:"flex-end",alignItems:"flex-end",gap:5,}}>

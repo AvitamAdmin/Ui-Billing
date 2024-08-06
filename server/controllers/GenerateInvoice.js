@@ -181,3 +181,25 @@ exports.addInvoice = async (req, res) => {
       res.status(500).json({ error: "Internal server error while calculating total paid amount" });
     }
   };
+  exports.updatePaidStatus = async (req, res) => {
+    try {
+      const { id } = req.body;
+      console.log(id);
+  
+      // Find the invoice by ID and update the paid status to "Paid"
+      const updatedInvoice = await GenerateInvoice.findByIdAndUpdate(
+        id,
+        { paidstatus: 'Paid' },
+        { new: true }
+      );
+  
+      if (!updatedInvoice) {
+        return res.status(404).json({ message: 'Invoice not found' });
+      }
+  
+      res.status(200).json({ message: 'Invoice updated successfully', updatedInvoice });
+    } catch (error) {
+      console.error('Error updating invoice:', error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  };
