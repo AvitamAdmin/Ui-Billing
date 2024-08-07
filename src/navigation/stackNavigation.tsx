@@ -184,9 +184,10 @@ const StackNavigation = (props: NavigationProps) => {
         component={SignupScreen}
       />
       <Stack.Screen
-        options={{
-          headerShown: false,
-        }}
+        // options={{
+        //   headerShown: true,
+        //   headerTitle:""
+        // }}
         name={screenName.FinanceScreen}
         component={FinanceScreen}
       />

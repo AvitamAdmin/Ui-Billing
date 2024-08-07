@@ -129,10 +129,13 @@ const RecentInvoices = () => {
                 borderColor:"#d9d9d9",
                 gap:10
               }}>
-              <View style={{width: '22%',backgroundColor:"#a1c3ff",justifyContent:"center",alignItems:"center",flexDirection:"column",borderRadius:8}}>
-              <Image source={require("../../../assets/images/Profile.png")} style={{ width: 60,
-    height: 70,
-    marginTop: 10}}/>
+              <View style={{width: 70,height:70,backgroundColor:"#eeeeee",justifyContent:"center",alignItems:"center",flexDirection:"column",borderRadius:48}}>
+              <CustomIcon
+                            name={'user-large'}
+                            size={35}
+                            color={colors.primary}
+                            type={'FontAwesome6'}
+                          />
               </View>
               <View
                 style={{

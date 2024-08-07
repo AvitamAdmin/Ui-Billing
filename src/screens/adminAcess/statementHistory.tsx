@@ -8,8 +8,10 @@ import Feather from 'react-native-vector-icons/Feather';
 import FontAwesome6 from 'react-native-vector-icons/FontAwesome6';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import CustomIcon from '../../utils/icons';
+import { useNavigation } from '@react-navigation/native';
 
 const StatementHistory = () => {
+    const navigation = useNavigation();
   return (
     <View
       style={{
@@ -27,22 +29,23 @@ const StatementHistory = () => {
           flexDirection: 'column',
           justifyContent: 'center',
           alignItems: 'center',
-          gap: 20,
+          gap:10
         }}>
         <View style={{
           display: 'flex',
           flexDirection: 'row',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          width:"100%",
-          backgroundColor:"#f5f"
-        }}>
-          <Pressable style={{backgroundColor:"#196",
           justifyContent: 'flex-start',
+          alignItems: 'flex-start',
+          width:"100%",
+        //   backgroundColor:"#f5f"
+        }}>
+          <Pressable onPress={()=>{
+            navigation.goBack();
+          }} style={{justifyContent: 'flex-start',
           alignItems: 'flex-start',}}>
             <CustomIcon
               color="#000"
-              size={16}
+              size={26}
               name="arrowleft"
               type="AntDesign"
             />
@@ -53,7 +56,7 @@ const StatementHistory = () => {
           justifyContent: 'center',
           alignItems: 'center',
           width:"100%",
-          backgroundColor:"#f5f"
+        //   backgroundColor:"#f5f"
         }}>
           <Text
             style={{

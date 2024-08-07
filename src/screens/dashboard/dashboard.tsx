@@ -116,31 +116,24 @@ const DashboardScreen = (props: dashboardProps) => {
             </View>
             
           </TouchableOpacity>
-          <TouchableOpacity onPress={() =>
-              navigation.navigate(screenName.Personal as never)
-            } style={{padding:10,borderRadius:8,display:"flex",flexDirection:"row",justifyContent:"space-between",backgroundColor:"#ebebeb"}}>
-            <View style={{width:"30%"}}>
+          <View style={{backgroundColor:"#ebebeb",padding:15,borderRadius:8}}>
             <Text style={{fontSize:16}}>Other</Text>
-            </View>
-            
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() =>
-              navigation.navigate(screenName.StatementHistory as never)
-            } style={{padding:10,borderRadius:8,display:"flex",flexDirection:"row",justifyContent:"space-between",backgroundColor:"#ebebeb"}}>
-            <View style={{width:"60%"}}>
-            <Text style={{fontSize:16}}>Payment History</Text>
-            </View>
-            
-          </TouchableOpacity>
+          </View>
           <TouchableOpacity onPress={()=>{
                  AsyncStorage.removeItem('userToken');
 
             console.log("storage cleared");
             navigation.navigate(screenName.LoginEmailScreen as never);
 
-          }} style={{padding:15,borderRadius:8}}>
-            <Text style={{fontSize:16,color:"red"}}>Logout</Text>
+          }} style={{padding:15,borderRadius:8,flexDirection:"row",gap:5,alignItems:"center",justifyContent:"flex-start"}}>
+            <Text style={{fontSize:18,color:"red"}}>Logout</Text><CustomIcon
+              color="red"
+              size={18}
+              name="logout"
+              type="AntDesign"
+            />
           </TouchableOpacity>
+
         </View>
       </View>
     );
@@ -516,7 +509,7 @@ const DashboardScreen = (props: dashboardProps) => {
               <FrequentCustomers />
               {/* <QuickAccess /> */}
               {/* <InvoiceStatics /> */}
-              <RecentInvoices />
+              {/* <RecentInvoices /> */}
               {/* {paymentSurvey()}
               <RecentCustomers /> */}
             </View>
