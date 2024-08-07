@@ -25,11 +25,11 @@ function tab(){
 const Tab = createMaterialTopTabNavigator();
   return (
    <View style={{flex:1}}>
-     <View style={{width:"100%",backgroundColor:"#8a42f5",height:"7%",padding:20}}>
+     <View style={{width:"100%",backgroundColor:"#743BFF",height:"7%",padding:20,opacity:5}}>
           <Pressable onPress={()=>{navigation.goBack()}}><AntDesign name="arrowleft" size={24} color="#fff" /></Pressable>
     </View>
     {tab()}
-  
+   
    </View> 
   )
 }

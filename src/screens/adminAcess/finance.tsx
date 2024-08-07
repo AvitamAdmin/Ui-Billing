@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View, Image, TextInput, Pressable, ScrollView } from 'react-native';
 import axios from 'axios';
 import { api } from '../../../envfile/api';
+import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
+
 
 const Finance = () => {
   const [outgoingCash, setOutgoingCash] = useState(0);
@@ -34,6 +36,8 @@ const Finance = () => {
           (fetchedCashFlow.totalBorrowing || 0) -
           (fetchedCashFlow.totalOutgoing || 0) // Initial grand total calculation
         );
+        console.log(todayIncome,"sandy");
+        
       } else {
         console.error("Failed to fetch cash flow:", response.data.error);
       }
@@ -146,176 +150,178 @@ const Finance = () => {
 
   return (
     <ScrollView>
-      <View style={styles.container}>
-        <View style={styles.row}>
-          <View style={styles.box}>
-            <View style={styles.boxContent}>
-              <Text style={styles.title}>Outgoing Cash</Text>
-              <Text style={styles.amount}>{outgoingCash}</Text>
-              <Image source={require('../../../assets/images/OutgoingCash.png')} style={styles.image} />
-            </View>
+      <View style={{width:wp("100%"),flexDirection: "column",display: "flex",justifyContent: "center",flex: 1,alignItems: "center",gap:25}}>
+        <View style={{width:wp("90%"),flexDirection: "column",display: "flex",justifyContent: "center",alignItems: "center",gap: 20,paddingTop:30}}>
+          <View style={{width:wp("90%"),flexDirection: "row",display: "flex",justifyContent: "space-between",alignItems: "center",borderRadius:10,backgroundColor:"#fff",elevation:5,padding:10}}>
+              <Text style={{color:"#807d82",fontWeight:"bold",fontSize:hp(1.9)}}>Closing Amount</Text>
+              <Text style={{color:"green",fontWeight:"bold",fontSize:hp(1.9)}}>{closingAmount}</Text>
           </View>
-          <View style={styles.box}>
-            <View style={styles.boxContent}>
-              <Text style={styles.title}>Borrowing Cash</Text>
-              <Text style={styles.amount}>{borrowingCash}</Text>
-              <Image source={require('../../../assets/images/BorrowingCash.png')} style={styles.image} />
-            </View>
+          <View style={{width:wp("90%"),flexDirection: "row",display: "flex",justifyContent: "space-between",alignItems: "center",borderRadius:10,backgroundColor:"#fff",elevation:5,padding:10}}>
+              <Text style={{color:"#807d82",fontWeight:"bold",fontSize:hp(1.9)}}>Today's Income</Text>
+              <Text style={{color:"green",fontWeight:"bold",fontSize:hp(1.9)}}>{todayIncome}</Text>
           </View>
-        </View>
-
-        <View>
-          <View style={styles.box}>
-            <View style={styles.boxContent}>
-              <Text style={styles.title}>Today's Income</Text>
-              <Text style={styles.amount}>{todayIncome}</Text>
-              <Image source={require('../../../assets/images/IncomingCash.png')} style={styles.image} />
-            </View>
+          <View style={{width:wp("90%"),flexDirection: "row",display: "flex",justifyContent: "space-between",alignItems: "center",borderRadius:10,backgroundColor:"#fff",elevation:5,padding:10}}>
+              <Text style={{color:"#807d82",fontWeight:"bold",fontSize:hp(1.9)}}>Grand Total</Text>
+              <Text style={{color:"green",fontWeight:"bold",fontSize:hp(1.9)}}>{grandTotal}</Text>
           </View>
-          <View style={styles.box}>
-            <View style={styles.boxContent}>
-              <Text style={styles.title}>Closing Amount</Text>
-              <Text style={styles.amount}>{closingAmount}</Text>
-              <Image source={require('../../../assets/images/IncomingCash.png')} style={styles.image} />
-            </View>
+          <View style={{width:wp("90%"),flexDirection: "row",display: "flex",justifyContent: "space-between",alignItems: "center",borderRadius:10,backgroundColor:"#fff",elevation:5,padding:10}}>
+              <Text style={{color:"#807d82",fontWeight:"bold",fontSize:hp(1.9)}}>Outgoing Amount</Text>
+              <Text style={{color:"green",fontWeight:"bold",fontSize:hp(1.9)}}>{outgoingCash}</Text>
           </View>
-          <View style={styles.box}>
-            <View style={styles.boxContent}>
-              <Text style={styles.title}>Grand Total</Text>
-              <Text style={styles.amount}>{grandTotal}</Text>
-              <Image source={require('../../../assets/images/IncomingCash.png')} style={styles.image} />
-            </View>
+      
+          <View style={{width:wp("90%"),flexDirection: "row",display: "flex",justifyContent: "space-between",alignItems: "center",borderRadius:10,backgroundColor:"#fff",elevation:5,padding:10}}>
+              <Text style={{color:"#807d82",fontWeight:"bold",fontSize:hp(1.9)}}>Borrowing Cash</Text>
+              <Text style={{color:"green",fontWeight:"bold",fontSize:hp(1.9)}}>{borrowingCash}</Text>
           </View>
         </View>
+           
 
-        <View style={styles.inputContainer}>
+        <View style={{width:wp("100%"),display: "flex",justifyContent:"flex-start",alignItems: "center",gap: 10,flexDirection:"column"}}>
+          <Text style={{color:"#8F62FF",fontWeight:"bold",fontSize:hp(2.2)}}>Update Outgoing Cash</Text>
           <TextInput
             placeholder="Enter Outgoing Cash"
             keyboardType="numeric"
             value={outgoingCashInput}
             onChangeText={handleInputChange(setOutgoingCashInput)}
-            style={styles.input}
-          />
-          <Pressable onPress={() => handleCashSubmit('outgoing')} style={styles.submitButton}>
+            style={{borderColor: "#c8d2d5",backgroundColor: "#e6e9e9",borderWidth: 2,width: "90%",height: 50,borderRadius: 10,paddingHorizontal: 20,color:"#000"}}/>
+          <Pressable onPress={() => handleCashSubmit('outgoing')} style={{backgroundColor: "#8F62FF",borderRadius: 10,paddingVertical: 10,paddingHorizontal: 20}}>
             <Text>Submit Outgoing Cash</Text>
           </Pressable>
-        </View>
+        </View> 
 
-        <View style={styles.inputContainer}>
+        <View style={{width:wp("100%"),display: "flex",justifyContent:"flex-start",alignItems: "center",gap: 10,flexDirection:"column"}}>
+        <Text style={{color:"#8F62FF",fontWeight:"bold",fontSize:hp(2.2)}}>Update Borrowing Cash</Text>
           <TextInput
             placeholder="Enter Borrowing Cash"
             keyboardType="numeric"
             value={borrowingCashInput}
             onChangeText={handleInputChange(setBorrowingCashInput)}
-            style={styles.input}
+            style={{borderColor: "#c8d2d5",backgroundColor: "#e6e9e9",borderWidth: 2,width: "90%",height: 50,borderRadius: 10,paddingHorizontal: 20}}
           />
-          <Pressable onPress={() => handleCashSubmit('borrowing')} style={styles.submitButton}>
+          <Pressable onPress={() => handleCashSubmit('borrowing')} style={{backgroundColor: "#8F62FF",borderRadius: 10,paddingVertical: 10,paddingHorizontal: 20}}>
             <Text>Submit Borrowing Cash</Text>
           </Pressable>
         </View>
 
-        <View style={styles.inputContainer}>
+        <View style={{width:wp("100%"),display: "flex",justifyContent:"flex-start",alignItems: "center",gap: 10,flexDirection:"column"}}>
+        <Text style={{color:"#8F62FF",fontWeight:"bold",fontSize:hp(2.2)}}>Update Today's Income</Text>
+
           <TextInput
             placeholder="Enter Today's Income"
             keyboardType="numeric"
             value={todayIncomeInput}
             onChangeText={handleInputChange(setTodayIncomeInput)}
-            style={styles.input}
+            style={{borderColor: "#c8d2d5",backgroundColor: "#e6e9e9",borderWidth: 2,width: "90%",height: 50,borderRadius: 10,paddingHorizontal: 20}}
           />
-          <Pressable onPress={handleIncomeSubmit} style={styles.submitButton}>
+          <Pressable onPress={handleIncomeSubmit} style={{backgroundColor: "#8F62FF",borderRadius: 10,paddingVertical: 10,paddingHorizontal: 20}}>
             <Text>Submit Today's Income</Text>
           </Pressable>
         </View>
+    
+        <View style={{width:wp("100%"),display: "flex",justifyContent:"flex-start",alignItems: "center",gap: 10,flexDirection:"column"}}>
+        <Text style={{color:"#8F62FF",fontWeight:"bold",fontSize:hp(2.2)}}>Update Closing Amount</Text>
 
-        <View style={styles.inputContainer}>
           <TextInput
             placeholder="Enter Closing Amount"
             keyboardType="numeric"
             value={closingAmountInput}
             onChangeText={handleInputChange(setClosingAmountInput)}
-            style={styles.input}
+            style={{borderColor: "#c8d2d5",backgroundColor: "#e6e9e9",borderWidth: 2,width: "90%",height: 50,borderRadius: 10,paddingHorizontal: 20}}
           />
-          <Pressable onPress={handleClosingAmountSubmit} style={styles.submitButton}>
+          <Pressable onPress={handleClosingAmountSubmit} style={{backgroundColor: "#8F62FF",borderRadius: 10,paddingVertical: 10,paddingHorizontal: 20}}>
             <Text>Submit Closing Amount</Text>
           </Pressable>
         </View>
+
+        <View>
+          
+         
+        
+        </View>
+
+       
+        
+
+       
+
+       
       </View>
     </ScrollView>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    width: "100%",
-    flexDirection: "column",
-    display: "flex",
-    justifyContent: "center",
-    backgroundColor: "#8a42f5",
-    flex: 1,
-    gap: 10,
-    alignItems: "center"
-  },
-  row: {
-    width: "90%",
-    flexDirection: "row",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    gap: 10
-  },
-  box: {
-    width: "40%",
-    flexDirection: "row",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center"
-  },
-  boxContent: {
-    width: "100%",
-    height: 180,
-    backgroundColor: "#4b2386",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    borderRadius: 10,
-    gap: 20
-  },
-  title: {
-    fontWeight: "bold",
-    fontSize: 20,
-    color: "#e0e0e0"
-  },
-  amount: {
-    fontSize: 25,
-    color: "#e0e0e0",
-    fontWeight: "900"
-  },
-  image: {
-    width: 80,
-    height: 80
-  },
-  inputContainer: {
-    width: "100%",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    gap: 10
-  },
-  input: {
-    borderColor: "#c8d2d5",
-    backgroundColor: "#e6e9e9",
-    borderWidth: 2,
-    width: "90%",
-    height: 50,
-    borderRadius: 10,
-    paddingHorizontal: 20
-  },
-  submitButton: {
-    backgroundColor: "#f59f42",
-    borderRadius: 10,
-    paddingVertical: 10,
-    paddingHorizontal: 20
-  }
-});
+// const styles = StyleSheet.create({
+//   container: {
+//     width: "100%",
+//     flexDirection: "column",
+//     display: "flex",
+//     justifyContent: "center",
+//     backgroundColor: "#8a42f5",
+//     flex: 1,
+//     gap: 10,
+//     alignItems: "center"
+//   },
+//   row: {
+//     width: "90%",
+//     flexDirection: "row",
+//     display: "flex",
+//     justifyContent: "center",
+//     alignItems: "center",
+//     gap: 10
+//   },
+//   box: {
+//     width: "40%",
+//     flexDirection: "row",
+//     display: "flex",
+//     justifyContent: "center",
+//     alignItems: "center"
+//   },
+//   boxContent: {
+//     width: "100%",
+//     height: 180,
+//     backgroundColor: "#4b2386",
+//     display: "flex",
+//     justifyContent: "center",
+//     alignItems: "center",
+//     borderRadius: 10,
+//     gap: 20
+//   },
+//   title: {
+//     fontWeight: "bold",
+//     fontSize: 20,
+//     color: "#e0e0e0"
+//   },
+//   amount: {
+//     fontSize: 25,
+//     color: "#e0e0e0",
+//     fontWeight: "900"
+//   },
+//   image: {
+//     width: 80,
+//     height: 80
+//   },
+//   inputContainer: {
+//     width: "100%",
+//     display: "flex",
+//     justifyContent: "center",
+//     alignItems: "center",
+//     gap: 10
+//   },
+//   input: {
+//     borderColor: "#c8d2d5",
+//     backgroundColor: "#e6e9e9",
+//     borderWidth: 2,
+//     width: "90%",
+//     height: 50,
+//     borderRadius: 10,
+//     paddingHorizontal: 20
+//   },
+//   submitButton: {
+//     backgroundColor: "#f59f42",
+//     borderRadius: 10,
+//     paddingVertical: 10,
+//     paddingHorizontal: 20
+//   }
+// });
 
 export default Finance;
