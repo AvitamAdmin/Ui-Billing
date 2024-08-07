@@ -1,5 +1,6 @@
 export const screenName = {
     AuthLoadingScreen:"AuthLoadingScreen",
+    StatementHistory:"StatementHistory",
     ViewAllInvoice:"ViewAllInvoice",
     AllInvoice:"AllInvoice",
     PaidInvoice:"PaidInvoice",

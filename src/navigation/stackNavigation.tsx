@@ -71,7 +71,7 @@ import Signatures from '../screens/signature/signatures';
 import AddNewUnits from '../screens/units/addNewUnits';
 import VendorsScreen from '../screens/vendors/vendorsScreen';
 import {screenName} from '../utils/screenNames';
-import { colors } from '../utils/theme/colors';
+import {colors} from '../utils/theme/colors';
 import SignupScreen from '../screens/auth/signupScreen';
 import PersonalScreen from '../screens/adminAcess/personal';
 import FinanceScreen from '../screens/adminAcess/finance';
@@ -85,6 +85,7 @@ import AllInvoice from '../screens/invoices/allInvoice';
 import PaidInvoice from '../screens/invoices/paidInvoice';
 import UnPaidInvoice from '../screens/invoices/unPaidInvoice';
 import ViewAllInvoice from '../screens/invoices/viewAllInvoice';
+import StatementHistory from '../screens/adminAcess/statementHistory';
 
 const Stack = createStackNavigator();
 interface NavigationProps {
@@ -94,106 +95,117 @@ interface NavigationProps {
 const StackNavigation = (props: NavigationProps) => {
   // screenOptions={{ headezrShown: false }}
   return (
-    <Stack.Navigator screenOptions={{headerShown:false}} initialRouteName={screenName.AuthLoadingScreen}>
+    <Stack.Navigator
+      screenOptions={{headerShown: false}}
+      initialRouteName={screenName.AuthLoadingScreen}>
       <Stack.Screen
-      options={{
-        headerShown:false
-      }}
+        options={{
+          headerShown: false,
+        }}
         name={screenName.AllInvoice}
         component={AllInvoice}
-      /><Stack.Screen
-      options={{
-        headerShown:false
-      }}
+      />
+      <Stack.Screen
+        // options={{
+        //   headerShown: true,
+        //   headerTitle:""
+        // }}
+        name={screenName.StatementHistory}
+        component={StatementHistory}
+      />
+      <Stack.Screen
+        options={{
+          headerShown: false,
+        }}
         name={screenName.PaidInvoice}
         component={PaidInvoice}
-      /><Stack.Screen
-      options={{
-        headerShown:false
-      }}
+      />
+      <Stack.Screen
+        options={{
+          headerShown: false,
+        }}
         name={screenName.UnPaidInvoice}
         component={UnPaidInvoice}
-      /><Stack.Screen
-      options={{
-        headerShown:false
-      }}
+      />
+      <Stack.Screen
+        options={{
+          headerShown: false,
+        }}
         name={screenName.AuthLoadingScreen}
         component={AuthLoadingScreen}
       />
       <Stack.Screen
-      options={{
-        headerShown:true
-      }}
+        options={{
+          headerShown: true,
+        }}
         name={screenName.Viewallstocks}
         component={Viewallstocks}
       />
-       <Stack.Screen
-      options={{
-        headerShown:true
-      }}
+      <Stack.Screen
+        options={{
+          headerShown: true,
+        }}
         name={screenName.ViewAllInvoice}
         component={ViewAllInvoice}
       />
       <Stack.Screen
-      options={{
-        headerShown:false
-      }}
+        options={{
+          headerShown: false,
+        }}
         name={screenName.CreateBill}
         component={CreateBill}
       />
       <Stack.Screen
-      options={{
-        headerShown:false
-      }}
+        options={{
+          headerShown: false,
+        }}
         name={screenName.BillTemplate}
         component={BillTemplate}
       />
-       <Stack.Screen
-      options={{
-        headerShown:false
-      }}
+      <Stack.Screen
+        options={{
+          headerShown: false,
+        }}
         name={screenName.AddBillAddress}
         component={AddBillAddress}
       />
       <Stack.Screen
-      options={{
-        headerShown:false
-      }}
+        options={{
+          headerShown: false,
+        }}
         name={screenName.OnboardingScreen}
         component={OnboardingScreen}
       />
       <Stack.Screen
-      options={{
-        headerShown:false
-      }}
+        options={{
+          headerShown: false,
+        }}
         name={screenName.SignupScreen}
         component={SignupScreen}
       />
       <Stack.Screen
-      options={{
-        headerShown:false
-      }}
+        options={{
+          headerShown: false,
+        }}
         name={screenName.FinanceScreen}
         component={FinanceScreen}
       />
       <Stack.Screen
-      options={{
-        headerShown:false
-      }}
+        options={{
+          headerShown: false,
+        }}
         name={screenName.Stockupdate}
         component={Stockupdate}
       />
       <Stack.Screen
-      options={{
-       
-      }}
+        options={{}}
         name={screenName.Personal}
         component={PersonalScreen}
       />
       <Stack.Screen
-       options={{
-        headerShown:false
-      }}
+        options={{
+          headerShown: false,
+        }}
         name={screenName.DashboardScreen}
         component={DashboardScreen}
       />
@@ -206,22 +218,26 @@ const StackNavigation = (props: NavigationProps) => {
       />
       <Stack.Screen name={screenName.Products} component={Products} />
       <Stack.Screen
-       options={{
-        headerShown:false
-      }}
+        options={{
+          headerShown: false,
+        }}
         name={screenName.AddNewProducts}
         component={AddNewProducts}
       />
       <Stack.Screen
-       options={{
-        headerShown:false
-      }}
+        options={{
+          headerShown: false,
+        }}
         name={screenName.AddNewCategories}
         component={AddNewCategories}
       />
-      <Stack.Screen  options={{
-        headerShown:false
-      }} name={screenName.AddNewUnits} component={AddNewUnits} />
+      <Stack.Screen
+        options={{
+          headerShown: false,
+        }}
+        name={screenName.AddNewUnits}
+        component={AddNewUnits}
+      />
       <Stack.Screen name={screenName.InventoryList} component={InventoryList} />
       <Stack.Screen
         name={screenName.InventoryAdded}
@@ -238,9 +254,10 @@ const StackNavigation = (props: NavigationProps) => {
         name={screenName.SettingsScreen}
         component={SettingsScreen}
       />
-      <Stack.Screen  options={{
-        headerShown:false
-      }}
+      <Stack.Screen
+        options={{
+          headerShown: false,
+        }}
         name={screenName.AddInvoiceScreen}
         component={AddInvoiceScreen}
       />
@@ -289,9 +306,13 @@ const StackNavigation = (props: NavigationProps) => {
       <Stack.Screen name={screenName.IncomeReport} component={IncomeReport} />
       <Stack.Screen name={screenName.TaxReport} component={TaxReport} />
       <Stack.Screen name={screenName.Signatures} component={Signatures} />
-      <Stack.Screen  options={{
-        headerShown:false
-      }} name={screenName.AddSignatures} component={AddSignature} />
+      <Stack.Screen
+        options={{
+          headerShown: false,
+        }}
+        name={screenName.AddSignatures}
+        component={AddSignature}
+      />
       <Stack.Screen
         name={screenName.InvoiceTemplatesScreen}
         component={InvoiceTemplatesScreen}
@@ -301,9 +322,10 @@ const StackNavigation = (props: NavigationProps) => {
         name={screenName.CustomersScreen}
         component={CustomersScreen}
       />
-      <Stack.Screen  options={{
-        headerShown:false
-      }}
+      <Stack.Screen
+        options={{
+          headerShown: false,
+        }}
         name={screenName.AddCustomersScreen}
         component={AddCustomersScreen}
       />
@@ -315,9 +337,10 @@ const StackNavigation = (props: NavigationProps) => {
         name={screenName.QuotationsScreen}
         component={QuotationsScreen}
       />
-      <Stack.Screen  options={{
-        headerShown:false
-      }}
+      <Stack.Screen
+        options={{
+          headerShown: false,
+        }}
         name={screenName.AddQuotationScreen}
         component={AddQuotationScreen}
       />
@@ -342,15 +365,16 @@ const StackNavigation = (props: NavigationProps) => {
         component={DeliveryChallanDetailsScreen}
       />
       <Stack.Screen
-       options={{
-        headerShown:false
-      }}
+        options={{
+          headerShown: false,
+        }}
         name={screenName.AddDeliveryScreen}
         component={AddDeliverChallanScreen}
       />
-      <Stack.Screen  options={{
-        headerShown:false
-      }}
+      <Stack.Screen
+        options={{
+          headerShown: false,
+        }}
         name={screenName.AddCreditNotesScreen}
         component={AddCreditNotesScreen}
       />
@@ -370,9 +394,10 @@ const StackNavigation = (props: NavigationProps) => {
         name={screenName.SuccessSendPaymentLink}
         component={SuccessSendPaymentLink}
       />
-      <Stack.Screen  options={{
-        headerShown:false
-      }}
+      <Stack.Screen
+        options={{
+          headerShown: false,
+        }}
         name={screenName.AddInvoiceOption}
         component={AddInvoiceOption}
       />
@@ -389,9 +414,10 @@ const StackNavigation = (props: NavigationProps) => {
         name={screenName.PurchaseReturn}
         component={PurchaseReturn}
       />
-      <Stack.Screen  options={{
-        headerShown:false
-      }}
+      <Stack.Screen
+        options={{
+          headerShown: false,
+        }}
         name={screenName.AddPurchaseReturn}
         component={AddPurchaseReturn}
       />
@@ -400,17 +426,22 @@ const StackNavigation = (props: NavigationProps) => {
         component={PurchaseReturnDebitNotesDetails}
       />
       <Stack.Screen name={screenName.Purchases} component={Purchases} />
-      <Stack.Screen  options={{
-        headerShown:false
-      }} name={screenName.AddPurchases} component={AddPurchases} />
+      <Stack.Screen
+        options={{
+          headerShown: false,
+        }}
+        name={screenName.AddPurchases}
+        component={AddPurchases}
+      />
       <Stack.Screen
         name={screenName.PurchasesDetails}
         component={PurchasesDetails}
       />
       <Stack.Screen name={screenName.SalesReturn} component={SalesReturn} />
-      <Stack.Screen  options={{
-        headerShown:false
-      }}
+      <Stack.Screen
+        options={{
+          headerShown: false,
+        }}
         name={screenName.AddSalesReturn}
         component={AddSalesReturn}
       />
@@ -419,9 +450,9 @@ const StackNavigation = (props: NavigationProps) => {
         component={SalesReturnDetails}
       />
       <Stack.Screen
-      options={{
-        headerShown:false
-      }}
+        options={{
+          headerShown: false,
+        }}
         name={screenName.NotificationScreen}
         component={NotificationScreen}
       />
@@ -441,9 +472,10 @@ const StackNavigation = (props: NavigationProps) => {
         name={screenName.ForgetPassword}
         component={ForgetPassword}
       />
-      <Stack.Screen  options={{
-        headerShown:false
-      }}
+      <Stack.Screen
+        options={{
+          headerShown: false,
+        }}
         name={screenName.AddPurchaseOrderScreen}
         component={AddPurchaseOrderScreen}
       />
@@ -452,6 +484,5 @@ const StackNavigation = (props: NavigationProps) => {
 };
 
 // const Tab = createBottomTabNavigator();
-
 
 export default StackNavigation;
