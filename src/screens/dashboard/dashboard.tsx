@@ -484,7 +484,8 @@ const DashboardScreen = (props: dashboardProps) => {
   };
 
   return (
-    <ScrollView>
+    <View>
+      <ScrollView>
       <ImageBackground
         source={DashboardBackground}
         style={[{flex: 1, height: '100%', width: '100%', paddingTop: 10}]}>
@@ -509,15 +510,19 @@ const DashboardScreen = (props: dashboardProps) => {
               <FrequentCustomers />
               {/* <QuickAccess /> */}
               {/* <InvoiceStatics /> */}
-              {/* <RecentInvoices /> */}
+              <RecentInvoices />
               {/* {paymentSurvey()}
               <RecentCustomers /> */}
             </View>
           </View>
         </View>
-        <BottomNavBar />
+        
       </ImageBackground>
     </ScrollView>
+          <View>
+            <BottomNavBar/>
+          </View>
+    </View>
   );
 };
 
