@@ -19,6 +19,8 @@ exports.customerCreate = async (req, res) => {
   
       // Save the new user to the database
       await newCustomer.save();
+      const broadcast = req.app.get('broadcast');
+      broadcast({ type: 'CREATE_CUSTOMER', data: newCustomer });
   
       res.status(201).json({ message: 'customer registered successfully' });
     } catch (error) {
@@ -78,6 +80,33 @@ exports.customerCreate = async (req, res) => {
     } catch (error) {
       console.log(error, "Error updating pending amount in backend");
       res.status(500).send({ status: "Error updating pending amount" });
+    }
+  };
+  
+
+  exports.deleteCustomer = async (req, res) => {
+    try {
+      const id = req.params.id;
+  
+      // Find the customer by ID
+      const customer = await CustomerDetails.findById(id);
+  
+      if (!customer) {
+        return res.status(404).send({ status: "Customer not found" });
+      }
+  
+      // Check if the customer has any pending amount
+      if (parseFloat(customer.pendingAmount) > 0) {
+        return res.status(400).send({ status: "* Cannot delete customer with pending amount" });
+      }
+  
+      // Delete the customer if no pending amount
+      await CustomerDetails.deleteOne({ _id: id });
+  
+      res.send({ status: "Customer deleted successfully" });
+    } catch (error) {
+      console.log(error, "Error deleting customer in backend");
+      res.status(500).send({ status: "Error deleting customer" });
     }
   };
   

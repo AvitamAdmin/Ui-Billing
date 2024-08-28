@@ -10,6 +10,7 @@ interface UploadImageCardProps {
     title: string;
     sizeInfo: string;
     onImageSelect: (base64: string) => void;
+    
 }
 
 export const UploadImageCard: FC<UploadImageCardProps> = ({

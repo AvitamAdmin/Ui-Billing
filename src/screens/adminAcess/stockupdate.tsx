@@ -343,6 +343,8 @@ import { bg_color_primary } from '../../utils/theme/commonStyles';
 
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import { api } from '../../../envfile/api';
+import CustomIcon from '../../utils/icons';
+import { colors } from '../../utils/theme/colors';
 
 
 const StockUpdate = () => {
@@ -368,6 +370,8 @@ console.log(value,"hfdg");
           value: product._id,
         }));
         setProductData(formattedData);
+        console.log(productData,"hfhfhffhfh");
+        
       } catch (error) {
         console.error("Failed to fetch products:", error);
       }
@@ -380,7 +384,7 @@ console.log(value,"hfdg");
     if (value) {
       const fetchStockData = async () => {
         try {
-          const response = await fetch(api+"/stock/getStockData/${value}");
+          const response = await fetch(api+`/stock/getStockData/${value}`);
           const data = await response.json();
           console.log('Stock Data fetched:', data); // Log the full stock data
           if (data.status === 'ok' && data.data) {
@@ -401,7 +405,7 @@ console.log(value,"hfdg");
 
   const handleUpdate = async () => {
     try {
-      const response = await fetch(api+'/stock/updateStockData/${value}', {
+      const response = await fetch(api+`/stock/updateStockData/${value}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -422,10 +426,19 @@ console.log(value,"hfdg");
       Alert.alert('Error', 'An error occurred while updating stock data.');
     }
   };
+  const navigation = useNavigation()
   return (
     <View>
+      <View style={{padding:5,width:"100%",justifyContent:"flex-start"}}><TouchableOpacity onPress={() => navigation.goBack()}>
+        <CustomIcon
+                      color={colors.blackOne}
+                      name="arrow-back"
+                      size={24}
+                      type="Ionicons"
+                    />
+        </TouchableOpacity></View>
       <ScrollView>
-      <View style={{ padding: 20,width:"100%",display:"flex",justifyContent:"center",flexDirection:"column",alignItems:"center"}}>
+      <View style={{ padding: 10,width:"100%",display:"flex",justifyContent:"center",flexDirection:"column",alignItems:"center"}}>
         <Dropdown
           style={[styles.dropdown, isFocus && { borderColor: 'blue' }]}
           placeholderStyle={styles.placeholderStyle}
@@ -457,7 +470,7 @@ console.log(value,"hfdg");
         />
 
         <View style={{paddingTop: 20,width:wp("90%")}}>
-          <Text style={{fontSize: hp(2.2),fontWeight: 'bold',paddingBottom: 10,color:"#000"}}>PRODUCT{stockData.productName}</Text>
+          <Text style={{fontSize: hp(2.2),fontWeight: 'bold',paddingBottom: 10,color:"#000"}}>Product {stockData.productName}</Text>
            
 
         <View style={{flexDirection:"column",gap:10}}>
@@ -580,12 +593,12 @@ const styles = StyleSheet.create({
     alignItems:"center"
   },
   dropdown: {
-    height: 50,
+    height: 40,
     borderColor: 'gray',
-    borderWidth: 0.5,
+    borderWidth: 1,
     borderRadius: 8,
-    paddingHorizontal: 8,
-    width:"93%",
+    paddingHorizontal: 5,
+    width:"95%",
     color:"#000"
   },
   placeholderStyle: {
@@ -599,7 +612,7 @@ const styles = StyleSheet.create({
   inputSearchStyle: {
     height: 40,
     fontSize: 16,
-    color:"#000"
+    color:"#f5f"
   },
   iconStyle: {
     width: 20,
@@ -616,7 +629,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     paddingBottom: 10,
-    color:"#000"
+    color:"#f5f"
   },
   stockRow: {
     flexDirection: 'row',

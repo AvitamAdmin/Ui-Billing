@@ -5,10 +5,13 @@ type Product = {
   productName: string;
   purchasePrice: string;
   sellingPrice: string;
-  image: string;
-  count: number;
-  quantity: string;
-  bag: string;
+  image: string; // Assuming image is now a base64 string
+  count: number; // Add count property
+  bag1: string;
+  quantity1: string; 
+  bag2: string;
+  quantity2: string;
+  productPrice: number;
 };
 type Customer = {
   _id: string;

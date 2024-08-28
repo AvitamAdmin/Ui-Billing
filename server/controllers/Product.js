@@ -41,7 +41,7 @@ exports.GetProduct = async (req, res) => {
   try {
     const getallproducts = await Product.find();
     res.send({ status: "ok", data: getallproducts });
-    console.log(getallproducts, "getproduct details");
+    // console.log(getallproducts, "getproduct details");
   } catch (error) {
     console.error("getproduct failed:", error);
     res.status(500).json({ error: "Internal server error from getproduct" });
@@ -59,4 +59,27 @@ exports.deleteProduct = async (req, res) => {
     console.log(error, "delete user error in backend");
   }
 };
+
+exports.updateProduct = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const {  newPurchasePrice,
+      newSellingPrice } = req.body;
+    console.log(req.body,"req.body");
+    const updatedProduct = await Product.findByIdAndUpdate(id, {
+      
+      purchasePrice:newPurchasePrice,
+      sellingPrice:newSellingPrice,
+    }, { new: true });
+
+    if (!updatedProduct) {
+      return res.status(404).send({ message: "Product not found" });
+    }
+
+    res.send({ data: updatedProduct });
+  } catch (error) {
+    res.status(500).send({ message: "Error updating product" });
+  }
+};
+
 

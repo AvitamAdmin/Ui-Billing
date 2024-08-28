@@ -33,8 +33,22 @@ const navigation = useNavigation();
 
 const [customer, setCustomer] = useState<Customer[]>([]);
 useEffect(() => {
-    fetchProducts();
-}, [])
+  fetchProducts(); // Fetch initial customer data
+
+  const ws = new WebSocket(api + '/api/customer/getcustomerdetails');
+
+  ws.onmessage = (event) => {
+    const message = JSON.parse(event.data);
+    if (message.type === 'CREATE_CUSTOMER') {
+      setCustomer((prevCustomers) => [message.data, ...prevCustomers]);
+    }
+  };
+
+  // Clean up WebSocket connection on component unmount
+  return () => {
+    ws.close();
+  };
+}, []);
 
 const fetchProducts = async () => {
     try {
@@ -53,10 +67,13 @@ const fetchProducts = async () => {
         <View style={[{ backgroundColor: colors.blackOne, height: 100, width: '100%', borderRadius: 8 }, mv15, alignSelfCenter]}>
             <View style={[mh10, mv5, mt5, flexRow, alignItemCenter, justifyBetween]}>
                 <H16White700>{labels.frequentCustomers}</H16White700>
-                <TouchableOpacity onPress={()=>{
-navigation.navigate(screenName.AddCustomersScreen as never)
-                }}>
-                    <H14White400Underline>{labels.addNew}</H14White400Underline>
+                <TouchableOpacity onPress={fetchProducts}>
+                    <CustomIcon
+              color="#fff"
+              size={22}
+              name="reload"
+              type="Ionicons"
+            />
                 </TouchableOpacity>
             </View>
             <View style={{flexDirection:"row",gap:5}}>

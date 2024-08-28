@@ -1,7 +1,9 @@
 export const screenName = {
     AuthLoadingScreen:"AuthLoadingScreen",
     StatementHistory:"StatementHistory",
-    ViewAllInvoice:"ViewAllInvoice",
+    ViewAllBankAcc:"ViewAllBankAcc",
+    CreateBankAccount:"CreateBankAccount",
+    ViewAllInvoice:"View all Invoice",
     AllInvoice:"AllInvoice",
     PaidInvoice:"PaidInvoice",
     UnPaidInvoice:"UnPaidInvoice",
@@ -92,5 +94,10 @@ export const screenName = {
     SalesReturnDetails: "SalesReturnDetails",
     NotificationScreen:'NotificationScreen',
     ProfitorLoss:'ProfitorLoss',
-    PaymentSummary:'PaymentSummary'
+    PaymentSummary:'PaymentSummary',
+    FinanceFile:"FinanceFile",
+    Incomehistory:"Incomehistory",
+    History:"History",
+    Viewallcustomers:"Viewallcustomers",
+
 };

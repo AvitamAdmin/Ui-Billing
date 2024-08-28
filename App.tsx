@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { ImageBackground, Platform, StatusBar, View } from 'react-native';
 import SplashScreen from 'react-native-splash-screen';
-import MainNavigation from './src/navigation/mainNavigation';
 import { getData, storageKeys } from './src/utils/async';
 import { screenName } from './src/utils/screenNames';
 import { SplashScreenContainer } from './src/utils/styledComponents';
@@ -13,6 +12,7 @@ import { configureStore } from '@reduxjs/toolkit';
 import useReducer from "./src/redux/Slice";
 import { Provider } from "react-redux";
 import store from './src/redux/Store';
+import MainNavigation from './src/navigation/mainNavigation';
 
 
 

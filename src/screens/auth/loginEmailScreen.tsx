@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { Fragment, useState } from 'react';
-import { Alert, Image, ScrollView, TouchableOpacity, View } from 'react-native';
+import { Alert, Image, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import axios from 'axios';
 import { Controller, useForm, SubmitHandler } from 'react-hook-form';
 import { OnboardingButton } from '../../components/commonButton';
@@ -27,12 +27,7 @@ export type LoginEmailScreenProps = {};
 const LoginEmailScreen: React.FC<LoginEmailScreenProps> = () => {
     const [showPassword, setShowPassword] = useState(true);
     const navigation = useNavigation();
-
-    const formKeys = {
-        email: 'email',
-        password: 'password',
-    } as const; // Ensure the keys are recognized as specific literals
-
+    const [errmsg, setErrmsg] = useState("");
 
     const {
         handleSubmit,
@@ -41,29 +36,32 @@ const LoginEmailScreen: React.FC<LoginEmailScreenProps> = () => {
     } = useForm<LoginFormInputs>();
 
     const onLogin: SubmitHandler<LoginFormInputs> = async (data) => {
+        setErrmsg(""); // Clear any previous error messages
+
         try {
-          const response = await axios.post(api+'/auth/login', data);
-          if (response.status === 200) {
-            console.log('Login successful:', response.data);
-      
-            // Separate storage of token and email
-            const { email, token } = response.data;
-      
-            await AsyncStorage.setItem('userEmail', email); // Store email
-            await AsyncStorage.setItem('userToken', token); // Store token
-            console.log(token,"tokem");
-            console.log(email,"email");
-            
-      
-            // Navigate to the dashboard
-            navigation.navigate(screenName.DashboardScreen as never);
-          } else {
-            Alert.alert('Login failed', 'Invalid email or password');
-          }
-        } catch (error) {
-          console.error('Error logging in:', error);
+            const response = await axios.post(api + '/auth/login', data);
+
+            if (response.status === 200) {
+                setErrmsg(""); // Clear any error messages
+                console.log('Login successful:', response.data);
+
+                const { email, token } = response.data;
+                await AsyncStorage.setItem('userEmail', email);
+                await AsyncStorage.setItem('userToken', token);
+
+                navigation.navigate(screenName.DashboardScreen as never);
+            }
+        } catch (error: any) {
+            if (error.response && error.response.status === 404) {
+                setErrmsg("User not found");
+            } else if (error.response && error.response.status === 401) {
+                setErrmsg("Invalid email or password");
+            } else {
+                setErrmsg("An unexpected error occurred");
+                console.error('Error logging in:', error);
+            }
         }
-      };
+    };
 
     const togglePasswordVisibility = () => {
         setShowPassword(!showPassword);
@@ -95,12 +93,13 @@ const LoginEmailScreen: React.FC<LoginEmailScreenProps> = () => {
                                     <View style={{ marginVertical: 30, justifyContent: 'center', alignItems: 'center', gap: 10 }}>
                                         <H28blackOne700>{labels.welcomeBack}</H28blackOne700>
                                         <H16blackTwo400>{labels.loginMessage}</H16blackTwo400>
+                                        {errmsg && <Text style={{color:"red"}}>{errmsg}</Text>}
                                     </View>
                                     <View style={{ marginVertical: 15 }}>
                                         <H14blackOne600 style={{ marginVertical: 5 }}>{labels.email}</H14blackOne600>
                                         <IconInputContainer>
                                             <Controller
-                                                name={formKeys.email}
+                                                name="email"
                                                 control={control}
                                                 render={({ field: { onChange, value } }) => (
                                                     <CustomTextInput
@@ -110,19 +109,17 @@ const LoginEmailScreen: React.FC<LoginEmailScreenProps> = () => {
                                                         textColor={colors.black}
                                                     />
                                                 )}
-                                                rules={{
-                                                    required: requiredValidation(labels.emailAddress),
-                                                    minLength: minLengthValidation(validationSchema.name.minLength),
-                                                }}
+                                                rules={{ required: 'Email is required' }}
                                             />
                                             <CustomIcon name='email-outline' size={16} color={colors.grey} type='MaterialCommunityIcons' />
                                         </IconInputContainer>
+                                        {errors.email && <Text style={{color:"red"}}>Email is required</Text>}
                                     </View>
                                     <View >
                                         <H14blackOne600 style={[mv5]}>{labels.password}</H14blackOne600>
                                         <IconInputContainer>
                                             <Controller
-                                                name={formKeys.password}
+                                                name="password"
                                                 control={control}
                                                 render={({ field: { onChange, value } }) => (
                                                     <CustomTextInput
@@ -133,10 +130,7 @@ const LoginEmailScreen: React.FC<LoginEmailScreenProps> = () => {
                                                         textColor={colors.black}
                                                     />
                                                 )}
-                                                rules={{
-                                                    required: requiredValidation(labels.password),
-                                                    minLength: minLengthValidation(validationSchema.password.minLength),
-                                                }}
+                                                rules={{ required: 'Password is required' }}
                                             />
                                             <TouchableOpacity onPress={togglePasswordVisibility}>
                                                 <CustomIcon
@@ -147,10 +141,11 @@ const LoginEmailScreen: React.FC<LoginEmailScreenProps> = () => {
                                                 />
                                             </TouchableOpacity>
                                         </IconInputContainer>
+                                        {errors.password && <Text style={{color:"red"}}>Password is required</Text>}
                                     </View>
-                                    <TouchableOpacity style={[mt15]} onPress={forgetPassword}>
+                                    {/* <TouchableOpacity style={[mt15]} onPress={forgetPassword}>
                                         <H14blackTwo400 style={[alignSelfEnd]}>{labels.forgetPassword}</H14blackTwo400>
-                                    </TouchableOpacity>
+                                    </TouchableOpacity> */}
                                     <TouchableOpacity style={[mt15]} onPress={() => navigation.navigate(screenName.SignupScreen as never)}>
                                         <H14blackTwo400 style={[alignSelfEnd]}>Don't have an account?. Sign Up</H14blackTwo400>
                                     </TouchableOpacity>

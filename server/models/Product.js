@@ -3,7 +3,7 @@ const { Schema } = mongoose;
 
 const productSchema = new Schema({
   productName: { type: String, required: true },
-  image: { type: String, required: true }, // Assuming image is stored as a base64 encoded string
+  image: { type: String, }, // Assuming image is stored as a base64 encoded string
   sellingPrice: { type: Number, required: true },
   purchasePrice: { type: Number, required: true },
   creator: { type: String,  required: true },

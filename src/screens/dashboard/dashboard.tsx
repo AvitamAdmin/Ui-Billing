@@ -1,5 +1,5 @@
 import {useNavigation} from '@react-navigation/native';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Image,
   ImageBackground,
@@ -69,12 +69,39 @@ import QuickAccess from './quickAccess';
 import RecentCustomers from './recentCustomers';
 import RecentInvoices from './recentInvoices';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
+import { api } from '../../../envfile/api';
 
 export type dashboardProps = {};
+interface Product {
+  _id: string;
+  productName: string;
+  purchasePrice: string;
+  sellingPrice: string;
+  image: string; // Assuming image is now a base64 string
+}
 
 const DashboardScreen = (props: dashboardProps) => {
   const [showModal, setShowModal] = useState<boolean>(false);
   const [showModal2, setShowModal2] = useState<boolean>(false);
+  const [products, setProducts] = useState<Product[]>([]);
+  useEffect(() => {
+    fetchProducts();
+  }, [])
+  
+  const fetchProducts = async () => {
+    try {
+      const response = await axios.get<{data: Product[]}>(api+
+        '/auth/product/getProduct',
+      );
+      setProducts(response.data.data); // Assuming response.data.data is an array of products
+      // console.log(products,"asdfghjkl");
+      
+    } catch (error) {
+      console.error('Error fetching products:', error);
+    }
+  };
+  
 
   const navigation = useNavigation();
 
@@ -102,27 +129,48 @@ const DashboardScreen = (props: dashboardProps) => {
           height: '100%',
           display: 'flex',
           flexDirection: 'column',
-          gap: 20,
+          gap: 10,
         }}>
         <View>
           <Text style={{fontSize:18,fontWeight:"700",color:"#000"}}>Admin Access</Text>
         </View>
         <View style={{display:"flex",flexDirection:"column",width:"100%",gap:15}}>
           <TouchableOpacity onPress={() =>
-              navigation.navigate(screenName.Personal as never)
+              navigation.navigate(screenName.Stockupdate as never)
             } style={{padding:10,borderRadius:8,display:"flex",flexDirection:"row",justifyContent:"space-between",backgroundColor:"#ebebeb"}}>
             <View style={{width:"30%"}}>
-            <Text style={{fontSize:16}}>Personal</Text>
+            <Text style={{fontSize:16,color:"#404040"}}>Stock Update</Text>
             </View>
             
           </TouchableOpacity>
-          <View style={{backgroundColor:"#ebebeb",padding:15,borderRadius:8}}>
-            <Text style={{fontSize:16}}>Other</Text>
-          </View>
+          <TouchableOpacity onPress={() =>
+              navigation.navigate(screenName.StatementHistory as never)
+            } style={{padding:10,borderRadius:8,display:"flex",flexDirection:"row",justifyContent:"space-between",backgroundColor:"#ebebeb"}}>
+            <View style={{width:"70%"}}>
+            <Text style={{fontSize:16,color:"#404040"}}>Payment Survey</Text>
+            </View>
+            
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() =>
+              navigation.navigate(screenName.FinanceFile as never)
+            } style={{padding:10,borderRadius:8,display:"flex",flexDirection:"row",justifyContent:"space-between",backgroundColor:"#ebebeb"}}>
+            <View style={{width:"70%"}}>
+            <Text style={{fontSize:16,color:"#404040"}}>Finance</Text>
+            </View>
+            
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() =>
+              navigation.navigate(screenName.CreateBankAccount as never)
+            } style={{padding:10,borderRadius:8,display:"flex",flexDirection:"row",justifyContent:"space-between",backgroundColor:"#ebebeb"}}>
+            <View style={{width:"70%"}}>
+            <Text style={{fontSize:16,color:"#404040"}}>Create Bank Account</Text>
+            </View>
+            
+          </TouchableOpacity>
           <TouchableOpacity onPress={()=>{
                  AsyncStorage.removeItem('userToken');
 
-            console.log("storage cleared");
+            console.log("token deleted");
             navigation.navigate(screenName.LoginEmailScreen as never);
 
           }} style={{padding:15,borderRadius:8,flexDirection:"row",gap:5,alignItems:"center",justifyContent:"flex-start"}}>
@@ -203,7 +251,7 @@ const DashboardScreen = (props: dashboardProps) => {
           justifyContent: 'space-between',
           alignItems: 'center',
         }}>
-        <TouchableOpacity
+        {/* <TouchableOpacity
           onPress={openModal}
           style={[
             {
@@ -216,7 +264,7 @@ const DashboardScreen = (props: dashboardProps) => {
             },
           ]}>
           <LayoutDashboard height={16} width={16} color={colors.white} />
-        </TouchableOpacity>
+        </TouchableOpacity> */}
         <H18white700>{labels.dashboard}</H18white700>
         <View style={{flexDirection: 'row', justifyContent: 'space-around'}}>
           {/* <TouchableOpacity
@@ -274,7 +322,7 @@ const DashboardScreen = (props: dashboardProps) => {
           children={openmenu()}
           visible={showModal2}
           onClose={closeModal2}
-          height={'40%'}
+          height={'43%'}
         />
         <CustomModal
           children={menuOptionModal()}
@@ -315,7 +363,6 @@ const DashboardScreen = (props: dashboardProps) => {
                         justifyContent: 'space-around',
                       }}>
                       <H14blackOne600>{cardName}</H14blackOne600>
-                      <H10grey600>{date}</H10grey600>
                     </View>
                     <View
                       style={[
@@ -353,7 +400,7 @@ const DashboardScreen = (props: dashboardProps) => {
                         width: 60,
                         borderRadius: 2,
                       }}>
-                      {isAdd ? (
+                      {/* {isAdd ? (
                         <View
                           style={{
                             flexDirection: 'row',
@@ -384,7 +431,7 @@ const DashboardScreen = (props: dashboardProps) => {
                           />
                           <H10Danger600>- {percentage}</H10Danger600>
                         </View>
-                      )}
+                      )} */}
                     </View>
                   </View>
                 </Card>
@@ -451,8 +498,8 @@ const DashboardScreen = (props: dashboardProps) => {
           {addQuickData.map((item, index) => {
             return (
               <TouchableOpacity
-                onPress={() => {
-                  navigation.navigate(item.moveTo);
+                onPress={()=>{
+                  navigation.navigate(item.moveTo)
                 }}
                 key={item.id}>
                 <Card
@@ -461,7 +508,7 @@ const DashboardScreen = (props: dashboardProps) => {
                   }
                   style={{
                     height: 70,
-                    width: 110,
+                    width: 100,
                     alignItems: 'center',
                     justifyContent: 'center',
                   }}>
@@ -484,16 +531,15 @@ const DashboardScreen = (props: dashboardProps) => {
   };
 
   return (
-    <View>
-      <ScrollView>
+   <View>
+     <ScrollView style={{backgroundColor:"#fff",minHeight:"100%"}}>
       <ImageBackground
         source={DashboardBackground}
         style={[{flex: 1, height: '100%', width: '100%', paddingTop: 10}]}>
         <View style={{marginBottom: 60}}>
           <View style={{marginHorizontal: 10, flex: 1}}>
             {dashBoardHeader()}
-
-            <View style={[mt10, mb10]}>{headerScrollCard()}</View>
+            {/* <View style={[mt10, mb10]}>{headerScrollCard()}</View> */}
           </View>
           <View
             style={{
@@ -516,13 +562,12 @@ const DashboardScreen = (props: dashboardProps) => {
             </View>
           </View>
         </View>
-        
       </ImageBackground>
+      
     </ScrollView>
-          <View>
-            <BottomNavBar/>
-          </View>
-    </View>
+    <BottomNavBar />
+
+   </View>
   );
 };
 

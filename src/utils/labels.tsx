@@ -1,5 +1,6 @@
 export const labels = {
     createbilladdress :"Create Bill Shop Address",
+    addnewbankaccount :"Create Bank Account",
     addNewCustomer: 'Add New Customer',
     logIn: 'Sign in',
     signUp: 'Sign Up',

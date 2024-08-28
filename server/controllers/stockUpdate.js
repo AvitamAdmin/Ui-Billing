@@ -16,25 +16,52 @@ exports.getStockData = async (req, res) => {
   }
 };
 
-
-
-
-// Update stock data for a specific product
 exports.updateStockData = async (req, res) => {
   try {
     const { productId } = req.params;
-    console.log(productId,"ggggg");
-    const { currentStock, totalPurchase, totalSales } = req.body;
+    console.log(productId, "Product ID");
 
-    const stockData = await StockUpdate.findOneAndUpdate(
-      { productId },
-      {currentStock, totalPurchase, totalSales, lastUpdated: Date.now() },
-      { new: true, upsert: true }
-    );
+    const { totalPurchase, totalSales } = req.body;
 
-    res.json(stockData);
+    // Find the existing stock data for the product
+    const existingStock = await StockUpdate.findOne({ productId });
+
+    let updatedStockData;
+
+    if (existingStock) {
+      // Calculate the new currentStock
+      const newCurrentStock = existingStock.currentStock + totalPurchase;
+
+      // Update the stock data with the new currentStock and totalSales
+      updatedStockData = await StockUpdate.findOneAndUpdate(
+        { productId },
+        {
+          currentStock: newCurrentStock, 
+          totalPurchase: totalPurchase,
+          totalSales,
+          lastUpdated: Date.now(),
+        },
+        { new: true }
+      );
+    } else {
+      // If no existing record, create a new one with the given currentStock and totalPurchase
+      updatedStockData = await StockUpdate.findOneAndUpdate(
+        { productId },
+        {
+          currentStock: totalPurchase,
+          totalPurchase :totalPurchase,
+          totalSales,
+          lastUpdated: Date.now(),
+        },
+        { new: true, upsert: true }
+      );
+    }
+
+    res.json(updatedStockData);
   } catch (error) {
+    console.error('Error updating stock data:', error);
     res.status(500).json({ message: 'Error updating stock data', error });
   }
 };
+
 

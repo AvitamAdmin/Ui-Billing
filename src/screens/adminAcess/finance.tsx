@@ -70,7 +70,7 @@ const Finance = () => {
       // Ensure date is in the format YYYY-MM-DD
       const formattedDate = new Date(date).toISOString().split('T')[0];
       
-      const response = await axios.get(api + `/api/cashflow/getHistoricalData`, {
+      const response = await axios.get(api + "/api/cashflow/getHistoricalData", {
         params: { date: formattedDate }
       });
   

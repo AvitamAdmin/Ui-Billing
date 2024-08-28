@@ -15,6 +15,8 @@ import RNFS from 'react-native-fs';
 import Share from 'react-native-share';
 import RNPrint from 'react-native-print';
 import RNHTMLtoPDF from 'react-native-html-to-pdf';
+import axios from 'axios';
+import { api } from '../../../envfile/api';
 
 interface Item {
   item: string;
@@ -24,6 +26,8 @@ interface Item {
   sellingPrice: number;
   productName: string;
 }
+
+
 
 const BillTemplate: React.FC = () => {
   const Customername = useSelector((state: RootState) => state.billing.name);
@@ -42,7 +46,7 @@ const BillTemplate: React.FC = () => {
   useEffect(() => {
     // Calculate total product price
     const totalPrice = FetchCustomerFromBill.reduce((total, item) => {
-      return total + item.quantity * item.sellingPrice;
+      return total + (item.quantity1 * item.bag1* item.sellingPrice) + (item.quantity2 * item.bag2* item.sellingPrice) 
     }, 0);
     setTotalProductPrice(totalPrice);
   }, [FetchCustomerFromBill]);
@@ -107,18 +111,30 @@ const BillTemplate: React.FC = () => {
 
   const fetchPendingAmount = useSelector(
     (state: RootState) => state.billing.fetchPendingAmount,
+);
 
-    
-    
-  );
+const [invoiceCount, setInvoiceCount] = useState(null); // Set initial state to null
+
+const fetchInvoiceCount = async () => {
+  try {
+    const response = await axios.get(api + "/api/invoice/getInvoicecount");
+    console.log(response.data, "invoiceCount"); // Log the response to verify
+    setInvoiceCount(response.data.data); // Access the data property
+  } catch (error) {
+    console.log(error, "fetch invoice count error");
+  }
+};
+
+useEffect(() => {
+  fetchInvoiceCount();
+}, []);
   return (
     <View
       style={{
         width: wp('100%'),
         display: 'flex',
         flexDirection: 'column',
-        justifyContent: 'center',
-       
+        justifyContent: 'center'
       }}>
          <ViewShot ref={viewShotRef} options={{ format: 'png', quality: 0.9 }}>
       <View style={{backgroundColor:"#fff", height:hp("90%")}}>
@@ -167,7 +183,7 @@ const BillTemplate: React.FC = () => {
                 fontSize: hp(1.9),
                 width: wp('30%'),
               }}>
-              098947 54308
+              98659 21275
             </Text>
           </View>
           <View style={{flexDirection: 'row', width: wp('25%')}}>
@@ -185,7 +201,7 @@ const BillTemplate: React.FC = () => {
                 fontSize: hp(1.9),
                 width: wp('30%'),
               }}>
-              090420 66533
+              98422 02175
             </Text>
           </View>
         </View>
@@ -198,7 +214,7 @@ const BillTemplate: React.FC = () => {
           flexDirection: 'row',
           justifyContent: 'center',
           position: 'absolute',
-          top: 40,
+          top: 30,
         }}>
         <View
           style={{
@@ -208,8 +224,8 @@ const BillTemplate: React.FC = () => {
             justifyContent: 'flex-start',
           }}>
           <Image
-            source={require('../../../assets/images/Logo.png')}
-            style={{height: hp(6), width: wp(25)}}
+            source={require('../../../assets/images/murugarlogo.png')}
+            style={{height: hp(9), width: wp(15)}}
           />
         </View>
       </View>
@@ -232,14 +248,14 @@ const BillTemplate: React.FC = () => {
             alignItems: 'center',
           }}>
           <Text style={{color: '#1D6B39', fontWeight: 'bold', fontSize: hp(4)}}>
-            SK VEGETABLES
+          K.M. DURAI & SONS
           </Text>
           <Text
             style={{color: '#1D6B39', fontWeight: 'bold', textAlign: 'center'}}>
-            Wholesale of CURRY LEAF, MALLY, PUTHINA ORDER SUPPLIERS
+            VEGETABLES TRANSPORTING MUNDY, 
           </Text>
           <Text style={{color: '#1D6B39', fontWeight: 'bold'}}>
-            No.10 Transport Market, Karamadai, Coimbatore Dist.
+          Karamadai - 641104
           </Text>
         </View>
       </View>
@@ -261,7 +277,7 @@ const BillTemplate: React.FC = () => {
           }}>
           <View style={{flexDirection: 'row', gap: 3}}>
             <Text style={{color: '#1D6B39', fontWeight: 'bold'}}>No.</Text>
-            <Text style={{color: '#1D6B39'}}>1600</Text>
+            <Text style={{color: '#1D6B39',fontWeight: 'bold'}}>{invoiceCount + 1 }</Text>
           </View>
           <View style={{flexDirection: 'row'}}>
             <Text style={{color: '#1D6B39', fontWeight: 'bold'}}>Date : </Text>
@@ -337,9 +353,11 @@ const BillTemplate: React.FC = () => {
         <View
           style={{borderWidth: 2, borderColor: '#1D6B39', borderTopWidth: 1}}>
           {FetchCustomerFromBill.map((item, id) => {
-            const productprice = item.quantity * item.sellingPrice;
+            const productprice1 = (item.quantity1 * item.bag1* item.sellingPrice) 
+            const productprice2 = (item.quantity2 * item.bag2* item.sellingPrice) 
             return (
-              <View style={styles.row} key={id}>
+              <View>
+                <View style={styles.row} key={id}>
                 <View style={[styles.cell, styles.rateCell, styles.cellBorder]}>
                   <Text style={{color: 'green', fontWeight: 'bold'}}>
                     {item.sellingPrice}
@@ -357,12 +375,12 @@ const BillTemplate: React.FC = () => {
                 </View>
                 <View style={[styles.cell, styles.qtyCell, styles.cellBorder]}>
                   <Text style={{color: 'green', fontWeight: 'bold'}}>
-                    {item.quantity}
+                    {item.quantity1}
                   </Text>
                 </View>
                 <View style={[styles.cell, styles.bagCell, styles.cellBorder]}>
                   <Text style={{color: 'green', fontWeight: 'bold'}}>
-                    {item.bag}
+                    {item.bag1}
                   </Text>
                 </View>
                 <View
@@ -378,10 +396,56 @@ const BillTemplate: React.FC = () => {
                       fontWeight: 'bold',
                       justifyContent: 'flex-end',
                     }}>
-                    {productprice}
+                    {productprice1}
                   </Text>
                 </View>
               </View>
+              {item.bag2 == "0" ? (<View></View>) : 
+             ( <View style={styles.row} key={id}>
+                <View style={[styles.cell, styles.rateCell, styles.cellBorder]}>
+                  <Text style={{color: 'green', fontWeight: 'bold'}}>
+                    {item.sellingPrice}
+                  </Text>
+                </View>
+                <View
+                  style={[
+                    styles.cell,
+                    styles.particularsCell,
+                    styles.cellBorder,
+                  ]}>
+                  <Text style={{color: 'green', fontWeight: 'bold'}}>
+                    {item.productName}
+                  </Text>
+                </View>
+                <View style={[styles.cell, styles.qtyCell, styles.cellBorder]}>
+                  <Text style={{color: 'green', fontWeight: 'bold'}}>
+                    {item.quantity2}
+                  </Text>
+                </View>
+                <View style={[styles.cell, styles.bagCell, styles.cellBorder]}>
+                  <Text style={{color: 'green', fontWeight: 'bold'}}>
+                    {item.bag2}
+                  </Text>
+                </View>
+                <View
+                  style={{
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    paddingVertical: 8,
+                    width: wp('20%'),
+                  }}>
+                  <Text
+                    style={{
+                      color: 'green',
+                      fontWeight: 'bold',
+                      justifyContent: 'flex-end',
+                    }}>
+                    {productprice2}
+                  </Text>
+                </View>
+              </View>)}
+              </View>
+              
             );
           })}
         </View>

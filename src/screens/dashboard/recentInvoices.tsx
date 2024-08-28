@@ -33,6 +33,9 @@ import {screenName} from '../../utils/screenNames';
 import axios from 'axios';
 import CustomIcon from '../../utils/icons';
 import {api} from '../../../envfile/api';
+import * as Progress from 'react-native-progress';
+
+
 
 type Customer = {
   _id: string;
@@ -69,6 +72,18 @@ const RecentInvoices = () => {
   useEffect(() => {
     fetchCustomers();
     fetchInvoices();
+    const ws = new WebSocket(api + '/api/invoice/getInvoice');
+
+    ws.onmessage = (event) => {
+      const message = JSON.parse(event.data);
+      if (message.type === 'NEW_INVOICE') {
+        setInvoice((prevInvoices) => [message.data, ...prevInvoices]);
+      }
+    };
+
+    return () => {
+      ws.close();
+    };
   }, []);
 
   const fetchCustomers = async () => {
@@ -82,11 +97,15 @@ const RecentInvoices = () => {
     }
   };
 
+  const [loading, setloading] = useState<boolean>(false);
   const fetchInvoices = async () => {
     try {
+      setloading(true)
       const response = await axios.get(api + '/api/invoice/getInvoice');
       setInvoice(response.data.data);
-      console.log(invoice, 'invoice');
+      console.log(invoice.length, 'invoice');
+      setloading(false)
+
     } catch (error) {
       console.error('Error fetching invoices:', error);
     }
@@ -111,8 +130,43 @@ const RecentInvoices = () => {
           <H14Primary400Underline>{labels.viewAll}</H14Primary400Underline>
         </TouchableOpacity>
       </View>
+      <TouchableOpacity
+        onPress={() => {
+          fetchInvoices(); // Trigger manual refresh
+        }}
+        style={{
+          padding: 10,
+          backgroundColor: colors.primary,
+          borderRadius: 8,
+          marginVertical: 10,
+          alignItems: 'center',
+        }}>
+        <Text style={{color: '#fff', fontWeight: 'bold'}}>Refresh Invoice</Text>
+      </TouchableOpacity>
      
-      <View style={{gap: 10}}>
+      {loading ? (
+        <View
+          style={{
+            flexDirection: 'column',
+            width: '100%',
+            justifyContent: 'center',
+            alignItems: 'center',
+            backgroundColor: '#fff',
+            gap: 10,
+          }}>
+          <Text style={{color: '#000', fontSize: 20, fontWeight: 'bold'}}>
+            loading . . .
+          </Text>
+          <View>
+            <Progress.Circle
+              size={35}
+              thickness={5}
+              showsText
+              strokeCap="square"
+              indeterminate={true}
+            />
+          </View>
+        </View>):(<View>{invoice.length >= 1 ?  (<View style={{gap: 10}}>
         {sortedInvoices.map((item, id) => {
           return (
             <View
@@ -295,7 +349,12 @@ const RecentInvoices = () => {
             </View>
           );
         })}
-      </View>
+      </View>) : (<View style={{flexDirection:"column",gap:15,width:"100%",justifyContent:"center",alignItems:"center"}}>
+        <View style={{backgroundColor:"#fff"}}>
+          <Image source={require("../../../assets/images/invoicelogo.png")} style={{width:150,height:150}} />
+        </View>
+        <Text style={{color:"#000",fontSize:18,fontWeight:"bold"}}>No invoice Found</Text>
+      </View>)}</View>)}
     </View>
   );
 };

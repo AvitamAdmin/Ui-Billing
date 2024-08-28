@@ -1,7 +1,7 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { Fragment, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { Image, ScrollView, TouchableOpacity, View } from 'react-native';
+import { Image, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { OnboardingButton } from '../../components/commonButton';
 import { CustomTextInput } from '../../components/commonInputFields';
 import CustomIcon from '../../utils/icons';
@@ -35,18 +35,37 @@ const SignupScreen: React.FC<LoginEmailScreenProps> = () => {
         getValues
     } = useForm();
 
+
+    const [errMsg, setErrMsg] = useState("");
     const onLogin = async () => {
-        const formValues = getValues();
+        const formValues = getValues(); // Get form values
         console.log('Form Values:', formValues);
+        setErrMsg("");
+    
         try {
-            const response = await axios.post(api+'/auth/userRegister', formValues);
+            const response = await axios.post(api + '/auth/userRegister', formValues);
             console.log('Server Response:', response.data);
-            // Navigate to the login screen upon successful registration
-            navigation.navigate(screenName.LoginEmailScreen as never);
-        } catch (error) {
-            console.error('Error posting form values:', error);
+    
+            if (response.status === 201) {
+                // Show success message
+                setErrMsg("User registered successfully");
+                // Navigate to the login screen upon successful registration
+                navigation.navigate(screenName.LoginEmailScreen as never);
+            }
+        } catch (error: any) {
+            if (error.response && error.response.status === 400) {
+                // Show error message if user is already registered
+                setErrMsg("Email already registered");
+
+            } else {
+                // Handle other errors
+                setErrMsg("'An unexpected error occurred");
+
+                console.error('Error posting form values:', error);
+            }
         }
     };
+    
 
     const togglePasswordVisibility = () => {
         setShowPassword(!showPassword);
@@ -74,6 +93,9 @@ const SignupScreen: React.FC<LoginEmailScreenProps> = () => {
                                         <View style={{ marginVertical: 30,justifyContent: 'center', alignItems: 'center', gap:10}}>
                                             <H28blackOne700>{labels.welcome}</H28blackOne700>
                                             <H16blackTwo400>{labels.signupMessage}</H16blackTwo400>
+                                            <View><Text style={{color:"red"}}>{errMsg}</Text></View>
+
+                                            
                                         </View>
                                          <View style={{ marginVertical: 10 }}>
                                             <H14blackOne600 style={{ marginVertical: 5 }}>{labels.name}</H14blackOne600>

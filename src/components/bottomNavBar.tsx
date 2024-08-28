@@ -61,8 +61,7 @@ const BottomNavBar: React.FC<Props> = ({ navigationPlusButton }) => {
 
 
     return (
-        <View style={{minHeight:"0%"}}>
-            <View style={{ position: 'absolute', bottom: 0, left: 0, right: 0, }}>
+        <View style={{ position: 'absolute', bottom: 0, left: 0, right: 0,minHeight:"100%" }}>
             <View style={[flexRow, justifyBetween, ph15, pv10, { backgroundColor: colors.white, height: 60, borderRadius: 10,  shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.50, shadowRadius: 3.84, elevation: 8, }]}>
                 <TouchableOpacity onPress={() => navigation.navigate(screenName.DashboardScreen as never)} style={alignItemCenter}>
                     <HomeBottomTab height={25} width={25} />
@@ -100,7 +99,6 @@ const BottomNavBar: React.FC<Props> = ({ navigationPlusButton }) => {
                 </TouchableOpacity>
             </View>
             <CustomModal children={addNewModal()} visible={showModal} onClose={closeModal} height={'80%'} />
-        </View>
         </View>
     );
 }

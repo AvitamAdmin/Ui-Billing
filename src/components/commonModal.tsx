@@ -19,7 +19,7 @@ const CustomModal: React.FC<CustomModalProps> = ({ visible, onClose, height, chi
             <View style={{ flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.5)'}}>
                 <TouchableOpacity style={{  flex: 1, justifyContent: 'flex-end',
                 alignItems: 'center',}} onPress={onClose} />
-                <View style={{ backgroundColor: colors.white, height: height, padding: 20, borderRadius : 20 }}>
+                <View style={{ backgroundColor: colors.white, height: height, padding: 15, borderTopLeftRadius:10,borderTopRightRadius:10 }}>
                     {children}
                 </View>
             </View>

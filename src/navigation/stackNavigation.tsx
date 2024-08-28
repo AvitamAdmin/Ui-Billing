@@ -86,6 +86,12 @@ import PaidInvoice from '../screens/invoices/paidInvoice';
 import UnPaidInvoice from '../screens/invoices/unPaidInvoice';
 import ViewAllInvoice from '../screens/invoices/viewAllInvoice';
 import StatementHistory from '../screens/adminAcess/statementHistory';
+import Createbankaccount from '../screens/adminAcess/createbankaccount';
+import ViewAllBankAcc from '../screens/adminAcess/viewAllBankAcc';
+import FinanceFile from '../screens/adminAcess/financeFile';
+import Expensehistory from '../screens/adminAcess/expensehistory';
+import Incomehistory from '../screens/adminAcess/incomehistory';
+import Viewallcustomers from '../screens/customers/viewallcustomers';
 
 const Stack = createStackNavigator();
 interface NavigationProps {
@@ -114,6 +120,27 @@ const StackNavigation = (props: NavigationProps) => {
         component={StatementHistory}
       />
       <Stack.Screen
+        options={{}}
+        name={screenName.FinanceFile}
+        component={FinanceFile}
+      />
+      <Stack.Screen
+        // options={{
+        //   headerShown: true,
+        //   headerTitle:""
+        // }}
+        name={screenName.ViewAllBankAcc}
+        component={ViewAllBankAcc}
+      />
+       <Stack.Screen
+        // options={{
+        //   headerShown: true,
+        //   headerTitle:""
+        // }}
+        name={screenName.CreateBankAccount}
+        component={Createbankaccount}
+      />
+      <Stack.Screen
         options={{
           headerShown: false,
         }}
@@ -140,7 +167,26 @@ const StackNavigation = (props: NavigationProps) => {
         }}
         name={screenName.Viewallstocks}
         component={Viewallstocks}
-      />
+      /><Stack.Screen
+      options={{
+        headerShown: true,
+      }}
+      name={screenName.Viewallcustomers}
+      component={Viewallcustomers}
+    />
+      <Stack.Screen
+        options={{
+          headerShown: true,
+        }}
+        name={screenName.History}
+        component={Expensehistory}
+      /><Stack.Screen
+      options={{
+        headerShown: false,
+      }}
+      name={screenName.Incomehistory}
+      component={Incomehistory}
+    />
       <Stack.Screen
         options={{
           headerShown: true,

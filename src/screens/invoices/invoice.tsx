@@ -21,10 +21,10 @@ const InvoiceScreen = () => {
               textTransform: 'capitalize',
               color: focused ? '#fff' : 'gray',
               backgroundColor: focused ? '#3385ff' : 'white',
-              padding: 10,
+              padding: 7,
               borderRadius: 5,
-              paddingLeft:10,
-              paddingRight:10
+              paddingLeft:7,
+              paddingRight:7
             }}>
               {route.name}
             </Text>

@@ -117,7 +117,7 @@ const AddNewProducts = (props: AddNewProductsProps) => {
         <TopHeader headerText={labels.addNewProduct} />
         <ScrollView>
           <View style={{paddingBottom: '5%'}}>
-            <View style={[mv15]}>
+            {/* <View style={[mv15]}>
               <UploadImageCard
                 title={labels.customerImage}
                 sizeInfo={labels.sizeOfImg1}
@@ -125,7 +125,7 @@ const AddNewProducts = (props: AddNewProductsProps) => {
                   handleInputChange('image', base64)
                 }
               />
-            </View>
+            </View> */}
             <View>
               <Text style={{marginVertical: 8, color: '#000'}}>
                 {labels.productName}
