@@ -78,6 +78,10 @@ const Createbankaccount = () => {
       setErrorMsg('Check your account number');
       return;
     }
+    if (formValues.mobileno.length > 10) {
+      setErrorMsg('Check your Mobile number');
+      return;
+    }
     console.log(formValues.accountno.length,"length");
     
   
@@ -98,13 +102,13 @@ const Createbankaccount = () => {
       console.log(response.data);
   
       // Clear the form values after successful creation
-    //   setFormValues({
-    //     accountno: '',
-    //     accountholder: '',
-    //     mobileno: '',
-    //     accountbalance: '',
-    //     nickname: '',
-    //   });
+      setFormValues({
+        accountno: '',
+        accountholder: '',
+        mobileno: '',
+        accountbalance: '',
+        nickname: '',
+      });
   
       setErrorMsg(''); // Clear any error messages
     } catch (error) {
@@ -123,6 +127,7 @@ const Createbankaccount = () => {
       accountbalance: '',
       nickname: '',
     });
+    setErrorMsg("");
   };
 
   useFocusEffect(

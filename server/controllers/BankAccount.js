@@ -73,3 +73,13 @@ exports.createbankaccount = async (req, res) => {
 };
 
   
+exports.deleteBankAccount = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const deleteBankAcc = await Bankacc.findById(id);
+    await Bankacc.deleteOne(deleteBankAcc);
+    res.send({ status: "deleted BAnk Account" });
+  } catch (error) {
+    console.log(error, "delete user error in backend");
+  }
+};

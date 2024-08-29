@@ -1,10 +1,17 @@
-import React, { useEffect, useState } from 'react';
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View, Button } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import React, {useEffect, useState} from 'react';
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  Button,
+} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
 import axios from 'axios';
-import { api } from '../../../envfile/api';
+import {api} from '../../../envfile/api';
 import CustomIcon from '../../utils/icons';
-import { colors } from '../../utils/theme/colors';
+import {colors} from '../../utils/theme/colors';
 
 interface BankAccount {
   _id: string;
@@ -33,7 +40,9 @@ const ViewAllBankAcc = () => {
       const bankData: BankAccount[] = response.data.data;
       setBankDetails(bankData);
 
-      const defaultAccount = bankData.find(bank => bank.accounttype === 'default');
+      const defaultAccount = bankData.find(
+        bank => bank.accounttype === 'default',
+      );
       if (defaultAccount) {
         setDefaultBank(defaultAccount);
       }
@@ -46,7 +55,7 @@ const ViewAllBankAcc = () => {
 
   const updateBankType = async (id: string) => {
     try {
-      await axios.post(api + '/api/bank/updateaccounttype', { id });
+      await axios.post(api + '/api/bank/updateaccounttype', {id});
       const updatedBank = bankDetails.find(bank => bank._id === id);
       if (updatedBank) {
         setDefaultBank(updatedBank);
@@ -57,42 +66,96 @@ const ViewAllBankAcc = () => {
     }
   };
 
+  const deleteBankAccount = async (id: string) => {
+    console.log(id, 'klklkl');
+
+    try {
+      await axios.delete(api + `/api/bank/${id}`);
+      await fetchBankDetails();
+    } catch (error) {
+      console.error('Error deleting Bank Acc:', error);
+    }
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
-        <CustomIcon
-                      color={colors.blackOne}
-                      name="arrow-back"
-                      size={24}
-                      type="Ionicons"
-                    />
+          <CustomIcon
+            color={colors.blackOne}
+            name="arrow-back"
+            size={24}
+            type="Ionicons"
+          />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Bank Accounts</Text>
       </View>
 
-      <ScrollView contentContainerStyle={{ padding: 15 }}>
+      <ScrollView contentContainerStyle={{padding: 15}}>
         {bankDetails.length > 0 ? (
-          bankDetails.map((bank) => (
+          bankDetails.map(bank => (
             <View key={bank._id} style={styles.bankCard}>
-              <Text style={styles.title}>Bank Account Details:</Text>
-              <Text>Account Holder: {bank.accountholder}</Text>
-              <Text>Account Number: {bank.accountnumber}</Text>
-              <Text>Mobile Number: {bank.mobileno}</Text>
-              <Text>Account Balance: {bank.accountbalance}</Text>
-              <Text>Nickname: {bank.nickname || 'N/A'}</Text>
-              <Text>Status: {bank.status ? 'Active' : 'Inactive'}</Text>
-              
-              {defaultBank && defaultBank._id === bank._id ? (
-                <Text style={styles.defaultText}>Default Account</Text>
-              ) : (
-                <TouchableOpacity 
-                  style={styles.defaultButton}
-                  onPress={() => updateBankType(bank._id)}
-                >
-                  <Text style={styles.buttonText}>Set as Default</Text>
-                </TouchableOpacity>
-              )}
+              <View>
+                <Text style={styles.title}>Bank Account Details:</Text>
+                <Text>Account Holder: {bank.accountholder}</Text>
+                <Text>Account Number: {bank.accountnumber}</Text>
+                <Text>Mobile Number: {bank.mobileno}</Text>
+                <Text>Account Balance: {bank.accountbalance}</Text>
+                <Text>Nickname: {bank.nickname || 'N/A'}</Text>
+                {/* <Text>Status: {bank.status ? 'Active' : 'Inactive'}</Text> */}
+              </View>
+
+              <View>
+                {defaultBank && defaultBank._id === bank._id ? (
+                  <Text
+                    style={{
+                      width: '100%',
+                      backgroundColor: '#196',
+                      textAlign: 'center',
+                      padding: 8,
+                      borderRadius: 8,
+                      color: '#fff',
+                    }}>
+                    Default Account
+                  </Text>
+                ) : (
+                  <View
+                    style={{
+                      width: '100%',
+                      display: 'flex',
+                      flexDirection: 'row',
+                      justifyContent: 'space-around',
+                    }}>
+                    <TouchableOpacity
+                      style={{
+                        width: '40%',
+                        backgroundColor: '#8F62FF',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        padding: 8,
+                        borderRadius: 8,
+                      }}
+                      onPress={() => updateBankType(bank._id)}>
+                      <Text style={styles.buttonText}>Set as Default</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={{
+                        width: '40%',
+                        backgroundColor: '#ff4d4d',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        padding: 8,
+                        borderRadius: 8,
+                      }}
+                      onPress={() => {
+                        const id = bank._id;
+                        deleteBankAccount(id);
+                      }}>
+                      <Text style={styles.buttonText}>Delete</Text>
+                    </TouchableOpacity>
+                  </View>
+                )}
+              </View>
             </View>
           ))
         ) : (
@@ -129,10 +192,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderRadius: 10,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.2,
     shadowRadius: 3,
     elevation: 5,
+    gap: 10,
   },
   title: {
     fontWeight: 'bold',
