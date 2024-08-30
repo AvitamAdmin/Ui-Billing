@@ -1,4 +1,4 @@
-import {Pressable, ScrollView, StyleSheet, Text, View} from 'react-native';
+import {Pressable, ScrollView, StyleSheet, Text, TextInput, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import Feather from 'react-native-vector-icons/Feather';
 import {useNavigation} from '@react-navigation/native';
@@ -70,7 +70,11 @@ const Expensehistory = () => {
       console.error('Error fetching history:', error);
     }
   };
-
+  const [searchInput, setSearchInput] = useState("");
+  const [dateQuery, setDateQuery] = useState("");
+  const handleDateChange = (event) => {
+    setDateQuery(event.target.value);
+  }; 
   return (
     <View
       style={{
@@ -133,9 +137,34 @@ const Expensehistory = () => {
           </View>
         ) : (
           <View style={{ }}>
+            <View style={{flexDirection:"row",width:"100%",justifyContent:"space-between",marginBottom:5}}>
+          <View style={{width:"55%"}}>
+        <TextInput
+          value={searchInput}
+          onChangeText={setSearchInput}
+          placeholder="Search by Holder name"
+          placeholderTextColor="#ababab"
+          style={{backgroundColor:"#fff",borderRadius:5,color:"#000",paddingLeft:5,paddingRight:5,height:40,width:"100%"}}
+        />
+      </View>
+      <View style={{width:"40%"}}>
+      <TextInput
+      keyboardType='default'
+          value={dateQuery}
+          onChangeText={setDateQuery}
+          style={{backgroundColor:"#fff",borderRadius:5,color:"#000",paddingLeft:5,paddingRight:5,height:40,width:"100%"}}
+          placeholderTextColor="#ababab"
+          placeholder="MM/DD/YYYY"
+        />
+      </View>
+          </View>
             {combinedHistory.length > 0 ? (
               <ScrollView style={{ width: '100%', }}>
-                <View style={{gap: 10,paddingBottom: 20}}>{combinedHistory.map((item, id) => (
+                
+                <View style={{gap: 10,paddingBottom: 20}}>{combinedHistory .filter(index =>   index.holderName.toLowerCase().includes(searchInput.toLowerCase()) &&  new Date(index.creationTime)
+                  .toLocaleDateString()
+                  .toLowerCase()
+                  .includes(dateQuery) ).map((item, id) => (
                   <View
                     key={id}
                     style={{

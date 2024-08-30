@@ -9,6 +9,7 @@ import {
 import {Image} from 'react-native';
 import {api} from '../../../envfile/api';
 import * as Progress from 'react-native-progress';
+import { TextInput } from 'react-native';
 
 type Customer = {
   _id: string;
@@ -81,7 +82,11 @@ const ViewAllInvoice = () => {
       console.error('Error fetching invoices:', error);
     }
   };
-
+  const [searchInput, setSearchInput] = useState("");
+  const [dateQuery, setDateQuery] = useState("");
+  const handleDateChange = (event) => {
+    setDateQuery(event.target.value);
+  }; 
   return (
     <>
     
@@ -112,10 +117,36 @@ const ViewAllInvoice = () => {
       ) : (
         <ScrollView
           style={{backgroundColor: '#cccccc', width: '100%', padding: 10}}>
+            <View style={{flexDirection:"row",width:"100%",justifyContent:"space-between",marginBottom:5}}>
+          <View style={{width:"55%"}}>
+        <TextInput
+          value={searchInput}
+          onChangeText={setSearchInput}
+          placeholder="Search by customer name"
+          placeholderTextColor="#ababab"
+          style={{backgroundColor:"#fff",borderRadius:5,color:"#000",paddingLeft:5,paddingRight:5,height:40,width:"100%"}}
+        />
+      </View>
+      <View style={{width:"40%"}}>
+      <TextInput
+      keyboardType='default'
+          value={dateQuery}
+          onChangeText={setDateQuery}
+          style={{backgroundColor:"#fff",borderRadius:5,color:"#000",paddingLeft:5,paddingRight:5,height:40,width:"100%"}}
+          placeholderTextColor="#ababab"
+          placeholder="MM/DD/YYYY"
+        />
+      </View>
+
+      
+          </View>
           <View>
             {invoice.length >= 1 ? (
               <View style={{gap: 10, paddingBottom: 20}}>
-                {invoice.map((item, id) => (
+                {invoice .filter(index =>  index.customerName.toLowerCase().includes(searchInput.toLowerCase()) &&  new Date(index.creationTime)
+                  .toLocaleDateString()
+                  .toLowerCase()
+                  .includes(dateQuery) ).map((item, id) => (
                   <View
                   key={id}
                   style={{

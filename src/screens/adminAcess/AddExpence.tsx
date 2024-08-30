@@ -1,11 +1,12 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Pressable } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, Pressable, TouchableOpacity } from 'react-native';
 import { api } from '../../../envfile/api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Dropdown } from 'react-native-element-dropdown';
 import { useNavigation } from '@react-navigation/native';
 import { screenName } from '../../utils/screenNames';
+import { colors } from '../../utils/theme/colors';
 
 interface BankAccount {
   _id: string;
@@ -214,7 +215,20 @@ const navigation = useNavigation()
       </View>
 
       <Text style={{ color: "red" }}>{errMsg}</Text>
-      <Button title="Add Expense" onPress={handleAddIncome} />
+      <TouchableOpacity
+        style={{
+          width: '100%',
+          backgroundColor: colors.primary,
+          justifyContent: 'center',
+          alignItems: 'center',
+          padding: 8,
+          borderRadius: 8,
+        }}
+        onPress={handleAddIncome}>
+        <Text style={{fontSize: 18, fontWeight: '500', color: '#fff'}}>
+          Add Income
+        </Text>
+      </TouchableOpacity>
 
     </View>
           

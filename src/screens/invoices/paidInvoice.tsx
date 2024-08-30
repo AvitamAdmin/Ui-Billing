@@ -1,7 +1,7 @@
-import {Image, StyleSheet, Text, View} from 'react-native';
+import {Button, Image, StyleSheet, Text, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import axios from 'axios';
-import {ScrollView} from 'react-native-gesture-handler';
+import {ScrollView, TextInput} from 'react-native-gesture-handler';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -70,6 +70,12 @@ const PaidInvoice = () => {
     }
   };
 
+
+  const [searchInput, setSearchInput] = useState("");
+  const [dateQuery, setDateQuery] = useState("");
+  const handleDateChange = (event) => {
+    setDateQuery(event.target.value);
+  }; 
   return (
     <>
       {loading ? (
@@ -99,11 +105,37 @@ const PaidInvoice = () => {
       ) : (
         <ScrollView
           style={{backgroundColor: '#cccccc', width: '100%', padding: 10}}>
+          <View style={{flexDirection:"row",width:"100%",justifyContent:"space-between",marginBottom:5}}>
+          <View style={{width:"55%"}}>
+        <TextInput
+          value={searchInput}
+          onChangeText={setSearchInput}
+          placeholder="Search by customer name"
+          placeholderTextColor="#ababab"
+          style={{backgroundColor:"#fff",borderRadius:5,color:"#000",paddingLeft:5,paddingRight:5,height:40,width:"100%"}}
+        />
+      </View>
+      <View style={{width:"40%"}}>
+      <TextInput
+      keyboardType='default'
+          value={dateQuery}
+          onChangeText={setDateQuery}
+          style={{backgroundColor:"#fff",borderRadius:5,color:"#000",paddingLeft:5,paddingRight:5,height:40,width:"100%"}}
+          placeholderTextColor="#ababab"
+          placeholder="MM/DD/YYYY"
+        />
+      </View>
+
+      
+          </View>
           <View>
             {invoice.length >= 1 ? (
               <View style={{gap: 10, paddingBottom: 20}}>
                 {invoice
-                  .filter(index => index.paidstatus == 'Paid')
+                  .filter(index => index.paidstatus == 'Paid' &&  index.customerName.toLowerCase().includes(searchInput.toLowerCase()) &&  new Date(index.creationTime)
+                  .toLocaleDateString()
+                  .toLowerCase()
+                  .includes(dateQuery) )
                   .map((item, id) => (
                     <View
                     key={id}

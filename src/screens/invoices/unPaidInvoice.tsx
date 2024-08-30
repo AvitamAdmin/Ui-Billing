@@ -4,6 +4,7 @@ import {
   ScrollView,
   StyleSheet,
   Text,
+  TextInput,
   View,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
@@ -113,6 +114,12 @@ const UnPaidInvoice = () => {
       console.error('Error updating paid status:', error);
     }
   };
+
+  const [searchInput, setSearchInput] = useState("");
+  const [dateQuery, setDateQuery] = useState("");
+  const handleDateChange = (event) => {
+    setDateQuery(event.target.value);
+  }; 
   return (
     <>
       {loading ? (
@@ -142,12 +149,38 @@ const UnPaidInvoice = () => {
       ) : (
         <ScrollView
           style={{backgroundColor: '#cccccc', width: '100%', padding: 10}}>
+            <View style={{flexDirection:"row",width:"100%",justifyContent:"space-between",marginBottom:5}}>
+          <View style={{width:"55%"}}>
+        <TextInput
+          value={searchInput}
+          onChangeText={setSearchInput}
+          placeholder="Search by customer name"
+          placeholderTextColor="#ababab"
+          style={{backgroundColor:"#fff",borderRadius:5,color:"#000",paddingLeft:5,paddingRight:5,height:40,width:"100%"}}
+        />
+      </View>
+      <View style={{width:"40%"}}>
+      <TextInput
+      keyboardType='default'
+          value={dateQuery}
+          onChangeText={setDateQuery}
+          style={{backgroundColor:"#fff",borderRadius:5,color:"#000",paddingLeft:5,paddingRight:5,height:40,width:"100%"}}
+          placeholderTextColor="#ababab"
+          placeholder="MM/DD/YYYY"
+        />
+      </View>
+
+      
+          </View>
           <View>
             {invoices.filter(index => index.paidstatus == 'UnPaid').length >=
             1 ? (
               <View style={{gap: 10, paddingBottom: 20}}>
                 {invoices
-                  .filter(index => index.paidstatus == 'UnPaid')
+                  .filter(index => index.paidstatus == 'UnPaid'  &&  index.customerName.toLowerCase().includes(searchInput.toLowerCase()) &&  new Date(index.creationTime)
+                  .toLocaleDateString()
+                  .toLowerCase()
+                  .includes(dateQuery))
                   .map((item, id) => (
                     <View
                     key={id}
